@@ -8,6 +8,7 @@ PREFS_FILE = os.path.join(DATA_DIR, "user_preferences.json")
 PROPS_FILE = os.path.join(DATA_DIR, "properties.json")
 RENTAL_FILE = os.path.join(DATA_DIR, "rental_properties.json")
 NEARBY_PROPS_FILE = os.path.join(DATA_DIR, "nearby_properties.json")
+GATED_PLOTS_FILE = os.path.join(DATA_DIR, "gated_plots.json")
 ZONES_FILE = os.path.join(DATA_DIR, "market_zones.json")
 CUSTOM_ZONES_FILE = os.path.join(DATA_DIR, "custom_user_zones.json")
 ANCHORS_FILE = os.path.join(DATA_DIR, "anchors.json")
@@ -17,6 +18,7 @@ AUDIT_LEDGER_FILE = os.path.join(DATA_DIR, "property_audit_ledger.json")
 CHANGES_CSV_FILE = os.path.join(DATA_DIR, "property_parameter_changes.csv")
 ALL_PURCHASE_CSV = os.path.join(DATA_DIR, "all_purchase_properties_daily.csv")
 ALL_RENTAL_CSV = os.path.join(DATA_DIR, "all_rental_properties_daily.csv")
+ALL_GATED_PLOTS_CSV = os.path.join(DATA_DIR, "all_gated_plots_daily.csv")
 TOP_10_PURCHASE_CSV = os.path.join(DATA_DIR, "top_10_purchase_daily.csv")
 TOP_5_RENTAL_CSV = os.path.join(DATA_DIR, "top_5_rental_daily.csv")
 
@@ -71,6 +73,14 @@ def get_rental_properties():
 
 def get_nearby_properties():
     return load_json(NEARBY_PROPS_FILE, default=[])
+
+
+def get_gated_plots():
+    return load_json(GATED_PLOTS_FILE, default=[])
+
+
+def save_gated_plots(plots):
+    return save_json(GATED_PLOTS_FILE, plots)
 
 
 def get_market_zones():

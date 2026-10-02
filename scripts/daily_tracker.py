@@ -38,8 +38,10 @@ AUDIT_SOURCES_FILE = os.path.join(DATA_DIR, "audit_sources.json")
 
 ALL_PURCHASE_CSV = os.path.join(DATA_DIR, "all_purchase_properties_daily.csv")
 ALL_RENTAL_CSV = os.path.join(DATA_DIR, "all_rental_properties_daily.csv")
+ALL_GATED_PLOTS_CSV = os.path.join(DATA_DIR, "all_gated_plots_daily.csv")
 TOP_10_PURCHASE_CSV = os.path.join(DATA_DIR, "top_10_purchase_daily.csv")
 TOP_5_RENTAL_CSV = os.path.join(DATA_DIR, "top_5_rental_daily.csv")
+GATED_PLOTS_FILE = os.path.join(DATA_DIR, "gated_plots.json")
 
 
 def safe_print(text):
@@ -164,12 +166,13 @@ def run_daily_tracker(dry_run=False, force=False):
 
     properties = load_json(PROPS_FILE)
     rental_properties = load_json(RENTAL_FILE)
+    gated_plots = load_json(GATED_PLOTS_FILE)
 
     if not properties:
         safe_print("Error: properties.json missing or empty.")
         return {"success": False, "status": "ERROR_PROPERTIES_MISSING", "message": "properties.json is empty."}
 
-    safe_print(f"Loaded {len(properties)} purchase properties and {len(rental_properties)} rental listings.")
+    safe_print(f"Loaded {len(properties)} purchase properties, {len(rental_properties)} rental listings, and {len(gated_plots)} gated community plots.")
 
     # Audit sources count initialization
     audit_sources_count = 0
@@ -395,6 +398,43 @@ def run_daily_tracker(dry_run=False, force=False):
     all_rental_df = pd.DataFrame(rental_records)
     top_5_rental_df = pd.DataFrame(rental_records[:5])
 
+    # ---------------------------------------------------------
+    # 4b. Extract ALL Available Gated Community Land / Plots
+    # ---------------------------------------------------------
+    plot_records = []
+    for pl in (gated_plots or []):
+        plot_records.append({
+            "Snapshot_Date": date_str,
+            "Plot_ID": pl.get("id"),
+            "Community_Name": pl.get("name"),
+            "Developer": pl.get("builder"),
+            "Builder_Tier": pl.get("builder_tier"),
+            "Micro_Market": pl.get("micro_market"),
+            "Date_Posted": pl.get("date_posted", "2026-10-02"),
+            "Listing_Freshness": pl.get("listing_freshness", "Fresh Today 🟢"),
+            "Last_Verified_Date": pl.get("last_verified_date", "2026-10-02"),
+            "Rate_Per_Sqft_INR": pl.get("price_per_sqft"),
+            "Min_Base_Price_Cr": pl.get("total_price_cr"),
+            "Max_Base_Price_Cr": pl.get("max_price_cr", pl.get("total_price_cr")),
+            "Upfront_Cash_Required_Lakhs": pl.get("upfront_cash_required_lakhs", 25.0),
+            "Total_Ownership_Cost_Cr": pl.get("total_ownership_cost_cr", 1.05),
+            "Legal_Approval": pl.get("legal_approval"),
+            "Khata_Type": pl.get("khata_type"),
+            "RERA_Number": pl.get("rera_number"),
+            "Resident_Rating": pl.get("resident_rating", 4.6),
+            "Distance_To_Bellandur_KM": pl.get("distance_to_bellandur_km"),
+            "Commute_Ecospace_Mins": pl.get("commute_to_ecospace_mins"),
+            "Commute_PTP_Mins": pl.get("commute_to_ptp_mins"),
+            "Water_Source": pl.get("water_source"),
+            "Power_Infrastructure": pl.get("power_infrastructure"),
+            "Gated_Amenities": pl.get("gated_amenities"),
+            "Bank_Approvals": pl.get("bank_loan_approvals"),
+            "Validation_URL": pl.get("validation_url", ""),
+            "Source_Post_URL": pl.get("source_post_url", "")
+        })
+    plot_records.sort(key=lambda x: (-x["Resident_Rating"], x["Rate_Per_Sqft_INR"]))
+    all_plots_df = pd.DataFrame(plot_records)
+
     # Determine status label
     base_status = "UPDATED_ON_PARAMETER_CHANGE" if changes_detected else ("MANUAL_FORCE_RECORDED" if force else "RECORDED_NEW_SNAPSHOT")
     status_label = f"DRY_RUN_{base_status}" if dry_run else base_status
@@ -409,6 +449,10 @@ def run_daily_tracker(dry_run=False, force=False):
 
         all_rental_df.to_csv(ALL_RENTAL_CSV, index=False, encoding="utf-8")
         safe_print(f"Recorded ALL ({len(all_rental_df)}) Rental options to {ALL_RENTAL_CSV}")
+
+        if not all_plots_df.empty:
+            all_plots_df.to_csv(ALL_GATED_PLOTS_CSV, index=False, encoding="utf-8")
+            safe_print(f"Recorded ALL ({len(all_plots_df)}) Gated Plots to {ALL_GATED_PLOTS_CSV}")
 
         # Record TOP picks
         top_10_purchase_df.to_csv(TOP_10_PURCHASE_CSV, index=False, encoding="utf-8")

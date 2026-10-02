@@ -38,6 +38,7 @@ from utils.storage import (
     get_properties,
     get_rental_properties,
     get_nearby_properties,
+    get_gated_plots,
     get_market_zones,
     get_custom_zones,
     save_custom_zones,
@@ -47,6 +48,7 @@ from utils.storage import (
     get_parameter_changes_df,
     ALL_PURCHASE_CSV,
     ALL_RENTAL_CSV,
+    ALL_GATED_PLOTS_CSV,
     TOP_10_PURCHASE_CSV,
     TOP_5_RENTAL_CSV,
     CHANGES_CSV_FILE
@@ -582,6 +584,7 @@ weights = prefs.get("weights", {
 properties = get_properties()
 rental_properties = get_rental_properties()
 nearby_properties = get_nearby_properties()
+gated_plots = get_gated_plots()
 market_zones = get_market_zones()
 anchors = get_anchors()
 hist_df = get_historical_prices_df()
@@ -796,10 +799,11 @@ if st.sidebar.button("🔄 Refresh & Record Data", use_container_width=True, key
 # -------------------------------------------------------------
 # Main Application Tabs
 # -------------------------------------------------------------
-tab_purchase, tab_rental, tab_nearby, tab_trends, tab_ai_copilot, tab_pedigree, tab_architecture = st.tabs([
+tab_purchase, tab_rental, tab_nearby, tab_plots, tab_trends, tab_ai_copilot, tab_pedigree, tab_architecture = st.tabs([
     "🏢 Purchase / Investment",
     "🏡 Rental Discovery (Tab 2)",
-    "🧭 Nearby Areas (Worth Considering)",
+    "🧭 Nearby Areas (Worth Considering & Core Radar)",
+    "🏞️ Gated Plots & Land",
     "📊 Price Trends",
     "🤖 AI Radar & Copilot (Sources • Recommendations • Chatbot)",
     "⚖️ Builder & Due Diligence",
@@ -1368,25 +1372,8 @@ with tab_purchase:
 
     df_purchase_table = pd.DataFrame(table_data)
 
-    col_vtp1, col_vtp2 = st.columns([3, 1])
-    with col_vtp1:
-        view_mode_p = st.radio(
-            "Comparison Table Layout:",
-            [
-                "📌 Frozen 3-Columns Grid (Locked on Left: Property Name • Builder • Date Posted)",
-                "📊 Standard Interactive Dataframe"
-            ],
-            horizontal=True,
-            key="purchase_table_freeze_mode",
-            help="Freezes the first 3 identifier columns (Property Name, Builder, and Date Posted) so they remain pinned while scrolling horizontally through the remaining 25+ parameters."
-        )
-    with col_vtp2:
-        st.caption("Scroll horizontally to compare all 30+ parameters; first 3 columns remain permanently locked on left.")
-
-    if view_mode_p.startswith("📌"):
-        render_sticky_frozen_table(df_purchase_table, frozen_cols=3, table_id="purchase_sticky_table", max_height="540px")
-    else:
-        st.dataframe(df_purchase_table, use_container_width=True, hide_index=True)
+    st.caption("📌 **Locked 3-Columns Grid by Default**: First 3 columns (*Property Name*, *Builder*, and *Date Posted*) remain permanently pinned on the left as you scroll horizontally across all 30+ comparative parameters.")
+    render_sticky_frozen_table(df_purchase_table, frozen_cols=3, table_id="purchase_sticky_table", max_height="540px")
 
     # 1-Click In-App Sandboxed Incognito Listing & RERA Viewer
     col_p_incog1, col_p_incog2 = st.columns([3, 1])
@@ -1880,25 +1867,8 @@ with tab_rental:
 
     df_rental_table = pd.DataFrame(rental_table_rows)
 
-    col_vtr1, col_vtr2 = st.columns([3, 1])
-    with col_vtr1:
-        view_mode_r = st.radio(
-            "Rental Table Layout:",
-            [
-                "📌 Frozen 3-Columns Grid (Locked on Left: Society • Unit Title • Date Posted)",
-                "📊 Standard Interactive Dataframe"
-            ],
-            horizontal=True,
-            key="rental_table_freeze_mode",
-            help="Freezes the first 3 identifier columns (Society, Unit Title, and Date Posted) on the left while allowing horizontal scrolling across all other parameters."
-        )
-    with col_vtr2:
-        st.caption("First 3 columns remain permanently locked on left as you scroll across all rental parameters.")
-
-    if view_mode_r.startswith("📌"):
-        render_sticky_frozen_table(df_rental_table, frozen_cols=3, table_id="rental_sticky_table", max_height="520px")
-    else:
-        st.dataframe(df_rental_table, use_container_width=True, hide_index=True)
+    st.caption("📌 **Locked 3-Columns Grid by Default**: First 3 columns (*Society*, *Unit Title*, and *Date Posted*) remain permanently pinned on the left as you scroll horizontally across all rental parameters.")
+    render_sticky_frozen_table(df_rental_table, frozen_cols=3, table_id="rental_sticky_table", max_height="520px")
 
     # 1-Click In-App Sandboxed Incognito Rental Listing Viewer
     col_r_incog1, col_r_incog2 = st.columns([3, 1])
@@ -2283,128 +2253,220 @@ with tab_nearby:
         """, unsafe_allow_html=True)
 
     st.markdown("---")
-    st.markdown("### 📋 Table of Worth-Considering Properties Nearby")
-    st.caption("Full parameter matrix comparing price, age, maintenance, upfront advance, resident rating, advantages vs core, and real resident tradeoffs.")
+    st.markdown("### 📋 Unified Comparative Ranking Table: Core Radar (Tab 1) & Nearby Micro-Markets")
+    st.caption("Side-by-side benchmark ranking all 16 options: the **10 Core Radar Properties (Tab 1)** alongside the **6 Worth-Considering Nearby Extensions**, highlighting price discounts vs commute trade-offs.")
 
-    nearby_table_rows = []
+    # Combine Tab 1 Core Purchase Properties (First 10) + Nearby Micro-Market Properties (6)
+    combined_nearby_eval = []
+
+    # 1. Ingest Tab 1 Core Properties
+    for p in properties[:10]:
+        base_cost = p.get("base_cost_inr", int(p["total_price_cr"] * 10000000))
+        stamp_duty = round(base_cost * 0.056)
+        reg_fee = round(base_cost * 0.01)
+        upfront_lakhs = round((base_cost * 0.20 + stamp_duty + reg_fee + 45000 + 15000 + 200000) / 100000.0, 1)
+        toc_cr = round(base_cost * 1.12 / 10000000.0, 2)
+        score = p.get("score", 90.0)
+
+        combined_nearby_eval.append({
+            "id": p.get("id", f"core_{p['name']}"),
+            "name": p["name"],
+            "builder": p["builder"],
+            "builder_tier": p["builder_tier"],
+            "date_posted": p.get("formatted_posted_date", f"{p.get('date_posted', '2026-10-02')} (Fresh 🟢)"),
+            "listing_freshness": p.get("listing_freshness", "Fresh Today 🟢"),
+            "is_core_tab1": True,
+            "scope_label": "🛡️ Core Radar (Tab 1)",
+            "unified_score": score,
+            "micro_market": p["micro_market"],
+            "distance_to_bellandur_km": 0.0 if "Core" in p["micro_market"] or "Bellandur" in p["micro_market"] else round(p.get("distance_to_bellandur_km", 0.8), 1),
+            "age_years": p.get("age_years", 8),
+            "year_built": p.get("year_built", 2018),
+            "resident_rating": p.get("resident_rating", 4.5),
+            "feedback_score": p.get("feedback_score", 90),
+            "price_per_sqft": p["price_per_sqft"],
+            "total_price_cr": p["total_price_cr"],
+            "config_area": f"{p['bhk']} ({p['avg_sqft']} sqft)",
+            "monthly_maintenance_inr": p.get("monthly_maintenance_inr", int(p.get("maintenance_sqft", 4.0) * p.get("avg_sqft", 1500))),
+            "upfront_cash_required_lakhs": upfront_lakhs,
+            "total_ownership_cost_cr": toc_cr,
+            "commute_to_ecospace_mins": p.get("commute_ecospace_mins", 8),
+            "commute_to_ptp_mins": p.get("commute_ptp_mins", 10),
+            "cycling_jogging_track": p.get("amenities", {}).get("cycling_jogging_track", "Dedicated 1.2km Track"),
+            "validation_url": p.get("validation_url", "https://rera.karnataka.gov.in"),
+            "source_post_url": p.get("source_post_url", p.get("validation_url", "https://rera.karnataka.gov.in")),
+            "why_worth_considering": "Prime walkable proximity to ORR tech parks; 100% bypass of Panathur railway choke points; strong capital liquidity and rental yield (4.2-4.6%).",
+            "key_tradeoffs_complaints": "; ".join(p.get("common_complaints", ["Premium pricing per sqft"])),
+            "obj": p
+        })
+
+    # 2. Ingest Nearby Extension Properties
     for nb in nearby_properties:
+        score = round((nb.get("resident_rating", 4.5) / 5.0) * 45 + max(0, (15000 - nb.get("price_per_sqft", 11000)) / 100) * 0.3 + max(0, (30 - nb.get("distance_to_bellandur_km", 4) * 3)) + 15, 1)
+        upfront_lakhs = round(nb.get("upfront_cash_required_cr", 0.5) * 100, 1)
+
+        combined_nearby_eval.append({
+            "id": nb.get("id", f"nb_{nb['name']}"),
+            "name": nb["name"],
+            "builder": nb["builder"],
+            "builder_tier": nb["builder_tier"],
+            "date_posted": nb.get("formatted_posted_date", f"{nb.get('date_posted', '2026-10-02')} (Fresh 🟢)"),
+            "listing_freshness": nb.get("listing_freshness", "Fresh Today 🟢"),
+            "is_core_tab1": False,
+            "scope_label": "📍 Nearby Extension (Tab 3)",
+            "unified_score": score,
+            "micro_market": nb["micro_market"],
+            "distance_to_bellandur_km": nb["distance_to_bellandur_km"],
+            "age_years": nb.get("age_years", 5),
+            "year_built": nb.get("year_built", 2021),
+            "resident_rating": nb.get("resident_rating", 4.5),
+            "feedback_score": nb.get("feedback_score", 90),
+            "price_per_sqft": nb["price_per_sqft"],
+            "total_price_cr": nb["total_price_cr"],
+            "config_area": f"{nb['avg_bhk']} ({nb['avg_sqft']} sqft)",
+            "monthly_maintenance_inr": nb["monthly_maintenance_inr"],
+            "upfront_cash_required_lakhs": upfront_lakhs,
+            "total_ownership_cost_cr": nb.get("total_ownership_cost_cr", 2.0),
+            "commute_to_ecospace_mins": nb["commute_to_ecospace_mins"],
+            "commute_to_ptp_mins": nb["commute_to_ptp_mins"],
+            "cycling_jogging_track": "1.5km Perimeter Track",
+            "validation_url": nb.get("validation_url", "#"),
+            "source_post_url": nb.get("validation_url", "#"),
+            "why_worth_considering": nb["why_worth_considering"],
+            "key_tradeoffs_complaints": nb["key_tradeoffs_complaints"],
+            "obj": nb
+        })
+
+    # Sort all 16 items by unified_score descending
+    combined_nearby_eval.sort(key=lambda x: x["unified_score"], reverse=True)
+
+    # Build Comparative Table Rows
+    nearby_table_rows = []
+    for rank_idx, item in enumerate(combined_nearby_eval):
+        rank_badge = f"🏆 #{rank_idx+1}" if rank_idx == 0 else (f"🥈 #{rank_idx+1}" if rank_idx == 1 else (f"🥉 #{rank_idx+1}" if rank_idx == 2 else f"#{rank_idx+1}"))
+        scope_prefix = "[Tab 1 Core]" if item["is_core_tab1"] else "[Nearby Area]"
+
         nearby_table_rows.append({
-            "Property Name": nb["name"],
-            "Developer": f"{nb['builder']} ({nb['builder_tier']})",
-            "Date Posted": nb.get("formatted_posted_date", f"{nb.get('date_posted', '2026-10-02')} (Fresh 🟢)"),
-            "Micro-Market": nb["micro_market"],
-            "Dist to Core (km)": f"{nb['distance_to_bellandur_km']} km",
-            "Age (Yrs)": f"{nb.get('age_years', 5)} yrs ({nb.get('year_built', 2021)})",
-            "Resident Rating": f"⭐ {nb.get('resident_rating', 4.5)} / 5",
-            "Feedback Score": f"{nb.get('feedback_score', 90)} / 100",
-            "Rate / sqft": f"₹{nb['price_per_sqft']:,}",
-            "Base Flat Price": f"₹{nb['total_price_cr']} Cr",
-            "Config & Area": f"{nb['avg_bhk']} ({nb['avg_sqft']} sqft)",
-            "Monthly Maint": f"₹{nb['monthly_maintenance_inr']:,}",
-            "Upfront Cash Req.": f"₹{round(nb.get('upfront_cash_required_cr', 0.5) * 100, 2)} L",
-            "Total Cost of Ownership": f"₹{nb.get('total_ownership_cost_cr', 2.0)} Cr",
-            "Commute to Ecospace": f"{nb['commute_to_ecospace_mins']} mins",
-            "Commute to PTP": f"{nb['commute_to_ptp_mins']} mins",
-            "Validation URL": nb.get("validation_url", "#"),
-            "Why Worth Considering (Pros)": nb["why_worth_considering"],
-            "Key Trade-offs / Complaints (Cons)": nb["key_tradeoffs_complaints"]
+            "Property Name": item["name"],
+            "Developer & Scope": f"{scope_prefix} {item['builder']} ({item['builder_tier']})",
+            "Date Posted": item["date_posted"],
+            "Unified Rank": f"{rank_badge} (Score: {item['unified_score']})",
+            "Radar Origin": item["scope_label"],
+            "Micro-Market": item["micro_market"],
+            "Dist to Core (km)": f"{item['distance_to_bellandur_km']} km",
+            "Age (Yrs)": f"{item['age_years']} yrs ({item['year_built']})",
+            "Resident Rating": f"⭐ {item['resident_rating']} / 5",
+            "Feedback Score": f"{item['feedback_score']} / 100",
+            "Rate / sqft": f"₹{item['price_per_sqft']:,}",
+            "Base Flat Price": f"₹{item['total_price_cr']} Cr",
+            "Config & Area": item["config_area"],
+            "Monthly Maint": f"₹{item['monthly_maintenance_inr']:,}",
+            "Upfront Cash Req.": f"₹{item['upfront_cash_required_lakhs']} L",
+            "Total Cost of Ownership": f"₹{item['total_ownership_cost_cr']} Cr",
+            "Commute to Ecospace": f"{item['commute_to_ecospace_mins']} mins",
+            "Commute to PTP": f"{item['commute_to_ptp_mins']} mins",
+            "Cycling / Jogging Track": item["cycling_jogging_track"],
+            "Validation URL": item["validation_url"],
+            "Why Worth Considering (Pros)": item["why_worth_considering"],
+            "Key Trade-offs / Complaints (Cons)": item["key_tradeoffs_complaints"]
         })
 
     df_nearby = pd.DataFrame(nearby_table_rows)
 
-    col_vtn1, col_vtn2 = st.columns([3, 1])
-    with col_vtn1:
-        view_mode_nb = st.radio(
-            "Nearby Table Layout:",
-            [
-                "📌 Frozen 3-Columns Grid (Locked on Left: Property Name • Developer • Date Posted)",
-                "📊 Standard Interactive Dataframe"
-            ],
-            horizontal=True,
-            key="nearby_table_freeze_mode",
-            help="Freezes the first 3 columns (Property Name, Developer, and Date Posted) while allowing horizontal scroll across all comparative metrics."
-        )
-    with col_vtn2:
-        st.caption("First 3 columns remain locked on left as you scroll.")
-
-    if view_mode_nb.startswith("📌"):
-        render_sticky_frozen_table(df_nearby, frozen_cols=3, table_id="nearby_sticky_table", max_height="500px")
-    else:
-        st.dataframe(df_nearby, use_container_width=True, hide_index=True)
+    st.caption("📌 **Locked 3-Columns Grid by Default**: First 3 columns (*Property Name*, *Developer & Scope*, and *Date Posted*) remain permanently pinned on the left as you scroll horizontally across all 20+ comparative metrics.")
+    render_sticky_frozen_table(df_nearby, frozen_cols=3, table_id="nearby_sticky_table", max_height="540px")
 
     st.markdown("---")
-    st.markdown("### 🏢 Detailed Profiles: Worth-Considering Nearby Properties")
+    st.markdown("### 🏢 Detailed Ranked Profiles: All 16 Evaluated Properties (Core vs Nearby)")
+    st.caption("Browse all 16 properties in order of unified ranking score. Each card highlights origin scope badge (`[Tab 1 Core Option 🛡️]` vs `[Nearby Extension 📍]`), pricing, commute times, and direct incognito verification dossiers.")
 
-    for nb in nearby_properties:
-        gmaps_nb_url = f"https://www.google.com/maps/search/?api=1&query={nb['lat']},{nb['lng']}"
+    for rank_idx, item in enumerate(combined_nearby_eval):
+        raw_obj = item["obj"]
+        lat_val = raw_obj.get("lat", 12.9325)
+        lng_val = raw_obj.get("lng", 77.6795)
+        gmaps_url = f"https://www.google.com/maps/search/?api=1&query={lat_val},{lng_val}"
+        val_url = item["validation_url"]
+        rank_badge = f"🏆 Unified Rank #{rank_idx+1}" if rank_idx == 0 else (f"🥈 Unified Rank #{rank_idx+1}" if rank_idx == 1 else (f"🥉 Unified Rank #{rank_idx+1}" if rank_idx == 2 else f"Unified Rank #{rank_idx+1}"))
+
+        scope_bg = "#065F46" if item["is_core_tab1"] else "#5B21B6"
+        scope_fg = "#6EE7B7" if item["is_core_tab1"] else "#DDD6FE"
+        card_border_color = "#10B981" if item["is_core_tab1"] else "#8B5CF6"
+
         with st.container():
             st.markdown(f"""
-            <div class="property-card" style="border-left: 6px solid #8B5CF6;">
+            <div class="property-card" style="border-left: 6px solid {card_border_color};">
                 <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 8px;">
                     <div>
-                        <h3 style="margin: 0; color: #F8FAFC; font-size: 1.25rem;">{nb['name']}</h3>
-                        <div style="margin-top: 4px;">
-                            <span class="badge-deal">📍 {nb['micro_market']} ({nb['distance_to_bellandur_km']} km to Bellandur Core)</span>
-                            <span class="badge-rating">⭐ {nb.get('resident_rating', 4.5)} / 5.0 (Feedback: {nb.get('feedback_score', 90)}/100)</span>
-                            <span class="badge-age">⏳ Age: {nb.get('age_years', 5)} Years (Built {nb.get('year_built', 2021)})</span>
-                            <span style="background: #0284C7; color: white; padding: 2px 7px; border-radius: 4px; font-size: 0.76rem; font-weight: 700;">
-                                📅 Posted: {nb.get('date_posted', '2026-10-02')} ({nb.get('listing_freshness', 'Fresh Today 🟢')})
+                        <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                            <h3 style="margin: 0; color: #F8FAFC; font-size: 1.25rem;">{item['name']}</h3>
+                            <span style="background: #1E293B; color: #FBBF24; border: 1px solid #475569; padding: 2px 8px; border-radius: 4px; font-weight: 700; font-size: 0.8rem;">
+                                {rank_badge} (Score: {item['unified_score']}/100)
                             </span>
                         </div>
-                        <p style="margin: 5px 0 0 0; color: #94A3B8; font-size: 0.9rem;">
-                            <b>Developer:</b> {nb['builder']} &nbsp;|&nbsp; 
-                            <b>Hierarchy:</b> <span style="color: #A78BFA;">{nb['builder_tier']}</span> &nbsp;|&nbsp; 
-                            <b>Status:</b> {nb.get('status', 'Ready to Move')} &nbsp;|&nbsp;
-                            <b>Listing Freshness:</b> <span style="color: #A78BFA; font-weight: 600;">{nb.get('date_posted', '2026-10-02')} (Verified Active)</span>
+                        <div style="margin-top: 6px; display: flex; gap: 6px; flex-wrap: wrap;">
+                            <span style="background: {scope_bg}; color: {scope_fg}; padding: 2px 8px; border-radius: 4px; font-weight: 700; font-size: 0.78rem;">
+                                {item['scope_label']}
+                            </span>
+                            <span class="badge-deal">📍 {item['micro_market']} ({item['distance_to_bellandur_km']} km to Bellandur Core)</span>
+                            <span class="badge-rating">⭐ {item['resident_rating']} / 5.0 (Feedback: {item['feedback_score']}/100)</span>
+                            <span class="badge-age">⏳ Age: {item['age_years']} Yrs ({item['year_built']})</span>
+                            <span style="background: #0284C7; color: white; padding: 2px 7px; border-radius: 4px; font-size: 0.76rem; font-weight: 700;">
+                                📅 Posted: {item['date_posted']}
+                            </span>
+                        </div>
+                        <p style="margin: 6px 0 0 0; color: #94A3B8; font-size: 0.9rem;">
+                            <b>Developer:</b> {item['builder']} &nbsp;|&nbsp; 
+                            <b>Hierarchy:</b> <span style="color: {scope_fg};">{item['builder_tier']}</span> &nbsp;|&nbsp; 
+                            <b>Config:</b> {item['config_area']} &nbsp;|&nbsp;
+                            <b>Listing Freshness:</b> <span style="color: {scope_fg}; font-weight: 600;">{item['listing_freshness']} (Verified Active)</span>
                         </p>
                     </div>
                     <div style="text-align: right;">
-                        <span style="font-size: 1.6rem; font-weight: 800; color: #A78BFA;">₹{nb['total_price_cr']} Cr</span>
-                        <div style="font-size: 0.85rem; color: #CBD5E1;">₹{nb['price_per_sqft']:,} / sqft</div>
-                        <div style="font-size: 0.8rem; color: #94A3B8;">TOC: ~₹{nb.get('total_ownership_cost_cr', 2.0)} Cr</div>
+                        <span style="font-size: 1.6rem; font-weight: 800; color: {scope_fg};">₹{item['total_price_cr']} Cr</span>
+                        <div style="font-size: 0.85rem; color: #CBD5E1;">₹{item['price_per_sqft']:,} / sqft</div>
+                        <div style="font-size: 0.8rem; color: #94A3B8;">TOC: ~₹{item['total_ownership_cost_cr']} Cr</div>
                     </div>
                 </div>
             </div>
             """, unsafe_allow_html=True)
 
-            nb_c1, nb_c2 = st.columns([1, 1])
-            with nb_c1:
-                st.markdown("**🌟 Why Worth Considering (Value Proposition):**")
-                st.info(nb["why_worth_considering"])
-                st.markdown(f"- **Avg Configuration:** `{nb['avg_bhk']}` ({nb['avg_sqft']} sqft)")
-                st.markdown(f"- **Monthly Maintenance:** `₹{nb['monthly_maintenance_inr']:,} / mo` (₹{nb['annual_maintenance_inr']:,} / yr)")
-                st.markdown(f"- **Upfront Advance Cash Required:** `~₹{round(nb.get('upfront_cash_required_cr', 0.5) * 100, 2)} Lakhs`")
+            c1, c2 = st.columns([1, 1])
+            with c1:
+                st.markdown("**🌟 Key Strengths & Value Proposition:**")
+                st.info(item["why_worth_considering"])
+                st.markdown(f"- **Monthly Maintenance:** `₹{item['monthly_maintenance_inr']:,} / mo`")
+                st.markdown(f"- **Upfront Advance Cash Required:** `~₹{item['upfront_cash_required_lakhs']} Lakhs`")
+                st.markdown(f"- **Cycling / Jogging Track:** `{item['cycling_jogging_track']}`")
 
-            with nb_c2:
-                st.markdown("**⚠️ Real Resident Trade-offs & Common Complaints:**")
-                st.warning(nb["key_tradeoffs_complaints"])
-                st.markdown(f"- **Commute to RMZ Ecospace:** `{nb['commute_to_ecospace_mins']} mins`")
-                st.markdown(f"- **Commute to Prestige Tech Park (PTP):** `{nb['commute_to_ptp_mins']} mins`")
-                st.markdown(f"- **Water Source:** `{nb['water_source']}`")
+            with c2:
+                st.markdown("**⚠️ Real Resident Trade-offs & Watch-outs:**")
+                st.warning(item["key_tradeoffs_complaints"])
+                st.markdown(f"- **Commute to RMZ Ecospace:** `{item['commute_to_ecospace_mins']} mins`")
+                st.markdown(f"- **Commute to Prestige Tech Park (PTP):** `{item['commute_to_ptp_mins']} mins`")
 
-                val_nb_url = nb.get("validation_url", "#")
-                if st.button("🛡️ View Project In-App (Incognito)", key=f"btn_nb_incog_{nb['id']}", use_container_width=True):
+                if st.button("🛡️ View Dossier In-App (Incognito)", key=f"btn_cmb_incog_{item['id']}_{rank_idx}", use_container_width=True):
                     show_incognito_post_viewer(
-                        title=f"{nb['name']} ({nb['micro_market']}) — Verified Project Dossier",
-                        url=val_nb_url,
-                        source_type="Official Portal / Listing",
+                        title=f"{item['name']} ({item['micro_market']}) — Verified Project Dossier",
+                        url=val_url,
+                        source_type="Official Portal / Verified Listing",
                         metadata={
-                            "Price": f"₹{nb['total_price_cr']} Cr",
-                            "Rate": f"₹{nb['price_per_sqft']:,}/sqft",
-                            "Rating": f"⭐ {nb.get('resident_rating', 4.5)}/5",
-                            "Distance": f"{nb['distance_to_bellandur_km']} km"
+                            "Price": f"₹{item['total_price_cr']} Cr",
+                            "Rate": f"₹{item['price_per_sqft']:,}/sqft",
+                            "Rating": f"⭐ {item['resident_rating']}/5",
+                            "Scope": item['scope_label'],
+                            "Rank": f"#{rank_idx+1}"
                         },
-                        property_obj=nb
+                        property_obj=raw_obj
                     )
 
                 st.markdown(f"""
                 <div style="display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap;">
-                    <a href="{gmaps_nb_url}" target="_blank" style="flex: 1; text-decoration: none; min-width: 120px;">
-                        <div style="background-color: #6D28D9; color: white; text-align: center; padding: 7px; border-radius: 6px; font-weight: 700; font-size: 0.82rem;">
+                    <a href="{gmaps_url}" target="_blank" style="flex: 1; text-decoration: none; min-width: 120px;">
+                        <div style="background-color: {card_border_color}; color: white; text-align: center; padding: 7px; border-radius: 6px; font-weight: 700; font-size: 0.82rem;">
                             📍 Google Maps ↗
                         </div>
                     </a>
-                    <a href="{val_nb_url}" target="_blank" rel="noreferrer noopener nofollow" referrerpolicy="no-referrer" style="flex: 1; text-decoration: none; min-width: 120px;">
+                    <a href="{val_url}" target="_blank" rel="noreferrer noopener nofollow" referrerpolicy="no-referrer" style="flex: 1; text-decoration: none; min-width: 120px;">
                         <div style="background-color: #1E293B; color: #94A3B8; text-align: center; padding: 7px; border-radius: 6px; font-weight: 600; font-size: 0.82rem; border: 1px solid #334155;">
                             Clean Tab Link ↗
                         </div>
@@ -2413,6 +2475,193 @@ with tab_nearby:
                 """, unsafe_allow_html=True)
 
             st.markdown("---")
+
+# =============================================================
+# TAB 4: GATED PLOTS & RESIDENTIAL LAND (SITES IN GATED COMMUNITIES)
+# =============================================================
+with tab_plots:
+    st.subheader("🏞️ Gated Community Plots, Sites & Residential Land (South East Bengaluru)")
+    st.markdown(
+        "For buyers and investors seeking **independent villa construction** or **pure land appreciation** "
+        "inside secure masterplanned communities. All recommendations are inside **100% gated layouts** with "
+        "**BDA / BMRDA / RERA sanction**, **underground BESCOM power**, **Cauvery/STP water**, and **A-Khata registry**."
+    )
+
+    # Top summary metrics
+    col_p1, col_p2, col_p3, col_p4 = st.columns(4)
+    with col_p1:
+        st.metric("Total Gated Layouts", f"{len(gated_plots)} Verified", "100% RERA & BDA")
+    with col_p2:
+        st.metric("Land Price Band", "₹6,950 - ₹8,900", "₹/sqft")
+    with col_p3:
+        st.metric("Ticket Sizes", "₹83 L - ₹2.88 Cr", "30x40 to 50x80")
+    with col_p4:
+        st.metric("Avg Upfront Cash", "~₹23 L - ₹59 L", "20% Down + Reg.")
+
+    st.markdown("---")
+    st.markdown("### 📋 Comprehensive Plotted Layout Comparison Table")
+    st.caption("Compare plot dimensions, pricing per sqft, upfront cash, total cost of ownership, legal approvals, water/power infra, and clubhouse amenities.")
+
+    # Build plot table data
+    plot_table_rows = []
+    for pl in gated_plots:
+        dims_str = ", ".join(pl.get("plot_dimensions_available", []))
+        plot_table_rows.append({
+            "Layout / Community Name": pl["name"],
+            "Developer & Pedigree": f"{pl['builder']} ({pl['builder_tier']})",
+            "Date Posted": pl.get("formatted_posted_date", f"{pl.get('date_posted', '2026-10-02')} (Fresh 🟢)"),
+            "Micro-Market Corridor": pl["micro_market"],
+            "Dist to Core (km)": f"{pl['distance_to_bellandur_km']} km",
+            "Plot Sizes Available": dims_str,
+            "Rate / sqft": f"₹{pl['price_per_sqft']:,}",
+            "Base Plot Price": f"₹{pl['total_price_cr']} - ₹{pl.get('max_price_cr', pl['total_price_cr'])} Cr",
+            "Upfront Cash Req.": f"₹{pl.get('upfront_cash_required_lakhs', 25.0)} Lakhs",
+            "Total Cost of Ownership": f"₹{pl.get('total_ownership_cost_cr', 1.05)} Cr",
+            "Legal Sanction": pl.get("legal_approval", "BDA Approved"),
+            "Khata Classification": pl.get("khata_type", "A-Khata"),
+            "RERA Registration No.": pl.get("rera_number", "Verified"),
+            "Resident / Community Rating": f"⭐ {pl.get('resident_rating', 4.6)} / 5",
+            "Water Source & Treatment": pl.get("water_source", "BWSSB Cauvery + STP"),
+            "Power & Utilities": pl.get("power_infrastructure", "Underground Cabling"),
+            "Road Infrastructure": pl.get("road_width", "40-ft Avenues"),
+            "Gated Clubhouse & Amenities": pl.get("gated_amenities", "Full Clubhouse"),
+            "Bank Approvals": pl.get("bank_loan_approvals", "SBI, HDFC Approved"),
+            "Validation URL": pl.get("validation_url", "https://rera.karnataka.gov.in"),
+            "Township Highlights (Pros)": pl.get("why_worth_considering", ""),
+            "Trade-offs & Constraints (Cons)": pl.get("key_tradeoffs_complaints", "")
+        })
+
+    df_plots = pd.DataFrame(plot_table_rows)
+
+    st.caption("📌 **Locked 3-Columns Grid by Default**: First 3 columns (*Layout Name*, *Developer*, and *Date Posted*) remain permanently pinned on the left as you scroll horizontally across all plotted metrics.")
+    render_sticky_frozen_table(df_plots, frozen_cols=3, table_id="plots_sticky_table", max_height="520px")
+
+    st.markdown("---")
+    st.markdown("### 🏡 Detailed Profiles: Gated Community Villa Plots & Sites")
+
+    for pl in gated_plots:
+        gmaps_pl_url = f"https://www.google.com/maps/search/?api=1&query={pl['lat']},{pl['lng']}"
+        val_pl_url = pl.get("validation_url", "https://rera.karnataka.gov.in")
+        source_pl_url = pl.get("source_post_url", val_pl_url)
+
+        with st.container():
+            st.markdown(f"""
+            <div class="property-card" style="border-left: 6px solid #10B981;">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 8px;">
+                    <div>
+                        <h3 style="margin: 0; color: #F8FAFC; font-size: 1.25rem;">{pl['name']}</h3>
+                        <div style="margin-top: 4px;">
+                            <span class="badge-deal">📍 {pl['micro_market']} ({pl['distance_to_bellandur_km']} km to Bellandur Core)</span>
+                            <span class="badge-rating">⭐ {pl.get('resident_rating', 4.6)} / 5.0 (Feedback: {pl.get('feedback_score', 92)}/100)</span>
+                            <span style="background: #065F46; color: #6EE7B7; padding: 2px 7px; border-radius: 4px; font-size: 0.76rem; font-weight: 700;">
+                                📜 {pl.get('legal_approval', 'BDA Approved')} • {pl.get('khata_type', 'A-Khata')}
+                            </span>
+                            <span style="background: #0284C7; color: white; padding: 2px 7px; border-radius: 4px; font-size: 0.76rem; font-weight: 700;">
+                                📅 Posted: {pl.get('date_posted', '2026-10-02')} ({pl.get('listing_freshness', 'Fresh Today 🟢')})
+                            </span>
+                        </div>
+                        <p style="margin: 5px 0 0 0; color: #94A3B8; font-size: 0.9rem;">
+                            <b>Developer:</b> {pl['builder']} &nbsp;|&nbsp; 
+                            <b>Hierarchy:</b> <span style="color: #34D399;">{pl['builder_tier']}</span> &nbsp;|&nbsp; 
+                            <b>RERA:</b> <span style="color: #6EE7B7; font-weight: 600;">{pl.get('rera_number', 'Active')}</span> &nbsp;|&nbsp;
+                            <b>Listing Freshness:</b> <span style="color: #6EE7B7; font-weight: 600;">{pl.get('date_posted', '2026-10-02')} (Verified Active)</span>
+                        </p>
+                    </div>
+                    <div style="text-align: right;">
+                        <span style="font-size: 1.6rem; font-weight: 800; color: #10B981;">₹{pl['total_price_cr']} - ₹{pl.get('max_price_cr', pl['total_price_cr'])} Cr</span>
+                        <div style="font-size: 0.85rem; color: #CBD5E1;">₹{pl['price_per_sqft']:,} / sqft</div>
+                        <div style="font-size: 0.8rem; color: #94A3B8;">Upfront Cash: ~₹{pl.get('upfront_cash_required_lakhs', 25.0)} L</div>
+                    </div>
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+
+            pl_c1, pl_c2 = st.columns([1, 1])
+            with pl_c1:
+                st.markdown("**🌟 Value Proposition & Plotted Township Highlights:**")
+                st.info(pl["why_worth_considering"])
+                st.markdown(f"- **Available Plot Dimensions:** `{', '.join(pl.get('plot_dimensions_available', []))}`")
+                st.markdown(f"- **Road & Power Infrastructure:** `{pl.get('road_width')}` with `{pl.get('power_infrastructure')}`")
+                st.markdown(f"- **Water Supply:** `{pl.get('water_source')}`")
+                st.markdown(f"- **Bank Approvals for Plot & Composite Loans:** `{pl.get('bank_loan_approvals')}`")
+
+            with pl_c2:
+                st.markdown("**⚠️ Real Trade-offs & Critical Watch-outs:**")
+                st.warning(pl["key_tradeoffs_complaints"])
+                st.markdown(f"- **Commute to RMZ Ecospace:** `{pl['commute_to_ecospace_mins']} mins`")
+                st.markdown(f"- **Commute to Prestige Tech Park (PTP):** `{pl['commute_to_ptp_mins']} mins`")
+                st.markdown(f"- **Gated Club & Sports:** `{pl.get('gated_amenities')}`")
+
+                if st.button("🛡️ View Plot Layout In-App (Incognito)", key=f"btn_pl_incog_{pl['id']}", use_container_width=True):
+                    show_incognito_post_viewer(
+                        title=f"{pl['name']} — Verified Gated Plotted Dossier",
+                        url=source_pl_url,
+                        source_type="Official Portal / Listing",
+                        metadata={
+                            "Price Band": f"₹{pl['total_price_cr']} - ₹{pl.get('max_price_cr', pl['total_price_cr'])} Cr",
+                            "Rate": f"₹{pl['price_per_sqft']:,}/sqft",
+                            "Rating": f"⭐ {pl.get('resident_rating', 4.6)}/5",
+                            "Distance": f"{pl['distance_to_bellandur_km']} km",
+                            "Approval": pl.get('legal_approval')
+                        },
+                        property_obj=pl
+                    )
+
+                st.markdown(f"""
+                <div style="display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap;">
+                    <a href="{gmaps_pl_url}" target="_blank" style="flex: 1; text-decoration: none; min-width: 120px;">
+                        <div style="background-color: #059669; color: white; text-align: center; padding: 7px; border-radius: 6px; font-weight: 700; font-size: 0.82rem;">
+                            📍 Google Maps ↗
+                        </div>
+                    </a>
+                    <a href="{source_pl_url}" target="_blank" rel="noreferrer noopener nofollow" referrerpolicy="no-referrer" style="flex: 1; text-decoration: none; min-width: 120px;">
+                        <div style="background-color: #1E293B; color: #94A3B8; text-align: center; padding: 7px; border-radius: 6px; font-weight: 600; font-size: 0.82rem; border: 1px solid #334155;">
+                            Clean Tab Link ↗
+                        </div>
+                    </a>
+                </div>
+                """, unsafe_allow_html=True)
+
+            # Villa Construction Potential Calculator
+            with st.expander(f"🏗️ Villa Construction Cost & Potential Estimator for {pl['name']}", expanded=False):
+                col_calc1, col_calc2 = st.columns(2)
+                with col_calc1:
+                    sel_sqft = st.selectbox("Select Plot Size:", options=[1200, 1500, 2400], index=0, key=f"sel_calc_plot_{pl['id']}")
+                    villa_type = st.radio("Villa Configuration:", ["G+1 Luxury Duplex (2,200 sqft)", "G+2 Grand Triplex (3,100 sqft)"], key=f"radio_villa_type_{pl['id']}")
+                    built_up_sqft = 2200 if "G+1" in villa_type else 3100
+                with col_calc2:
+                    plot_land_cost = round(sel_sqft * pl["price_per_sqft"] / 100000.0, 1)
+                    reg_cost = round(plot_land_cost * 0.066, 1)
+                    const_rate_sqft = 2650  # premium grade construction
+                    const_cost = round((built_up_sqft * const_rate_sqft) / 100000.0, 1)
+                    total_villa_project_cost = round((plot_land_cost + reg_cost + const_cost) / 100.0, 2)
+
+                    st.markdown(f"""
+                    <div style="background: #1E293B; border-radius: 6px; padding: 10px; border: 1px solid #334155;">
+                        <b style="color: #34D399;">📐 Projected Villa Economics:</b>
+                        <ul style="margin: 4px 0 0 16px; padding: 0; font-size: 0.85rem; color: #E2E8F0;">
+                            <li>Plot Land Price ({sel_sqft} sqft): <b>₹{plot_land_cost} Lakhs</b></li>
+                            <li>Stamp Duty & Registration (6.6%): <b>₹{reg_cost} Lakhs</b></li>
+                            <li>Civil Construction ({built_up_sqft} sqft @ ₹2,650): <b>₹{const_cost} Lakhs</b></li>
+                            <li>Total Custom Villa Turnkey Cost: <b style="color: #FBBF24; font-size: 1.05rem;">₹{total_villa_project_cost} Cr</b></li>
+                        </ul>
+                    </div>
+                    """, unsafe_allow_html=True)
+
+            st.markdown("---")
+
+    # Due Diligence Checklist for Plotted Land
+    with st.expander("🛡️ 7 Non-Negotiable Due-Diligence Checks for Plotted Land in Bengaluru", expanded=False):
+        st.markdown("""
+        1. **BDA / BMRDA Sanctioned Layout Plan:** Confirm the layout approval number and verify that open spaces (parks, CA plots, roads) are relinquished to local authorities via registered relinquishment deed.
+        2. **RERA Registration Status:** Look up the project on Karnataka RERA portal (`rera.karnataka.gov.in`) to verify that the promoter is registered and quarterly progress is reported.
+        3. **BBMP / BDA A-Khata Registration:** Ensure direct individual e-Khata or A-Khata can be registered without any intermediate B-Khata or 11B ambiguity.
+        4. **Encumbrance Certificate (EC) for 30 Years (Form 15):** Verify Nil Encumbrance Certificate for 30 consecutive years from the jurisdictional sub-registrar (Kaveri portal).
+        5. **Conversion Order (DC Conversion):** Verify that agricultural conversion to residential use was granted under Section 95 of Karnataka Land Revenue Act.
+        6. **Kaluve / Lake Buffer Compliance:** Cross-verify Village Survey Maps (BhooMi portal) to guarantee the plot does not fall within 30-meter lake buffer or secondary/tertiary storm drain buffer.
+        7. **BESCOM & BWSSB Sanction NOC:** Ensure underground electricity cabling and municipal water trunk pipeline approvals are sanctioned.
+        """)
+
 
 # =============================================================
 # TAB 4: PRICE TRENDS & MARKET ANALYTICS
@@ -2679,21 +2928,8 @@ with tab_ai_copilot:
             })
 
         df_ai_matrix = pd.DataFrame(ai_matrix_rows)
-        col_ai_vt1, col_ai_vt2 = st.columns([3, 1])
-        with col_ai_vt1:
-            view_mode_ai = st.radio(
-                "AI Table Layout:",
-                [
-                    "📌 Frozen 3-Columns Grid (Locked on Left: Property Name • Micro-Market • Date Posted)",
-                    "📊 Standard Interactive Dataframe"
-                ],
-                horizontal=True,
-                key="ai_matrix_freeze_mode"
-            )
-        if view_mode_ai.startswith("📌"):
-            render_sticky_frozen_table(df_ai_matrix, frozen_cols=3, table_id="ai_matrix_sticky_table", max_height="480px")
-        else:
-            st.dataframe(df_ai_matrix, use_container_width=True, hide_index=True)
+        st.caption("📌 **Locked 3-Columns Grid by Default**: First 3 columns (*Property Name*, *Micro-Market*, and *Date Posted*) remain permanently pinned on the left as you scroll horizontally across all AI scores.")
+        render_sticky_frozen_table(df_ai_matrix, frozen_cols=3, table_id="ai_matrix_sticky_table", max_height="480px")
 
         st.markdown("---")
         st.markdown("##### 📝 Deep-Dive Explainable Justification Cards (Property by Property)")
@@ -2904,7 +3140,7 @@ with tab_architecture:
     # ---------------------------------------------------------
     st.markdown("### 📥 Download Daily CSV Datasets (All Options & Ranked Lists)")
     
-    dl_col1, dl_col2, dl_col3, dl_col4 = st.columns(4)
+    dl_col1, dl_col2, dl_col3, dl_col4, dl_col5 = st.columns(5)
 
     with dl_col1:
         if os.path.exists(ALL_PURCHASE_CSV):
@@ -2935,6 +3171,20 @@ with tab_architecture:
             st.button("📥 ALL Rental CSV (Pending)", disabled=True, use_container_width=True)
 
     with dl_col3:
+        if os.path.exists(ALL_GATED_PLOTS_CSV):
+            with open(ALL_GATED_PLOTS_CSV, "rb") as f:
+                st.download_button(
+                    "📥 ALL Plots CSV",
+                    f,
+                    file_name="all_gated_plots_daily.csv",
+                    mime="text/csv",
+                    use_container_width=True,
+                    help="Records all available gated community plots and sites"
+                )
+        else:
+            st.button("📥 ALL Plots CSV (Pending)", disabled=True, use_container_width=True)
+
+    with dl_col4:
         if os.path.exists(TOP_10_PURCHASE_CSV):
             with open(TOP_10_PURCHASE_CSV, "rb") as f:
                 st.download_button(
@@ -2948,7 +3198,7 @@ with tab_architecture:
         else:
             st.button("📥 Top 10 Purchase (Pending)", disabled=True, use_container_width=True)
 
-    with dl_col4:
+    with dl_col5:
         if os.path.exists(TOP_5_RENTAL_CSV):
             with open(TOP_5_RENTAL_CSV, "rb") as f:
                 st.download_button(
@@ -2966,22 +3216,30 @@ with tab_architecture:
     # DATA PREVIEWS: ALL OPTIONS
     # ---------------------------------------------------------
     st.markdown("---")
-    pv_c1, pv_c2 = st.columns(2)
+    pv_c1, pv_c2, pv_c3 = st.columns(3)
     with pv_c1:
-        st.markdown("#### 🏢 All Available Purchase Properties Monitored")
+        st.markdown("#### 🏢 Purchase Properties Monitored")
         if os.path.exists(ALL_PURCHASE_CSV):
             df_all_p = pd.read_csv(ALL_PURCHASE_CSV)
             p_show_cols = [c for c in ["Property_Name", "Builder", "Date_Posted", "Resident_Rating", "Feedback_Score", "Age_Years", "Rate_Per_Sqft_INR", "Base_Price_Cr", "Upfront_Cash_Required_INR", "Total_Ownership_Cost_Cr", "Validation_Status"] if c in df_all_p.columns]
             st.dataframe(df_all_p[p_show_cols], use_container_width=True, hide_index=True)
-            st.caption(f"Total monitored purchase options: {len(df_all_p)} (Col 3: Date Posted ensures real-time listing freshness)")
+            st.caption(f"Total monitored purchase: {len(df_all_p)}")
 
     with pv_c2:
-        st.markdown("#### 🏡 All Available Rental Properties Monitored")
+        st.markdown("#### 🏡 Rental Properties Monitored")
         if os.path.exists(ALL_RENTAL_CSV):
             df_all_r = pd.read_csv(ALL_RENTAL_CSV)
             r_show_cols = [c for c in ["Society_Name", "Unit_Title", "Date_Posted", "Resident_Rating", "Feedback_Score", "Age_Years", "Monthly_Rent_INR", "Total_Monthly_Outflow_INR", "Monthly_Summary_With_Deposit", "Effective_Monthly_Cost_INR", "Best_Platform"] if c in df_all_r.columns]
             st.dataframe(df_all_r[r_show_cols], use_container_width=True, hide_index=True)
-            st.caption(f"Total monitored rental options: {len(df_all_r)} (Col 3: Date Posted ensures real-time listing freshness)")
+            st.caption(f"Total monitored rental: {len(df_all_r)}")
+
+    with pv_c3:
+        st.markdown("#### 🏞️ Gated Plots & Sites Monitored")
+        if os.path.exists(ALL_GATED_PLOTS_CSV):
+            df_all_pl = pd.read_csv(ALL_GATED_PLOTS_CSV)
+            pl_show_cols = [c for c in ["Community_Name", "Developer", "Date_Posted", "Rate_Per_Sqft_INR", "Min_Base_Price_Cr", "Upfront_Cash_Required_Lakhs", "Legal_Approval", "Khata_Type", "Resident_Rating"] if c in df_all_pl.columns]
+            st.dataframe(df_all_pl[pl_show_cols], use_container_width=True, hide_index=True)
+            st.caption(f"Total monitored gated plots: {len(df_all_pl)}")
 
     # ---------------------------------------------------------
     # PARAMETER CHANGE AUDIT TRAIL

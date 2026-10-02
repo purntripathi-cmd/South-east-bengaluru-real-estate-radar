@@ -18,7 +18,10 @@ import subprocess
 import urllib.parse
 from datetime import datetime
 import requests
-from bs4 import BeautifulSoup
+try:
+    from bs4 import BeautifulSoup
+except ImportError:
+    BeautifulSoup = None
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA_DIR = os.path.join(BASE_DIR, "data")
@@ -155,16 +158,23 @@ def scan_and_ingest_source(target_url: str, custom_name: str = None):
     except Exception as e:
         return False, f"Could not reach source at {clean_url}: {str(e)}"
 
-    # Parse metadata via BeautifulSoup
-    soup = BeautifulSoup(html, "html.parser")
-    title = soup.title.string.strip() if soup.title and soup.title.string else (custom_name or domain)
-    # Clean title
-    title = re.sub(r'[\r\n\t]+', ' ', title)[:70]
+    # Parse metadata via BeautifulSoup if available
+    if BeautifulSoup:
+        soup = BeautifulSoup(html, "html.parser")
+        title = soup.title.string.strip() if soup.title and soup.title.string else (custom_name or domain)
+        # Clean title
+        title = re.sub(r'[\r\n\t]+', ' ', title)[:70]
 
-    meta_desc = ""
-    desc_tag = soup.find("meta", attrs={"name": "description"}) or soup.find("meta", attrs={"property": "og:description"})
-    if desc_tag and desc_tag.get("content"):
-        meta_desc = desc_tag.get("content").strip()[:140]
+        meta_desc = ""
+        desc_tag = soup.find("meta", attrs={"name": "description"}) or soup.find("meta", attrs={"property": "og:description"})
+        if desc_tag and desc_tag.get("content"):
+            meta_desc = desc_tag.get("content").strip()[:140]
+    else:
+        # Regex fallback when BeautifulSoup is not yet installed
+        title_m = re.search(r'<title[^>]*>(.*?)</title>', html, re.IGNORECASE | re.DOTALL)
+        title = re.sub(r'[\r\n\t]+', ' ', title_m.group(1)).strip()[:70] if title_m else (custom_name or domain)
+        meta_m = re.search(r'<meta[^>]*name=["\']description["\'][^>]*content=["\'](.*?)["\']', html, re.IGNORECASE)
+        meta_desc = meta_m.group(1).strip()[:140] if meta_m else "Discovered source"
 
     # AI Classification
     domain_lower = domain.lower()

@@ -1,4 +1,5 @@
 import os
+import re
 import json
 import urllib.parse
 from datetime import datetime
@@ -13,7 +14,10 @@ import streamlit.components.v1 as components
 import psutil
 import gc
 import requests
-from bs4 import BeautifulSoup
+try:
+    from bs4 import BeautifulSoup
+except ImportError:
+    BeautifulSoup = None
 
 from utils.geo import haversine_distance_km, check_zone_membership, check_custom_pins
 from utils.scoring import compute_property_match_score, TIER_1_BUILDERS, TIER_2_BUILDERS
@@ -252,11 +256,14 @@ def show_incognito_post_viewer(title: str, url: str, source_type: str = "Officia
                     try:
                         resp = requests.get(cleaned_url, headers={"User-Agent": "Mozilla/5.0"}, timeout=4)
                         if resp.status_code == 200:
-                            s = BeautifulSoup(resp.text, "html.parser")
-                            # Strip all unwanted tags
-                            for t in s(["script", "style", "iframe", "noscript", "svg", "meta"]):
-                                t.extract()
-                            text = s.get_text(separator="\n", strip=True)
+                            if BeautifulSoup:
+                                s = BeautifulSoup(resp.text, "html.parser")
+                                # Strip all unwanted tags
+                                for t in s(["script", "style", "iframe", "noscript", "svg", "meta"]):
+                                    t.extract()
+                                text = s.get_text(separator="\n", strip=True)
+                            else:
+                                text = re.sub(r'<[^>]+>', ' ', resp.text)
                             lines = [line.strip() for line in text.splitlines() if line.strip()]
                             clean_text = "\n".join(lines[:100])
                             st.success(f"Successfully fetched clean text (HTTP 200 OK - {len(clean_text)} characters):")

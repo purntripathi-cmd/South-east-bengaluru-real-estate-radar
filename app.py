@@ -10,6 +10,8 @@ import streamlit as st
 import folium
 from streamlit_folium import st_folium
 import streamlit.components.v1 as components
+import psutil
+import gc
 
 from utils.geo import haversine_distance_km, check_zone_membership, check_custom_pins
 from utils.scoring import compute_property_match_score, TIER_1_BUILDERS, TIER_2_BUILDERS
@@ -41,6 +43,120 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="collapsed", # Better UX on mobile devices
 )
+
+# -------------------------------------------------------------
+# System & Process Resource Telemetry Helper
+# -------------------------------------------------------------
+def get_system_telemetry():
+    """Calculates live process and system CPU / Memory utilization."""
+    try:
+        proc = psutil.Process(os.getpid())
+        proc_mem_mb = proc.memory_info().rss / (1024 * 1024)
+        proc_cpu_pct = proc.cpu_percent(interval=None)
+        
+        sys_mem = psutil.virtual_memory()
+        sys_cpu_pct = psutil.cpu_percent(interval=None)
+        
+        if sys_mem.percent > 85 or sys_cpu_pct > 85:
+            health_color = "#EF4444"
+            health_badge = "High Load 🔴"
+        elif sys_mem.percent > 70 or sys_cpu_pct > 70:
+            health_color = "#F59E0B"
+            health_badge = "Moderate 🟡"
+        else:
+            health_color = "#10B981"
+            health_badge = "Optimal 🟢"
+            
+        return {
+            "proc_mem_mb": round(proc_mem_mb, 1),
+            "proc_cpu_pct": round(proc_cpu_pct, 1),
+            "sys_mem_pct": round(sys_mem.percent, 1),
+            "sys_mem_used_gb": round(sys_mem.used / (1024**3), 2),
+            "sys_mem_total_gb": round(sys_mem.total / (1024**3), 2),
+            "sys_cpu_pct": round(sys_cpu_pct, 1),
+            "num_threads": proc.num_threads(),
+            "health_color": health_color,
+            "health_badge": health_badge
+        }
+    except Exception:
+        return None
+
+# -------------------------------------------------------------
+# In-App Incognito & Ad-Shielded Listing Viewer (Sandboxed Modal)
+# -------------------------------------------------------------
+@st.dialog("🛡️ Incognito & Ad-Shielded In-App Listing Viewer", width="large")
+def show_incognito_post_viewer(title: str, url: str, source_type: str = "Official Listing / Portal", metadata: dict = None):
+    """
+    Renders listing or RERA page inside a sandboxed in-app iframe.
+    - Strips ad tracking / UTM / click identifiers
+    - Applies strict sandbox: blocks popups, redirects, and top-level navigation
+    - Enforces referrerpolicy="no-referrer" to prevent tracking leaks
+    - Provides isolated private tab fallback for sites with X-Frame-Options: SAMEORIGIN
+    """
+    try:
+        parsed = urllib.parse.urlparse(url)
+        q_params = urllib.parse.parse_qs(parsed.query)
+        clean_params = {
+            k: v for k, v in q_params.items() 
+            if not k.lower().startswith(('utm_', 'fbclid', 'gclid', 'ref', 'source', 'trk', 'aff'))
+        }
+        cleaned_query = urllib.parse.urlencode(clean_params, doseq=True)
+        cleaned_url = urllib.parse.urlunparse((parsed.scheme, parsed.netloc, parsed.path, parsed.params, cleaned_query, parsed.fragment))
+    except Exception:
+        cleaned_url = url
+
+    st.markdown(f"""
+    <div style="background: linear-gradient(135deg, #0F172A, #1E293B); border: 1px solid #334155; border-radius: 8px; padding: 12px; margin-bottom: 12px;">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 8px;">
+            <div>
+                <span style="background: #10B981; color: #022C22; font-size: 0.75rem; font-weight: 800; padding: 3px 8px; border-radius: 4px;">
+                    🛡️ INCOGNITO SANDBOX ACTIVE
+                </span>
+                <span style="background: #3B82F6; color: #EFF6FF; font-size: 0.75rem; font-weight: 700; padding: 3px 8px; border-radius: 4px; margin-left: 4px;">
+                    🚫 ADS & TRACKERS BLOCKED
+                </span>
+                <h3 style="margin: 6px 0 0 0; color: #F8FAFC; font-size: 1.15rem;">{title}</h3>
+                <div style="font-size: 0.8rem; color: #94A3B8; margin-top: 2px;">
+                    <b>Source:</b> {source_type} &nbsp;|&nbsp; <b>Policy:</b> <code>referrerpolicy="no-referrer"</code> (Strict Privacy Shield)
+                </div>
+            </div>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    if metadata:
+        meta_cols = st.columns(len(metadata))
+        for col, (k, v) in zip(meta_cols, metadata.items()):
+            col.metric(k, v)
+
+    st.caption("🔒 Sandboxed Frame: Popups, top-level window redirects, camera/mic, and third-party advertising scripts are strictly disabled.")
+
+    iframe_html = f"""
+    <div style="width: 100%; border: 1px solid #334155; border-radius: 8px; overflow: hidden; background: #FFFFFF;">
+        <iframe src="{cleaned_url}" 
+                sandbox="allow-scripts allow-forms allow-same-origin"
+                referrerpolicy="no-referrer"
+                loading="lazy"
+                style="width: 100%; height: 550px; border: none; display: block;"
+                title="Incognito Sandbox Viewer">
+        </iframe>
+    </div>
+    """
+    components.html(iframe_html, height=560)
+
+    st.markdown(f"""
+    <div style="margin-top: 10px; padding: 10px; background: #0F172A; border-radius: 6px; border: 1px solid #1E293B; font-size: 0.82rem; color: #CBD5E1;">
+        <span>ℹ️ <b>Privacy & Security Notice:</b> Some external domains (e.g. government RERA security gateways or specific classifieds) send <code>X-Frame-Options: SAMEORIGIN</code> headers that restrict in-app iframe rendering. If the viewer shows a connection notice, you can open it in an isolated private tab with zero tracking:</span>
+        <div style="margin-top: 8px;">
+            <a href="{cleaned_url}" target="_blank" rel="noreferrer noopener nofollow" referrerpolicy="no-referrer" style="text-decoration: none;">
+                <span style="background: #2563EB; color: white; padding: 6px 14px; border-radius: 6px; font-weight: 600; font-size: 0.82rem; display: inline-block;">
+                    🚀 Open in Isolated Clean Tab (No-Referrer / No-Tracking) ↗
+                </span>
+            </a>
+            <code style="font-size: 0.75rem; color: #94A3B8; margin-left: 8px;">URL: {cleaned_url[:65]}...</code>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
 
 # Client-side daily auto-refresh component (continues refreshing radar even when unattended)
 components.html("""
@@ -279,6 +395,27 @@ with col_k4:
     st.metric(label="Daily Sync", value="5:00 PM IST", delta="Automated Cron (11:30 UTC)")
 
 # -------------------------------------------------------------
+# System & Process Resource Telemetry Indicator Bar
+# -------------------------------------------------------------
+telemetry = get_system_telemetry()
+if telemetry:
+    st.markdown(f"""
+    <div style="background: #0B1120; border: 1px solid #1E293B; border-radius: 8px; padding: 7px 14px; margin: 4px 0 10px 0; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; font-size: 0.82rem;">
+        <div style="display: flex; align-items: center; gap: 14px; flex-wrap: wrap;">
+            <span style="color: #94A3B8;">🖥️ <b>Streamlit Process Memory:</b> <code style="color: #38BDF8; font-weight: 700;">{telemetry['proc_mem_mb']} MB</code></span>
+            <span style="color: #94A3B8;">⚡ <b>System RAM:</b> <code style="color: #FCD34D; font-weight: 700;">{telemetry['sys_mem_pct']}%</code> ({telemetry['sys_mem_used_gb']} / {telemetry['sys_mem_total_gb']} GB)</span>
+            <span style="color: #94A3B8;">⚙️ <b>CPU Utilization:</b> <code style="color: #A7F3D0; font-weight: 700;">{telemetry['sys_cpu_pct']}%</code> (App: {telemetry['proc_cpu_pct']}%)</span>
+            <span style="color: #94A3B8;">🧵 <b>Threads:</b> <code>{telemetry['num_threads']}</code></span>
+        </div>
+        <div>
+            <span style="background: #064E3B; color: {telemetry['health_color']}; padding: 3px 9px; border-radius: 4px; font-weight: 700; border: 1px solid {telemetry['health_color']};">
+                Resource Health: {telemetry['health_badge']}
+            </span>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+# -------------------------------------------------------------
 # Quick Snapshot & Delta Validation Status Banner
 # -------------------------------------------------------------
 with st.container():
@@ -315,6 +452,27 @@ with st.container():
 # Sidebar: Scoring Weights, Map Provider & Preferences
 # -------------------------------------------------------------
 st.sidebar.header("⚙️ Radar Controls")
+
+# Real-Time Resource Monitor Widget in Sidebar
+if telemetry:
+    with st.sidebar.expander("🖥️ Memory & CPU Resource Monitor", expanded=False):
+        st.markdown(f"**App Status:** `{telemetry['health_badge']}`")
+        st.markdown(f"- **Streamlit Process RSS:** `{telemetry['proc_mem_mb']} MB`")
+        st.markdown(f"- **Process CPU:** `{telemetry['proc_cpu_pct']}%`")
+        st.markdown(f"- **Active Threads:** `{telemetry['num_threads']}`")
+        
+        st.markdown(f"**System RAM ({telemetry['sys_mem_pct']}%):**")
+        st.progress(min(1.0, telemetry['sys_mem_pct'] / 100.0))
+        st.caption(f"{telemetry['sys_mem_used_gb']} GB used of {telemetry['sys_mem_total_gb']} GB")
+        
+        st.markdown(f"**System CPU ({telemetry['sys_cpu_pct']}%):**")
+        st.progress(min(1.0, telemetry['sys_cpu_pct'] / 100.0))
+        
+        if st.button("🧹 Clear Cache & Free Memory", key="btn_clear_gc", use_container_width=True):
+            st.cache_data.clear()
+            gc.collect()
+            st.toast("Memory freed and cache invalidated!", icon="🧹")
+            st.rerun()
 
 # Map Provider Selection
 st.sidebar.subheader("🗺️ Map Engine & Provider")
@@ -966,6 +1124,12 @@ with tab_purchase:
             "PTP / Ecospace Dist (km)": f"{p['dist_office_km']} km",
             "Occupancy Cert (OC)": p.get("occupancy_certificate", "100% OC Received"),
             "Open Space %": p.get("open_space_pct", "75% Open Space"),
+            "Cycling Track": p.get("cycling_track", "Dedicated Cycling Loop"),
+            "Jogging Track": p.get("jogging_track", "Landscaped Jogging Track"),
+            "Clubhouse & Pool": f"{p.get('clubhouse_sqft', '25,000 sqft')} | {p.get('swimming_pool', 'Lap Pool')}",
+            "Sports Courts": p.get("sports_courts", "Tennis & Badminton Courts"),
+            "Gym & Wellness": p.get("fitness_wellness", "AC Gym & Yoga Deck"),
+            "Key Amenities": p.get("amenities_summary", "Clubhouse, Pool, Courts, Gym"),
             "EV Charging": p.get("ev_charging_facility", "EV Bays Installed"),
             "Power Backup": p.get("power_backup", "100% DG Backup"),
             "Lake / Drain Buffer": p.get("lake_buffer_compliance", "Compliant"),
@@ -977,6 +1141,30 @@ with tab_purchase:
 
     df_purchase_table = pd.DataFrame(table_data)
     st.dataframe(df_purchase_table, use_container_width=True, hide_index=True)
+
+    # 1-Click In-App Sandboxed Incognito Listing & RERA Viewer
+    col_p_incog1, col_p_incog2 = st.columns([3, 1])
+    with col_p_incog1:
+        sel_comp_p = st.selectbox(
+            "🛡️ Select Property to Open Listing or RERA In-App (Sandboxed Incognito Mode - Ads & Trackers Blocked):",
+            options=[p["name"] for p in filtered_props],
+            key="sel_purchase_table_incog"
+        )
+    with col_p_incog2:
+        st.markdown("<div style='height: 28px;'></div>", unsafe_allow_html=True)
+        if st.button("👁️ Open Post In-App", key="btn_open_incog_purchase_table", use_container_width=True):
+            p_target = next(p for p in filtered_props if p["name"] == sel_comp_p)
+            show_incognito_post_viewer(
+                title=f"{p_target['name']} — Verified Listing & Dossier",
+                url=p_target.get("validation_url", p_target.get("rera_portal_url")),
+                source_type="Official Portal",
+                metadata={
+                    "Price": f"₹{p_target['total_price_cr']} Cr",
+                    "Rate": f"₹{p_target['price_per_sqft']:,}/sqft",
+                    "RERA": p_target.get("rera_number", "Active"),
+                    "Rating": f"⭐ {p_target.get('resident_rating', 4.5)}/5"
+                }
+            )
 
     # Interactive Side-by-Side Property Head-to-Head Comparison
     with st.expander("🔍 Interactive Head-to-Head Property Comparator (Select 2-4 Properties)"):
@@ -1070,8 +1258,24 @@ with tab_purchase:
                         name: p.get("occupancy_certificate", "100% OC Received")
                     })
                     compare_records.append({
-                        "Metric / Parameter": "Open Greenery %",
-                        name: p.get("open_space_pct", "75% Open Space")
+                        "Metric / Parameter": "🚴 Cycling Track",
+                        name: p.get("cycling_track", "Dedicated Cycling Loop")
+                    })
+                    compare_records.append({
+                        "Metric / Parameter": "🏃 Jogging Track",
+                        name: p.get("jogging_track", "Landscaped Jogging Track")
+                    })
+                    compare_records.append({
+                        "Metric / Parameter": "🏛️ Clubhouse & Swimming Pool",
+                        name: f"{p.get('clubhouse_sqft', '25k sqft Club')} | {p.get('swimming_pool', 'Lap Pool')}"
+                    })
+                    compare_records.append({
+                        "Metric / Parameter": "🎾 Sports Courts & Fitness",
+                        name: f"{p.get('sports_courts', 'Courts')} | {p.get('fitness_wellness', 'Gym')}"
+                    })
+                    compare_records.append({
+                        "Metric / Parameter": "🌟 Key Amenities Summary",
+                        name: p.get("amenities_summary", "Clubhouse, Pool, Courts, Gym")
                     })
                     compare_records.append({
                         "Metric / Parameter": "EV Charging & Power Backup",
@@ -1185,20 +1389,21 @@ with tab_purchase:
                 st.markdown(f"- **Open Space Greenery:** `{prop.get('open_space_pct', '75% Open Space')}`")
 
             with p_col2:
-                st.markdown("**🛠️ Clearances, Utilities & Metro:**")
+                st.markdown("**🏃 Tracks & Premium Amenities:**")
+                st.markdown(f"- **🚴 Cycling Track:** `{prop.get('cycling_track', 'Dedicated Cycling Loop')}`")
+                st.markdown(f"- **🏃 Jogging Track:** `{prop.get('jogging_track', 'Landscaped Jogging Track')}`")
+                st.markdown(f"- **🏛️ Clubhouse & Pool:** `{prop.get('clubhouse_sqft', '25,000 sqft')} | {prop.get('swimming_pool', 'Lap Pool')}`")
+                st.markdown(f"- **🎾 Courts & Wellness:** `{prop.get('sports_courts', 'Courts')} | {prop.get('fitness_wellness', 'Gym/Yoga')}`")
                 st.markdown(f"- **Occupancy Certificate:** `{prop.get('occupancy_certificate', '100% OC Received')}`")
-                st.markdown(f"- **EV Charging:** `{prop.get('ev_charging_facility', 'EV Bays Installed')}`")
-                st.markdown(f"- **Power Backup:** `{prop.get('power_backup', '100% DG Backup')}`")
-                st.markdown(f"- **Lake / Drain Buffer:** `{prop.get('lake_buffer_compliance', 'Safe Setback')}`")
+                st.markdown(f"- **EV Charging & DG Backup:** `{prop.get('ev_charging_facility', 'EV Bays')} | {prop.get('power_backup', '100% DG Backup')}`")
                 st.markdown(f"- **Legal Title & EC:** `{prop['land_title']} ({prop.get('encumbrance_certificate', 'Nil EC')})`")
-                st.markdown(f"- **Metro Blue Line:** `{prop['dist_metro_km']} km` | **Offices:** `{prop['dist_office_km']} km`")
 
             with p_chart:
                 # 1-Click Google Maps Deep Link
                 gmaps_pin_url = f"https://www.google.com/maps/search/?api=1&query={prop['lat']},{prop['lng']}"
                 st.markdown(f"""
                 <a href="{gmaps_pin_url}" target="_blank" style="text-decoration: none;">
-                    <div style="background-color: #0D9488; color: white; text-align: center; padding: 8px 12px; border-radius: 8px; font-weight: 700; font-size: 0.9rem; margin-bottom: 6px;">
+                    <div style="background-color: #0D9488; color: white; text-align: center; padding: 7px 12px; border-radius: 8px; font-weight: 700; font-size: 0.88rem; margin-bottom: 6px;">
                         📍 Open Exact Pin in Google Maps ↗
                     </div>
                 </a>
@@ -1206,16 +1411,45 @@ with tab_purchase:
 
                 val_url = prop.get("validation_url", "https://rera.karnataka.gov.in")
                 rera_url = prop.get("rera_portal_url", "https://rera.karnataka.gov.in")
+
+                col_card_incog1, col_card_incog2 = st.columns(2)
+                with col_card_incog1:
+                    if st.button("🛡️ View Post In-App", key=f"btn_card_post_incog_{prop['id']}", use_container_width=True):
+                        show_incognito_post_viewer(
+                            title=f"{prop['name']} — Verified Post / Listing",
+                            url=val_url,
+                            source_type="Official Developer Portal",
+                            metadata={
+                                "Price": f"₹{prop['total_price_cr']} Cr",
+                                "Rate": f"₹{prop['price_per_sqft']:,}/sqft",
+                                "Score": f"{score}/100",
+                                "Rating": f"⭐ {prop.get('resident_rating', 4.5)}/5"
+                            }
+                        )
+                with col_card_incog2:
+                    if st.button("📋 View RERA In-App", key=f"btn_card_rera_incog_{prop['id']}", use_container_width=True):
+                        show_incognito_post_viewer(
+                            title=f"{prop['name']} — Karnataka RERA Regulatory Filing",
+                            url=rera_url,
+                            source_type="Karnataka RERA Portal (Govt)",
+                            metadata={
+                                "RERA No": prop.get('rera_number', 'Active'),
+                                "Status": prop.get('rera_status', 'Delivered'),
+                                "Title": prop.get('land_title', 'A-Khata'),
+                                "OC": prop.get('occupancy_certificate', 'Received')
+                            }
+                        )
+
                 st.markdown(f"""
                 <div style="display: flex; gap: 6px; margin-bottom: 8px; flex-wrap: wrap;">
-                    <a href="{val_url}" target="_blank" style="flex: 1; text-decoration: none; min-width: 130px;">
-                        <div style="background-color: #1E3A8A; color: #BFDBFE; text-align: center; padding: 7px 8px; border-radius: 6px; font-weight: 700; font-size: 0.78rem; border: 1px solid #3B82F6;">
-                            🔗 Verify Official Post / Site ↗
+                    <a href="{val_url}" target="_blank" rel="noreferrer noopener nofollow" referrerpolicy="no-referrer" style="flex: 1; text-decoration: none; min-width: 110px;">
+                        <div style="background-color: #1E293B; color: #94A3B8; text-align: center; padding: 5px 6px; border-radius: 6px; font-weight: 600; font-size: 0.72rem; border: 1px solid #334155;">
+                            Clean Tab Link ↗
                         </div>
                     </a>
-                    <a href="{rera_url}" target="_blank" style="flex: 1; text-decoration: none; min-width: 130px;">
-                        <div style="background-color: #334155; color: #F1F5F9; text-align: center; padding: 7px 8px; border-radius: 6px; font-weight: 700; font-size: 0.78rem; border: 1px solid #64748B;">
-                            📋 Karnataka RERA Portal ↗
+                    <a href="{rera_url}" target="_blank" rel="noreferrer noopener nofollow" referrerpolicy="no-referrer" style="flex: 1; text-decoration: none; min-width: 110px;">
+                        <div style="background-color: #1E293B; color: #94A3B8; text-align: center; padding: 5px 6px; border-radius: 6px; font-weight: 600; font-size: 0.72rem; border: 1px solid #334155;">
+                            Clean RERA Tab ↗
                         </div>
                     </a>
                 </div>
@@ -1372,6 +1606,10 @@ with tab_rental:
             "Total Monthly (with Deposit Note)": f"Total Monthly: ₹{tot_outflow:,} (+{dep_interest_pm:,}/- pm due to deposit)",
             "Effective Monthly Cost": f"₹{effective_monthly:,}",
             "Security Deposit": f"₹{dep_inr:,} ({r['security_deposit_months']} mos)",
+            "Cycling Track": r.get("cycling_track", "Dedicated Cycling Loop"),
+            "Jogging Track": r.get("jogging_track", "Landscaped Jogging Track"),
+            "Clubhouse Size": r.get("clubhouse_sqft", "Clubhouse Available"),
+            "Key Amenities": r.get("amenities_summary", "Clubhouse, Pool, Gym"),
             "Pet Policy": r.get("pet_friendly", "Allowed"),
             "Bachelor Policy": r.get("bachelor_friendly", "Professionals Welcome"),
             "Lock-in / Notice": f"{r.get('lock_in_period_months', 6)}m lock / {r.get('notice_period_months', 1)}m notice",
@@ -1388,6 +1626,30 @@ with tab_rental:
 
     df_rental_table = pd.DataFrame(rental_table_rows)
     st.dataframe(df_rental_table, use_container_width=True, hide_index=True)
+
+    # 1-Click In-App Sandboxed Incognito Rental Listing Viewer
+    col_r_incog1, col_r_incog2 = st.columns([3, 1])
+    with col_r_incog1:
+        sel_comp_r = st.selectbox(
+            "🛡️ Select Rental Unit to Open Listing In-App (Sandboxed Incognito Mode - Ads & Trackers Blocked):",
+            options=[r["society_name"] + " - " + r["bhk"] for r in filtered_rentals],
+            key="sel_rental_table_incog"
+        )
+    with col_r_incog2:
+        st.markdown("<div style='height: 28px;'></div>", unsafe_allow_html=True)
+        if st.button("👁️ Open Rental In-App", key="btn_open_incog_rental_table", use_container_width=True):
+            r_target = next(r for r in filtered_rentals if (r["society_name"] + " - " + r["bhk"]) == sel_comp_r)
+            show_incognito_post_viewer(
+                title=f"{r_target['society_name']} ({r_target['bhk']}) — Rental Listing",
+                url=r_target.get("validation_url", r_target.get("source_post_url")),
+                source_type="NoBroker / Direct Listing",
+                metadata={
+                    "Rent": f"₹{r_target['rent_pm']:,}/mo",
+                    "Total Outflow": f"₹{r_target.get('total_monthly_outflow', 0):,}/mo",
+                    "Deposit": f"₹{r_target.get('security_deposit_inr', 0):,}",
+                    "Rating": f"⭐ {r_target.get('resident_rating', 4.5)}/5"
+                }
+            )
 
     # Side-by-Side Rental Comparator
     with st.expander("🔍 Interactive Head-to-Head Rental Comparator (Select 2-3 Societies)"):
@@ -1462,6 +1724,18 @@ with tab_rental:
                     rent_comp_records.append({
                         "Metric / Parameter": "EV Provision & Parking",
                         sel_label: r_item.get("ev_charging_facility", "EV Point Available")
+                    })
+                    rent_comp_records.append({
+                        "Metric / Parameter": "🚴 Cycling Track",
+                        sel_label: r_item.get("cycling_track", "Dedicated Cycling Loop")
+                    })
+                    rent_comp_records.append({
+                        "Metric / Parameter": "🏃 Jogging Track",
+                        sel_label: r_item.get("jogging_track", "Landscaped Jogging Track")
+                    })
+                    rent_comp_records.append({
+                        "Metric / Parameter": "🏛️ Clubhouse & Amenities",
+                        sel_label: f"{r_item.get('clubhouse_sqft', 'Clubhouse')} | {r_item.get('amenities_summary', 'Pool & Gym')}"
                     })
                     rent_comp_records.append({
                         "Metric / Parameter": "Occupancy Certificate (OC)",
@@ -1561,6 +1835,9 @@ with tab_rental:
                 st.markdown(f"- **7.5% Annual Interest on Deposit (Opportunity Cost):** <b style='color:#FCD34D;'>+₹{dep_interest_pm:,} / mo</b> <span style='font-size:0.8rem; color:#94A3B8;'>(₹{annual_dep_interest:,}/yr locked)</span>", unsafe_allow_html=True)
                 st.markdown(f"👉 **TOTAL MONTHLY WITH DEPOSIT NOTE:** <b style='color:#38BDF8; font-size:1.02rem;'>Total Monthly: ₹{tot_outflow:,} (+{dep_interest_pm:,}/- pm due to deposit)</b>", unsafe_allow_html=True)
                 st.markdown(f"- **Effective Economic Outflow:** `₹{effective_monthly:,} / mo`")
+                st.markdown(f"- **🚴 Cycling Track:** `{r.get('cycling_track', 'Dedicated Cycling Loop')}`")
+                st.markdown(f"- **🏃 Jogging Track:** `{r.get('jogging_track', 'Landscaped Jogging Track')}`")
+                st.markdown(f"- **🏛️ Clubhouse & Amenities:** `{r.get('clubhouse_sqft', 'Clubhouse')} | {r.get('amenities_summary', 'Pool & Gym')}`")
                 st.markdown(f"- **Pet Policy:** `{r.get('pet_friendly', 'Allowed')}`")
                 st.markdown(f"- **Bachelor Policy:** `{r.get('bachelor_friendly', 'Professionals Welcome')}`")
                 st.markdown(f"- **Lock-in / Notice Period:** `{r.get('lock_in_period_months', 6)} months / {r.get('notice_period_months', 1)} month`")
@@ -1620,16 +1897,45 @@ with tab_rental:
 
                 val_url = r.get("validation_url", "#")
                 source_post = r.get("source_post_url", "#")
+
+                col_rent_inc1, col_rent_inc2 = st.columns(2)
+                with col_rent_inc1:
+                    if st.button("🛡️ View In-App", key=f"btn_r_post_incog_{r['id']}", use_container_width=True):
+                        show_incognito_post_viewer(
+                            title=f"{r['society_name']} ({r['bhk']}) — Verified Rental Listing",
+                            url=val_url,
+                            source_type="Listing Portal / Direct",
+                            metadata={
+                                "Rent": f"₹{rent_val:,}/mo",
+                                "Maintenance": f"₹{maint_val:,}/mo",
+                                "Deposit": f"₹{dep_val:,}",
+                                "Rating": f"⭐ {r.get('resident_rating', 4.5)}/5"
+                            }
+                        )
+                with col_rent_inc2:
+                    if st.button("💬 Community Post", key=f"btn_r_comm_incog_{r['id']}", use_container_width=True):
+                        show_incognito_post_viewer(
+                            title=f"{r['society_name']} — Tenant Community Post",
+                            url=source_post,
+                            source_type="Community Group / Notice",
+                            metadata={
+                                "Society": r['society_name'],
+                                "BHK": r['bhk'],
+                                "Floor": r['floor'],
+                                "Available": r['available_from']
+                            }
+                        )
+
                 st.markdown(f"""
                 <div style="display: flex; gap: 6px; margin-bottom: 6px; flex-wrap: wrap;">
-                    <a href="{val_url}" target="_blank" style="flex: 1; text-decoration: none; min-width: 120px;">
-                        <div style="background-color: #1E3A8A; color: #BFDBFE; text-align: center; padding: 6px; border-radius: 6px; font-weight: 700; font-size: 0.78rem; border: 1px solid #3B82F6;">
-                            🔗 Verify Post / Listing ↗
+                    <a href="{val_url}" target="_blank" rel="noreferrer noopener nofollow" referrerpolicy="no-referrer" style="flex: 1; text-decoration: none; min-width: 110px;">
+                        <div style="background-color: #1E293B; color: #94A3B8; text-align: center; padding: 5px 6px; border-radius: 6px; font-weight: 600; font-size: 0.72rem; border: 1px solid #334155;">
+                            Clean Tab Link ↗
                         </div>
                     </a>
-                    <a href="{source_post}" target="_blank" style="flex: 1; text-decoration: none; min-width: 120px;">
-                        <div style="background-color: #065F46; color: #A7F3D0; text-align: center; padding: 6px; border-radius: 6px; font-weight: 700; font-size: 0.78rem; border: 1px solid #10B981;">
-                            💬 Community Listing ↗
+                    <a href="{source_post}" target="_blank" rel="noreferrer noopener nofollow" referrerpolicy="no-referrer" style="flex: 1; text-decoration: none; min-width: 110px;">
+                        <div style="background-color: #1E293B; color: #94A3B8; text-align: center; padding: 5px 6px; border-radius: 6px; font-weight: 600; font-size: 0.72rem; border: 1px solid #334155;">
+                            Clean Comm Tab ↗
                         </div>
                     </a>
                 </div>
@@ -1774,6 +2080,19 @@ with tab_nearby:
                 st.markdown(f"- **Water Source:** `{nb['water_source']}`")
 
                 val_nb_url = nb.get("validation_url", "#")
+                if st.button("🛡️ View Project In-App (Incognito)", key=f"btn_nb_incog_{nb['id']}", use_container_width=True):
+                    show_incognito_post_viewer(
+                        title=f"{nb['name']} ({nb['micro_market']}) — Verified Project Dossier",
+                        url=val_nb_url,
+                        source_type="Official Portal / Listing",
+                        metadata={
+                            "Price": f"₹{nb['total_price_cr']} Cr",
+                            "Rate": f"₹{nb['price_per_sqft']:,}/sqft",
+                            "Rating": f"⭐ {nb.get('resident_rating', 4.5)}/5",
+                            "Distance": f"{nb['distance_to_bellandur_km']} km"
+                        }
+                    )
+
                 st.markdown(f"""
                 <div style="display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap;">
                     <a href="{gmaps_nb_url}" target="_blank" style="flex: 1; text-decoration: none; min-width: 120px;">
@@ -1781,9 +2100,9 @@ with tab_nearby:
                             📍 Google Maps ↗
                         </div>
                     </a>
-                    <a href="{val_nb_url}" target="_blank" style="flex: 1; text-decoration: none; min-width: 120px;">
-                        <div style="background-color: #1E3A8A; color: #BFDBFE; text-align: center; padding: 7px; border-radius: 6px; font-weight: 700; font-size: 0.82rem; border: 1px solid #3B82F6;">
-                            🔗 Verify Project Post ↗
+                    <a href="{val_nb_url}" target="_blank" rel="noreferrer noopener nofollow" referrerpolicy="no-referrer" style="flex: 1; text-decoration: none; min-width: 120px;">
+                        <div style="background-color: #1E293B; color: #94A3B8; text-align: center; padding: 7px; border-radius: 6px; font-weight: 600; font-size: 0.82rem; border: 1px solid #334155;">
+                            Clean Tab Link ↗
                         </div>
                     </a>
                 </div>

@@ -67,7 +67,14 @@
     "ev_charging_facility": "Installed (4 Dedicated EV Bays + 15A Pods)",
     "power_backup": "100% Full DG Backup (Including ACs & Appliances)",
     "lake_buffer_compliance": "Fully Compliant (>60m from Green Glen Storm Drain)",
-    "encumbrance_certificate": "30-Year Nil Encumbrance Certificate Verified"
+    "encumbrance_certificate": "30-Year Nil Encumbrance Certificate Verified",
+    "cycling_track": "1.2 km Dedicated Asphalt Cycling Track (Internal Loop)",
+    "jogging_track": "1.0 km Rubberized Synthetic Jogging Track",
+    "clubhouse_sqft": "28,000 sqft Grand Club Iris",
+    "swimming_pool": "Olympic Lap Pool (Heated) + Toddler Splash Pool",
+    "sports_courts": "2 Floodlit Tennis, 2 Squash, 2 Badminton Courts",
+    "fitness_wellness": "AC Technogym Center, Yoga/Pilates Deck, Steam & Sauna",
+    "amenities_summary": "28k sqft Club, 1.2km Cycle Track, 1.0km Jog Track, Heated Pool, Tennis, Squash, Badminton, Gym"
   },
   {
     "id": "prop_02",
@@ -137,7 +144,14 @@
     "ev_charging_facility": "Installed (Basement Level 1 EV Station)",
     "power_backup": "100% DG Power Backup for All Apartments",
     "lake_buffer_compliance": "Clear of Lake Buffer Zone (>250m to Bellandur Lake)",
-    "encumbrance_certificate": "Clean Title & 30-Year Form 15 Nil EC"
+    "encumbrance_certificate": "Clean Title & 30-Year Form 15 Nil EC",
+    "cycling_track": "850m Paved Cycling Path (Podium Perimeter)",
+    "jogging_track": "1.2 km Tree-Canopied Jogging Track",
+    "clubhouse_sqft": "30,000 sqft Multilevel Clubhouse",
+    "swimming_pool": "Double-Deck Resort Pool + Jacuzzi Jet Beds",
+    "sports_courts": "Tennis Court, 3 Indoor Badminton Courts, Table Tennis Arena",
+    "fitness_wellness": "Comprehensive Fitness Center, Aerobics Studio, Health Spa",
+    "amenities_summary": "30k sqft Club, 850m Cycle Path, 1.2km Jog Track, Double-Deck Pool, Tennis, 3 Badminton Courts, Spa"
   },
   {
     "id": "prop_03",
@@ -207,7 +221,14 @@
     "ev_charging_facility": "Sanctioned BESCOM 11kW Fast Charger",
     "power_backup": "100% Full Auto DG Backup",
     "lake_buffer_compliance": "Safe Gurukul Side Elevation; Zero Buffer Encroachment",
-    "encumbrance_certificate": "Verified Nil Encumbrance (A-Khata Registered)"
+    "encumbrance_certificate": "Verified Nil Encumbrance (A-Khata Registered)",
+    "cycling_track": "750m Internal Paved Cycle Loop",
+    "jogging_track": "900m Perimeter Jogging Track",
+    "clubhouse_sqft": "20,000 sqft Resident Clubhouse",
+    "swimming_pool": "Standard Outdoor Lap Pool + Kids Splash Pool",
+    "sports_courts": "2 Badminton Courts, 1 Tennis Court, Half Basketball Court",
+    "fitness_wellness": "Equipped Gymnasium & Multipurpose Activity Studio",
+    "amenities_summary": "20k sqft Club, 750m Cycle Loop, 900m Jog Track, Outdoor Pool, Tennis, 2 Badminton Courts, Gym"
   },
   {
     "id": "prop_04",
@@ -277,7 +298,14 @@
     "ev_charging_facility": "Basement 15A Charging Sockets Available",
     "power_backup": "100% DG Backup for Essential Circuits & Lifts",
     "lake_buffer_compliance": "Verified Clear of All Rajakaluves",
-    "encumbrance_certificate": "30-Year Clean Legal Title & Nil EC"
+    "encumbrance_certificate": "30-Year Clean Legal Title & Nil EC",
+    "cycling_track": "800m Dedicated Ground Cycle Track",
+    "jogging_track": "1.0 km Landscaped Walking & Jogging Trail",
+    "clubhouse_sqft": "22,000 sqft Jharoka Clubhouse",
+    "swimming_pool": "Semi-Covered Swimming Pool with Toddler Pool",
+    "sports_courts": "Tennis Court, 2 Badminton Courts, Squash Court",
+    "fitness_wellness": "Modern Gymnasium, Yoga & Meditation Gazebo",
+    "amenities_summary": "22k sqft Club, 800m Cycle Track, 1.0km Jog Trail, Semi-Covered Pool, Tennis, Squash, Badminton, Gym"
   },
   {
     "id": "prop_05",
@@ -347,7 +375,14 @@
     "ev_charging_facility": "Private Wallbox EV Provision for Each Penthouse/3BHK",
     "power_backup": "100% Uninterrupted Full Load DG Generator",
     "lake_buffer_compliance": "Complies Fully with 30m NGT Lake Zone Guidelines",
-    "encumbrance_certificate": "Flawless Tier 1 Legal Title Documentation"
+    "encumbrance_certificate": "Flawless Tier 1 Legal Title Documentation",
+    "cycling_track": "1.1 km Interlocking Paver Cycle Track",
+    "jogging_track": "1.0 km Reflexology Jogging Track",
+    "clubhouse_sqft": "26,000 sqft Signature Clubhouse",
+    "swimming_pool": "Heated Indoor Pool + Rooftop Infinity Plunge Pool",
+    "sports_courts": "2 Tennis Courts, Squash Court, 2 Badminton Courts, Billiards",
+    "fitness_wellness": "State-of-the-Art Fitness Center, Steam/Sauna, Pilates Studio",
+    "amenities_summary": "26k sqft Club, 1.1km Cycle Track, 1.0km Jog Track, Heated Indoor Pool, Rooftop Pool, Tennis, Squash, Gym"
   },
   {
     "id": "prop_06",
@@ -417,7 +452,14 @@
     "ev_charging_facility": "Shared Fast Charging Hub (Tata Power EZ Charge)",
     "power_backup": "100% Full Load DG Power Backup",
     "lake_buffer_compliance": "Designed with Elevated Promenade above Lake Buffer",
-    "encumbrance_certificate": "BDA Sanctioned Plan & Nil Encumbrance"
+    "encumbrance_certificate": "BDA Sanctioned Plan & Nil Encumbrance",
+    "cycling_track": "900m Internal Bicycle Path",
+    "jogging_track": "1.1 km Shaded Greenery Jogging Path",
+    "clubhouse_sqft": "24,000 sqft Community Clubhouse",
+    "swimming_pool": "Resort-style Swimming Pool + Jacuzzi & Kids Pool",
+    "sports_courts": "Tennis Court, 2 Badminton Courts, Cricket Pitch Nets",
+    "fitness_wellness": "Health Club, Aerobics Room, Air-Conditioned Gymnasium",
+    "amenities_summary": "24k sqft Club, 900m Cycle Path, 1.1km Jog Track, Resort Pool, Tennis, 2 Badminton Courts, Cricket Nets, Gym"
   },
   {
     "id": "prop_07",
@@ -487,7 +529,14 @@
     "ev_charging_facility": "50+ EV Charging Stations Across Campus",
     "power_backup": "100% DG Backup in All Towers",
     "lake_buffer_compliance": "Clear of Varthur Buffer (Strictly Bottleneck Route Trap)",
-    "encumbrance_certificate": "Master Title Clean; Issue is Panathur Bottleneck Access"
+    "encumbrance_certificate": "Master Title Clean; Issue is Panathur Bottleneck Access",
+    "cycling_track": "2.2 km Cobbled Nature Cycle Boulevard",
+    "jogging_track": "1.8 km Micro-Forest Jogging & Nature Trail",
+    "clubhouse_sqft": "45,000 sqft Earth-Sheltered Luxury Clubhouse",
+    "swimming_pool": "Bio-Filtered Natural Swimming Lake + Heated 50m Lap Pool",
+    "sports_courts": "3 Tennis Courts, 4 Badminton Courts, 2 Squash Courts, Futsal Court",
+    "fitness_wellness": "Olympic Gym, Cantilevered Yoga Deck over lake, Wellness Spa",
+    "amenities_summary": "45k sqft Earth Club, 2.2km Nature Cycle Track, 1.8km Jog Trail, Bio Lake Pool, 3 Tennis, 4 Badminton, 2 Squash"
   },
   {
     "id": "prop_08",
@@ -557,7 +606,14 @@
     "ev_charging_facility": "Dedicated 15A Metered Sockets in Basement",
     "power_backup": "100% Full DG Backup with Auto-Switch",
     "lake_buffer_compliance": "Completely Safe Arterial Corridor Elevation",
-    "encumbrance_certificate": "Verified BBMP A-Khata with 30-Year Nil EC"
+    "encumbrance_certificate": "Verified BBMP A-Khata with 30-Year Nil EC",
+    "cycling_track": "1.6 km Dedicated Cycling Trail with Bike Stations",
+    "jogging_track": "1.3 km Cushion-Tread Jogging Track",
+    "clubhouse_sqft": "35,000 sqft Biophilic Green Clubhouse",
+    "swimming_pool": "Olympic Lap Pool + Beach-entry Lagoon Pool",
+    "sports_courts": "2 Tennis Courts, 3 Badminton Courts, Basketball Court, Skating Rink",
+    "fitness_wellness": "Panoramic Glass Gym, Outdoor Calisthenics, Yoga Lawn",
+    "amenities_summary": "35k sqft Club, 1.6km Cycle Trail, 1.3km Jog Track, Beach Lagoon Pool, 2 Tennis, 3 Badminton, Skating Rink"
   },
   {
     "id": "prop_09",
@@ -628,7 +684,14 @@
     "ev_charging_facility": "Fast Charging Plaza with 6 AC/DC Guns",
     "power_backup": "Industrial Grade Dual DG Generator System",
     "lake_buffer_compliance": "Full Rajakaluve Setback Clearance Certified",
-    "encumbrance_certificate": "Clean Corporate Title with Institutional Legal Audit"
+    "encumbrance_certificate": "Clean Corporate Title with Institutional Legal Audit",
+    "cycling_track": "3.0 km Internal Township Cycle Boulevard",
+    "jogging_track": "2.5 km Perimeter Jogging Track",
+    "clubhouse_sqft": "50,000 sqft (5 Clubhouses across phases)",
+    "swimming_pool": "5 Swimming Pools spread across phases",
+    "sports_courts": "Multiple Tennis Courts, 6 Badminton Courts, Volleyball, Basketball",
+    "fitness_wellness": "5 Gymnasiums, Aerobics Studios, Yoga Lawns",
+    "amenities_summary": "50k sqft Club (5 Clubs), 3.0km Cycle Track, 2.5km Jog Track, 5 Pools, 6 Badminton, Tennis, Basketball"
   },
   {
     "id": "prop_10",
@@ -699,6 +762,13 @@
     "ev_charging_facility": "15A EV Charging Plugs per Parking Slot",
     "power_backup": "100% DG Backup with Individual Sub-meters",
     "lake_buffer_compliance": "High Crest Location; Zero Flood or Lake Buffer Risk",
-    "encumbrance_certificate": "Verified BBMP e-Aasthi A-Khata & Nil EC"
+    "encumbrance_certificate": "Verified BBMP e-Aasthi A-Khata & Nil EC",
+    "cycling_track": "None (Shared 350m Driveway)",
+    "jogging_track": "400m Concrete Walkway around building",
+    "clubhouse_sqft": "8,000 sqft Basic Multi-Purpose Hall",
+    "swimming_pool": "Small 15m Plunge Pool (Irregular maintenance)",
+    "sports_courts": "None (Single Table Tennis in basement)",
+    "fitness_wellness": "Basic 600 sqft Gym Room",
+    "amenities_summary": "8k sqft Basic Hall, No Cycle Track, 400m Concrete Walkway, Small Plunge Pool, Basic Gym, No Sports Courts"
   }
 ]

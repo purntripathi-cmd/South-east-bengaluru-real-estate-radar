@@ -82,6 +82,10 @@ def detect_parameter_changes(properties, rental_properties, ledger):
         ("ev_charging_facility", "EV Charging Facility"),
         ("power_backup", "Power Backup"),
         ("lake_buffer_compliance", "Lake Buffer Compliance"),
+        ("cycling_track", "Cycling Track"),
+        ("jogging_track", "Jogging Track"),
+        ("clubhouse_sqft", "Clubhouse Size"),
+        ("amenities_summary", "Amenities Summary"),
         ("validation_url", "Validation URL")
     ]
 
@@ -118,6 +122,10 @@ def detect_parameter_changes(properties, rental_properties, ledger):
         ("lock_in_period_months", "Lock-in Period"),
         ("notice_period_months", "Notice Period"),
         ("ev_charging_facility", "EV Charging Facility"),
+        ("cycling_track", "Cycling Track"),
+        ("jogging_track", "Jogging Track"),
+        ("clubhouse_sqft", "Clubhouse Size"),
+        ("amenities_summary", "Amenities Summary"),
         ("validation_url", "Validation URL")
     ]
 
@@ -291,6 +299,12 @@ def run_daily_tracker(dry_run=False, force=False):
             "Power_Backup": p.get("power_backup", "100% Full DG Backup"),
             "Lake_Buffer_Compliance": p.get("lake_buffer_compliance", "Fully Compliant"),
             "Encumbrance_Certificate": p.get("encumbrance_certificate", "Verified 30-Yr Nil EC"),
+            "Cycling_Track": p.get("cycling_track", "Dedicated Cycling Track"),
+            "Jogging_Track": p.get("jogging_track", "Landscaped Jogging Track"),
+            "Clubhouse_Size": p.get("clubhouse_sqft", "25,000 sqft Clubhouse"),
+            "Swimming_Pool": p.get("swimming_pool", "Lap Pool + Kids Pool"),
+            "Sports_Courts": p.get("sports_courts", "Tennis & Badminton Courts"),
+            "Amenities_Summary": p.get("amenities_summary", "Clubhouse, Pool, Courts, Gym"),
             "Common_Complaints": complaints_str
         })
 
@@ -347,6 +361,10 @@ def run_daily_tracker(dry_run=False, force=False):
             "Lock_In_Period_Months": r.get("lock_in_period_months", 6),
             "Notice_Period_Months": r.get("notice_period_months", 1),
             "EV_Charging_Facility": r.get("ev_charging_facility", "EV Points Available"),
+            "Cycling_Track": r.get("cycling_track", "Dedicated Cycling Track"),
+            "Jogging_Track": r.get("jogging_track", "Landscaped Jogging Track"),
+            "Clubhouse_Size": r.get("clubhouse_sqft", "25,000 sqft Clubhouse"),
+            "Amenities_Summary": r.get("amenities_summary", "Clubhouse, Pool, Courts, Gym"),
             "Validation_URL": r.get("validation_url", ""),
             "Source_Post_URL": r.get("source_post_url", ""),
             "Validation_Status": r.get("validation_status", "Verified"),

@@ -1,0 +1,57 @@
+{
+  "search_center": {
+    "lat": 12.9325,
+    "lng": 77.6850,
+    "radius_km": 3.5,
+    "name": "Bellandur - Kadubeesanahalli Corridor Center"
+  },
+  "weights": {
+    "metro_proximity": 15,
+    "traffic_integrity": 20,
+    "exact_distances": 15,
+    "builder_pedigree": 15,
+    "water_logging": 10,
+    "financials_appreciation": 15,
+    "land_title_quality": 10
+  },
+  "custom_anchors": {
+    "office": {
+      "name": "RMZ Ecospace / PTP",
+      "lat": 12.9262,
+      "lng": 77.6836
+    },
+    "school": {
+      "name": "New Horizon Gurukul",
+      "lat": 12.9412,
+      "lng": 77.6968
+    },
+    "hospital": {
+      "name": "Sakra World Hospital",
+      "lat": 12.9294,
+      "lng": 77.6881
+    },
+    "mall": {
+      "name": "Central Mall Bellandur",
+      "lat": 12.9268,
+      "lng": 77.6775
+    },
+    "airport": {
+      "name": "Kempegowda Intl Airport (BLR)",
+      "lat": 13.1986,
+      "lng": 77.7066
+    }
+  },
+  "penalties": {
+    "panathur_routing_penalty": -50,
+    "b_khata_penalty": -80,
+    "high_water_logging_penalty": -35
+  },
+  "filter_defaults": {
+    "min_match_score": 50,
+    "zone_filter": "All Zones",
+    "builder_tier_filter": "All Builders",
+    "rental_budget_max": 150000,
+    "bhk_filter": "All",
+    "direct_owner_only": false
+  }
+}

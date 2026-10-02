@@ -1,0 +1,527 @@
+[
+  {
+    "id": "rent_01",
+    "society_name": "Sobha Iris",
+    "unit_title": "Spacious 3 BHK with Modular Kitchen & Pool View",
+    "micro_market": "Green Glen Layout",
+    "zone_type": "Green",
+    "lat": 12.9287,
+    "lng": 77.6749,
+    "bhk": "3 BHK",
+    "area_sqft": 1820,
+    "floor": "4th of 9",
+    "facing": "East",
+    "furnishing": "Semi Furnished",
+    "rent_pm": 68000,
+    "maintenance_pm": 5500,
+    "security_deposit_months": 4,
+    "security_deposit_inr": 272000,
+    "platforms": {
+      "Direct_Owner": {
+        "price": 68000,
+        "brokerage": 0,
+        "url": "https://chat.whatsapp.com/sample_green_glen_owners",
+        "badge": "Best Deal - 0 Brokerage"
+      },
+      "NoBroker": {
+        "price": 70000,
+        "brokerage": 0,
+        "url": "https://www.nobroker.in/property/rent/bangalore/bellandur",
+        "badge": "0 Brokerage"
+      },
+      "99acres": {
+        "price": 72000,
+        "brokerage": 72000,
+        "url": "https://www.99acres.com/rent-property-in-green-glen-layout-bangalore-ffid",
+        "badge": "1 Month Brokerage"
+      },
+      "MagicBricks": {
+        "price": 72000,
+        "brokerage": 72000,
+        "url": "https://www.magicbricks.com/property-for-rent/residential-real-estate?bedroom=3&city=Bangalore",
+        "badge": "1 Month Brokerage"
+      },
+      "Housing_com": {
+        "price": 71000,
+        "brokerage": 35500,
+        "url": "https://housing.com/rent/search-bangalore",
+        "badge": "15 Days Brokerage"
+      }
+    },
+    "best_platform": "Direct Owner",
+    "brokerage_savings_inr": 72000,
+    "tenant_preference": "Family Preferred",
+    "pet_friendly": true,
+    "bachelor_friendly": false,
+    "water_supply": "24/7 Cauvery Water + 4 Active Borewells (Zero Water Cuts)",
+    "power_backup": "100% Full DG Backup (Lights, Fans, Fridge, AC points)",
+    "amenities": ["Swimming Pool", "Gymnasium", "Clubhouse", "Tennis Court", "Kids Play Area", "Gated 24/7 Security", "EV Charger"],
+    "commute_time_mins": {
+      "RMZ Ecospace": 6,
+      "Prestige Tech Park": 10,
+      "Embassy TechVillage": 8,
+      "Cessna Business Park": 9
+    },
+    "panathur_bottleneck_free": true,
+    "traffic_verdict": "Green Route: 100% free of Panathur choke points. Direct exit to ORR via Green Glen main boulevard.",
+    "available_from": "Ready to Move / Immediate",
+    "contact": {
+      "type": "Direct Owner",
+      "name": "Ananya K.",
+      "phone": "+91 98450 21980",
+      "whatsapp": "919845021980",
+      "verified": true,
+      "preferred_time": "10:00 AM - 7:00 PM (Weekends preferred for site visit)"
+    }
+  },
+  {
+    "id": "rent_02",
+    "society_name": "Prestige Sunnyside",
+    "unit_title": "Luxury 3 BHK Ultra-Modern Furnished Flat with Sunlit Balcony",
+    "micro_market": "Bellandur Core",
+    "zone_type": "Green",
+    "lat": 12.9320,
+    "lng": 77.6815,
+    "bhk": "3 BHK",
+    "area_sqft": 1740,
+    "floor": "8th of 14",
+    "facing": "North-East",
+    "furnishing": "Fully Furnished",
+    "rent_pm": 76000,
+    "maintenance_pm": 5000,
+    "security_deposit_months": 5,
+    "security_deposit_inr": 380000,
+    "platforms": {
+      "Direct_Owner": {
+        "price": 76000,
+        "brokerage": 0,
+        "url": "https://www.prestigeconstructions.com",
+        "badge": "Direct Owner - Verified"
+      },
+      "NoBroker": {
+        "price": 78000,
+        "brokerage": 0,
+        "url": "https://www.nobroker.in/property/rent/bangalore/bellandur",
+        "badge": "0 Brokerage"
+      },
+      "99acres": {
+        "price": 80000,
+        "brokerage": 80000,
+        "url": "https://www.99acres.com",
+        "badge": "1 Month Brokerage"
+      },
+      "MagicBricks": {
+        "price": 79000,
+        "brokerage": 79000,
+        "url": "https://www.magicbricks.com",
+        "badge": "1 Month Brokerage"
+      },
+      "Housing_com": {
+        "price": 78500,
+        "brokerage": 39250,
+        "url": "https://housing.com",
+        "badge": "15 Days Brokerage"
+      }
+    },
+    "best_platform": "Direct Owner",
+    "brokerage_savings_inr": 80000,
+    "tenant_preference": "Families or Working Tech Professionals",
+    "pet_friendly": true,
+    "bachelor_friendly": true,
+    "water_supply": "Cauvery Line + High-output Borewells + In-house Water Softener",
+    "power_backup": "100% Full Power Backup",
+    "amenities": ["Infinity Swimming Pool", "Health Club & Gym", "Squash Court", "Supermarket Inside", "Creche / Daycare", "EV Charging Point"],
+    "commute_time_mins": {
+      "RMZ Ecospace": 5,
+      "Prestige Tech Park": 8,
+      "Embassy TechVillage": 6,
+      "Cessna Business Park": 7
+    },
+    "panathur_bottleneck_free": true,
+    "traffic_verdict": "Green Route: Prime Bellandur location with instant footbridge and service lane access to ORR.",
+    "available_from": "1st of Next Month",
+    "contact": {
+      "type": "Direct Owner",
+      "name": "Dr. Rohit Narang",
+      "phone": "+91 98801 44520",
+      "whatsapp": "919880144520",
+      "verified": true,
+      "preferred_time": "Evenings 6:00 PM - 9:00 PM"
+    }
+  },
+  {
+    "id": "rent_03",
+    "society_name": "NCC Nagarjuna Green Woods",
+    "unit_title": "Executive 2.5 BHK with Lake-View Balcony & Woodwork",
+    "micro_market": "Kadubeesanahalli (Gurukul Side)",
+    "zone_type": "Green",
+    "lat": 12.9390,
+    "lng": 77.6952,
+    "bhk": "2 BHK",
+    "area_sqft": 1390,
+    "floor": "3rd of 8",
+    "facing": "East",
+    "furnishing": "Semi Furnished",
+    "rent_pm": 52000,
+    "maintenance_pm": 4200,
+    "security_deposit_months": 3,
+    "security_deposit_inr": 156000,
+    "platforms": {
+      "Direct_Owner": {
+        "price": 52000,
+        "brokerage": 0,
+        "url": "https://wa.me/919900234567",
+        "badge": "Direct Owner Exclusive"
+      },
+      "NoBroker": {
+        "price": 53500,
+        "brokerage": 0,
+        "url": "https://www.nobroker.in",
+        "badge": "0 Brokerage"
+      },
+      "99acres": {
+        "price": 55000,
+        "brokerage": 55000,
+        "url": "https://www.99acres.com",
+        "badge": "1 Month Brokerage"
+      },
+      "MagicBricks": {
+        "price": 54000,
+        "brokerage": 54000,
+        "url": "https://www.magicbricks.com",
+        "badge": "1 Month Brokerage"
+      },
+      "Housing_com": {
+        "price": 53000,
+        "brokerage": 26500,
+        "url": "https://housing.com",
+        "badge": "15 Days Brokerage"
+      }
+    },
+    "best_platform": "Direct Owner",
+    "brokerage_savings_inr": 55000,
+    "tenant_preference": "All Welcome (Bachelors & Families)",
+    "pet_friendly": true,
+    "bachelor_friendly": true,
+    "water_supply": "Dual Cauvery Connection + 3 Deep Borewells",
+    "power_backup": "100% Full Generator Backup",
+    "amenities": ["Swimming Pool", "Gym", "Badminton Court", "Party Hall", "Lush Gardens", "24/7 Security"],
+    "commute_time_mins": {
+      "RMZ Ecospace": 10,
+      "Prestige Tech Park": 4,
+      "Embassy TechVillage": 7,
+      "Cessna Business Park": 5
+    },
+    "panathur_bottleneck_free": true,
+    "traffic_verdict": "Green Route: Excellent Gurukul side access. 4-minute walk to Prestige Tech Park without touching Panathur road.",
+    "available_from": "Immediate",
+    "contact": {
+      "type": "Direct Owner",
+      "name": "Vikram Sethi",
+      "phone": "+91 99002 34567",
+      "whatsapp": "919900234567",
+      "verified": true,
+      "preferred_time": "Anytime between 9:00 AM - 8:00 PM"
+    }
+  },
+  {
+    "id": "rent_04",
+    "society_name": "Rohan Jharoka II",
+    "unit_title": "Quiet 2 BHK Garden Facing Flat with Modular Wardrobes",
+    "micro_market": "Green Glen Layout",
+    "zone_type": "Green",
+    "lat": 12.9275,
+    "lng": 77.6742,
+    "bhk": "2 BHK",
+    "area_sqft": 1280,
+    "floor": "6th of 11",
+    "facing": "North",
+    "furnishing": "Semi Furnished",
+    "rent_pm": 49000,
+    "maintenance_pm": 3800,
+    "security_deposit_months": 4,
+    "security_deposit_inr": 196000,
+    "platforms": {
+      "Direct_Owner": {
+        "price": 49000,
+        "brokerage": 0,
+        "url": "https://wa.me/919871122334",
+        "badge": "Direct Owner Deal"
+      },
+      "NoBroker": {
+        "price": 50000,
+        "brokerage": 0,
+        "url": "https://www.nobroker.in",
+        "badge": "0 Brokerage"
+      },
+      "99acres": {
+        "price": 52000,
+        "brokerage": 52000,
+        "url": "https://www.99acres.com",
+        "badge": "1 Month Brokerage"
+      },
+      "MagicBricks": {
+        "price": 51000,
+        "brokerage": 51000,
+        "url": "https://www.magicbricks.com",
+        "badge": "1 Month Brokerage"
+      },
+      "Housing_com": {
+        "price": 50500,
+        "brokerage": 25250,
+        "url": "https://housing.com",
+        "badge": "15 Days Brokerage"
+      }
+    },
+    "best_platform": "Direct Owner",
+    "brokerage_savings_inr": 52000,
+    "tenant_preference": "Families & Couples",
+    "pet_friendly": false,
+    "bachelor_friendly": false,
+    "water_supply": "24/7 Cauvery Supply + Dedicated R.O. Unit",
+    "power_backup": "100% DG Backup",
+    "amenities": ["Clubhouse", "Gym", "Landscaped Park", "Billiards & Table Tennis", "Jogging Track"],
+    "commute_time_mins": {
+      "RMZ Ecospace": 7,
+      "Prestige Tech Park": 12,
+      "Embassy TechVillage": 9,
+      "Cessna Business Park": 10
+    },
+    "panathur_bottleneck_free": true,
+    "traffic_verdict": "Green Route: Interior Green Glen peaceful layout with multiple quick exit gates to Bellandur.",
+    "available_from": "Immediate",
+    "contact": {
+      "type": "Direct Owner",
+      "name": "Priya Sundaram",
+      "phone": "+91 98711 22334",
+      "whatsapp": "919871122334",
+      "verified": true,
+      "preferred_time": "11:00 AM - 5:00 PM"
+    }
+  },
+  {
+    "id": "rent_05",
+    "society_name": "Sobha Marvella",
+    "unit_title": "Grand 4 BHK Penthouse with Private Terrace & Italian Kitchen",
+    "micro_market": "Bellandur Core",
+    "zone_type": "Green",
+    "lat": 12.9342,
+    "lng": 77.6782,
+    "bhk": "4 BHK",
+    "area_sqft": 2750,
+    "floor": "Top Floor (12th)",
+    "facing": "East",
+    "furnishing": "Fully Furnished",
+    "rent_pm": 135000,
+    "maintenance_pm": 11000,
+    "security_deposit_months": 5,
+    "security_deposit_inr": 675000,
+    "platforms": {
+      "Direct_Owner": {
+        "price": 135000,
+        "brokerage": 0,
+        "url": "https://wa.me/919845566778",
+        "badge": "Direct Owner"
+      },
+      "NoBroker": {
+        "price": 138000,
+        "brokerage": 0,
+        "url": "https://www.nobroker.in",
+        "badge": "0 Brokerage"
+      },
+      "99acres": {
+        "price": 145000,
+        "brokerage": 145000,
+        "url": "https://www.99acres.com",
+        "badge": "1 Month Brokerage"
+      },
+      "MagicBricks": {
+        "price": 142000,
+        "brokerage": 142000,
+        "url": "https://www.magicbricks.com",
+        "badge": "1 Month Brokerage"
+      },
+      "Housing_com": {
+        "price": 140000,
+        "brokerage": 70000,
+        "url": "https://housing.com",
+        "badge": "15 Days Brokerage"
+      }
+    },
+    "best_platform": "Direct Owner",
+    "brokerage_savings_inr": 145000,
+    "tenant_preference": "Senior Executives & Families",
+    "pet_friendly": true,
+    "bachelor_friendly": false,
+    "water_supply": "Cauvery Active + Water Softening + Rainwater Harvesting",
+    "power_backup": "100% Full Uninterrupted DG Backup",
+    "amenities": ["Rooftop Heated Pool", "Steam & Sauna", "Squash & Tennis Courts", "Concierge Service", "EV Fast Charging"],
+    "commute_time_mins": {
+      "RMZ Ecospace": 5,
+      "Prestige Tech Park": 9,
+      "Embassy TechVillage": 7,
+      "Cessna Business Park": 8
+    },
+    "panathur_bottleneck_free": true,
+    "traffic_verdict": "Green Route: Premier Bellandur core location. Zero bottleneck congestion.",
+    "available_from": "15 Days Notice",
+    "contact": {
+      "type": "Direct Owner",
+      "name": "Capt. Alok Verma",
+      "phone": "+91 98455 66778",
+      "whatsapp": "919845566778",
+      "verified": true,
+      "preferred_time": "10:00 AM - 1:00 PM or 5:00 PM - 8:00 PM"
+    }
+  },
+  {
+    "id": "rent_06",
+    "society_name": "Assetz Canvas & Cove",
+    "unit_title": "Compact 2 BHK Smart Apartment with Brand New Appliances",
+    "micro_market": "Kadubeesanahalli East",
+    "zone_type": "Green",
+    "lat": 12.9432,
+    "lng": 77.6968,
+    "bhk": "2 BHK",
+    "area_sqft": 1190,
+    "floor": "7th of 18",
+    "facing": "North",
+    "furnishing": "Fully Furnished",
+    "rent_pm": 54000,
+    "maintenance_pm": 4500,
+    "security_deposit_months": 4,
+    "security_deposit_inr": 216000,
+    "platforms": {
+      "Direct_Owner": {
+        "price": 54000,
+        "brokerage": 0,
+        "url": "https://wa.me/919980112244",
+        "badge": "Direct Owner"
+      },
+      "NoBroker": {
+        "price": 55000,
+        "brokerage": 0,
+        "url": "https://www.nobroker.in",
+        "badge": "0 Brokerage"
+      },
+      "99acres": {
+        "price": 57000,
+        "brokerage": 57000,
+        "url": "https://www.99acres.com",
+        "badge": "1 Month Brokerage"
+      },
+      "MagicBricks": {
+        "price": 56000,
+        "brokerage": 56000,
+        "url": "https://www.magicbricks.com",
+        "badge": "1 Month Brokerage"
+      },
+      "Housing_com": {
+        "price": 55500,
+        "brokerage": 27750,
+        "url": "https://housing.com",
+        "badge": "15 Days Brokerage"
+      }
+    },
+    "best_platform": "Direct Owner",
+    "brokerage_savings_inr": 57000,
+    "tenant_preference": "Tech Professionals (Bachelors or Couples)",
+    "pet_friendly": true,
+    "bachelor_friendly": true,
+    "water_supply": "24/7 Treated Dual Cauvery + Deep Borewell",
+    "power_backup": "100% Full DG Backup",
+    "amenities": ["Clubhouse", "Co-working Lounge", "Swimming Pool", "Futsal Court", "Gym", "High-speed Fiber Ready"],
+    "commute_time_mins": {
+      "RMZ Ecospace": 9,
+      "Prestige Tech Park": 5,
+      "Embassy TechVillage": 7,
+      "Cessna Business Park": 6
+    },
+    "panathur_bottleneck_free": true,
+    "traffic_verdict": "Green Route: Quick approach to New Horizon Gurukul and PTP back gate.",
+    "available_from": "Immediate",
+    "contact": {
+      "type": "Direct Owner",
+      "name": "Siddharth Nair",
+      "phone": "+91 99801 12244",
+      "whatsapp": "919980112244",
+      "verified": true,
+      "preferred_time": "After 5:00 PM weekdays"
+    }
+  },
+  {
+    "id": "rent_07",
+    "society_name": "Sobha Dream Acres (Wing 18)",
+    "unit_title": "2 BHK in High-Density Township (Subject to Panathur Traffic)",
+    "micro_market": "Panathur / Balagere Road",
+    "zone_type": "Red",
+    "lat": 12.9370,
+    "lng": 77.7160,
+    "bhk": "2 BHK",
+    "area_sqft": 1010,
+    "floor": "11th of 14",
+    "facing": "East",
+    "furnishing": "Semi Furnished",
+    "rent_pm": 37000,
+    "maintenance_pm": 3200,
+    "security_deposit_months": 5,
+    "security_deposit_inr": 185000,
+    "platforms": {
+      "Direct_Owner": {
+        "price": 37000,
+        "brokerage": 0,
+        "url": "https://wa.me/919740011223",
+        "badge": "Direct Owner"
+      },
+      "NoBroker": {
+        "price": 38000,
+        "brokerage": 0,
+        "url": "https://www.nobroker.in",
+        "badge": "0 Brokerage"
+      },
+      "99acres": {
+        "price": 40000,
+        "brokerage": 40000,
+        "url": "https://www.99acres.com",
+        "badge": "1 Month Brokerage"
+      },
+      "MagicBricks": {
+        "price": 39500,
+        "brokerage": 39500,
+        "url": "https://www.magicbricks.com",
+        "badge": "1 Month Brokerage"
+      },
+      "Housing_com": {
+        "price": 39000,
+        "brokerage": 19500,
+        "url": "https://housing.com",
+        "badge": "15 Days Brokerage"
+      }
+    },
+    "best_platform": "Direct Owner",
+    "brokerage_savings_inr": 40000,
+    "tenant_preference": "Anyone",
+    "pet_friendly": true,
+    "bachelor_friendly": true,
+    "water_supply": "Water Tankers + Society Borewell",
+    "power_backup": "100% Full DG Backup",
+    "amenities": ["Multiple Swimming Pools", "Mega Gyms", "Sports Arenas", "Supermarket Inside"],
+    "commute_time_mins": {
+      "RMZ Ecospace": 35,
+      "Prestige Tech Park": 25,
+      "Embassy TechVillage": 30,
+      "Cessna Business Park": 28
+    },
+    "panathur_bottleneck_free": false,
+    "traffic_verdict": "RED CHOKE WARNING: Requires daily transit through the notorious Panathur Railway Underpass. Peak hour delays can exceed 45-60 minutes for just 2km.",
+    "available_from": "Immediate",
+    "contact": {
+      "type": "Broker Listing",
+      "name": "Kiran Properties",
+      "phone": "+91 97400 11223",
+      "whatsapp": "919740011223",
+      "verified": false,
+      "preferred_time": "10:00 AM - 6:00 PM"
+    }
+  }
+]

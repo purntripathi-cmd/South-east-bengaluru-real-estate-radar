@@ -1,0 +1,108 @@
+{
+  "office_anchors": [
+    {
+      "name": "RMZ Ecospace (Bellandur)",
+      "lat": 12.9262,
+      "lng": 77.6836,
+      "category": "Tech Park",
+      "companies": ["Intel", "Shell", "Bosch", "Accenture", "SAP"]
+    },
+    {
+      "name": "Prestige Tech Park (Kadubeesanahalli)",
+      "lat": 12.9366,
+      "lng": 77.6953,
+      "category": "Tech Park",
+      "companies": ["JPMorgan Chase", "Adobe", "Oracle", "Cisco"]
+    },
+    {
+      "name": "Embassy TechVillage (ETV)",
+      "lat": 12.9298,
+      "lng": 77.6912,
+      "category": "Tech Park",
+      "companies": ["Cisco", "Sony", "Wells Fargo", "Flipkart"]
+    },
+    {
+      "name": "Cessna Business Park",
+      "lat": 12.9348,
+      "lng": 77.6908,
+      "category": "Tech Park",
+      "companies": ["Cisco", "LG", "HCL"]
+    }
+  ],
+  "school_anchors": [
+    {
+      "name": "New Horizon Gurukul",
+      "lat": 12.9412,
+      "lng": 77.6968,
+      "category": "CBSE School",
+      "highlights": "Top tier CBSE, direct access without Panathur choke"
+    },
+    {
+      "name": "Gear Innovative Intl School",
+      "lat": 12.9150,
+      "lng": 77.6890,
+      "category": "International School",
+      "highlights": "Accessible via Doddakannelli / Bellandur"
+    },
+    {
+      "name": "Patel Public School",
+      "lat": 12.9315,
+      "lng": 77.6820,
+      "category": "ICSE School",
+      "highlights": "Inside Bellandur core"
+    }
+  ],
+  "hospital_anchors": [
+    {
+      "name": "Sakra World Hospital",
+      "lat": 12.9294,
+      "lng": 77.6881,
+      "category": "Multi-speciality Hospital",
+      "highlights": "Premier Japanese multi-speciality, ORR frontage"
+    },
+    {
+      "name": "Manipal Hospital Sarjapur",
+      "lat": 12.9205,
+      "lng": 77.6680,
+      "category": "Tertiary Care Hospital",
+      "highlights": "Quick access via Green Glen / Haralur"
+    }
+  ],
+  "metro_anchors": [
+    {
+      "name": "Bellandur Metro Station (Blue Line)",
+      "lat": 12.9275,
+      "lng": 77.6825,
+      "status": "Under Construction (Phase 2A)",
+      "line": "ORR Blue Line (Silk Board to KR Puram)"
+    },
+    {
+      "name": "Kadubeesanahalli Metro Station (Blue Line)",
+      "lat": 12.9380,
+      "lng": 77.6950,
+      "status": "Under Construction (Phase 2A)",
+      "line": "ORR Blue Line (Silk Board to KR Puram)"
+    }
+  ],
+  "mall_anchors": [
+    {
+      "name": "Central Mall Bellandur",
+      "lat": 12.9268,
+      "lng": 77.6775,
+      "category": "Retail & Entertainment"
+    },
+    {
+      "name": "Market Square Mall Sarjapur Rd",
+      "lat": 12.9180,
+      "lng": 77.6710,
+      "category": "Retail & Cinema"
+    }
+  ],
+  "airport_anchor": {
+    "name": "Kempegowda Intl Airport (BLR)",
+    "lat": 13.1986,
+    "lng": 77.7066,
+    "avg_distance_km": 46.5,
+    "peak_time_min": 85
+  }
+}

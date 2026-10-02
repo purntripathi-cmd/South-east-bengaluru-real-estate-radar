@@ -1,0 +1,97 @@
+{
+  "green_zones": [
+    {
+      "id": "bellandur_core",
+      "name": "Bellandur Core Grid",
+      "center": [12.9325, 77.6795],
+      "radius_meters": 1300,
+      "polygon": [
+        [12.9385, 77.6730],
+        [12.9390, 77.6845],
+        [12.9280, 77.6870],
+        [12.9245, 77.6800],
+        [12.9270, 77.6720]
+      ],
+      "description": "Bellandur residential core with established connectivity to Outer Ring Road, high rental demand, and metro walking distance.",
+      "traffic_rating": "Good to Moderate",
+      "water_risk": "Low (Elevated ridge away from lake storm beds)"
+    },
+    {
+      "id": "green_glen_layout",
+      "name": "Green Glen Layout (Structured Grid)",
+      "center": [12.9288, 77.6750],
+      "radius_meters": 900,
+      "polygon": [
+        [12.9335, 77.6705],
+        [12.9340, 77.6795],
+        [12.9240, 77.6790],
+        [12.9230, 77.6710]
+      ],
+      "description": "Planned, highly structured residential layout with wide internal 40ft/30ft roads, tree-lined avenues, direct walkability to Ecospace and Central Mall.",
+      "traffic_rating": "Excellent (Multiple exit points to ORR)",
+      "water_risk": "Low"
+    },
+    {
+      "id": "kadubeesanahalli_gurukul",
+      "name": "Kadubeesanahalli (NCC Nagarjuna to Gurukul Side)",
+      "center": [12.9390, 77.6950],
+      "radius_meters": 1100,
+      "polygon": [
+        [12.9440, 77.6910],
+        [12.9445, 77.7010],
+        [12.9350, 77.7005],
+        [12.9340, 77.6915]
+      ],
+      "description": "Strictly limited to the NCC Nagarjuna Green Woods side up to New Horizon Gurukul. Directly accessible from ORR service road without crossing into the Panathur bottleneck.",
+      "traffic_rating": "Good (Direct ORR corridor)",
+      "water_risk": "Low to Moderate"
+    }
+  ],
+  "red_zones": [
+    {
+      "id": "panathur_main_road",
+      "name": "Panathur Main Road Choke Corridor",
+      "center": [12.9360, 77.7085],
+      "radius_meters": 1000,
+      "polygon": [
+        [12.9420, 77.7030],
+        [12.9430, 77.7180],
+        [12.9310, 77.7190],
+        [12.9300, 77.7040]
+      ],
+      "reason": "Severe bottleneck with narrow 20ft road handling 50x intended density, chaotic heavy vehicle movement, and lack of stormwater drains.",
+      "penalty_points": -50,
+      "disqualification_risk": "High"
+    },
+    {
+      "id": "panathur_railway_underpass",
+      "name": "Panathur Railway Underpass & S-Curve",
+      "center": [12.9335, 77.7045],
+      "radius_meters": 550,
+      "polygon": [
+        [12.9365, 77.7020],
+        [12.9365, 77.7080],
+        [12.9305, 77.7080],
+        [12.9305, 77.7020]
+      ],
+      "reason": "Notorious single-lane railway underpass and sharp S-curve choke point with persistent monsoon flooding, gridlock delays of 45-90 minutes during peak hours.",
+      "penalty_points": -60,
+      "disqualification_risk": "Critical"
+    },
+    {
+      "id": "panathur_post_office",
+      "name": "Panathur Post Office Junction",
+      "center": [12.9385, 77.7140],
+      "radius_meters": 650,
+      "polygon": [
+        [12.9415, 77.7100],
+        [12.9420, 77.7185],
+        [12.9355, 77.7180],
+        [12.9350, 77.7100]
+      ],
+      "reason": "Unregulated commercial junction causing severe intersection blockage with no bypass options.",
+      "penalty_points": -45,
+      "disqualification_risk": "High"
+    }
+  ]
+}

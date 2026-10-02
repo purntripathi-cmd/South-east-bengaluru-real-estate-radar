@@ -54,6 +54,7 @@ from utils.storage import (
     CHANGES_CSV_FILE
 )
 from scripts.daily_tracker import run_daily_tracker
+from utils.schools import render_schools_collapsible_html, get_nearby_cbse_schools, load_cbse_schools
 
 # Set page configuration
 st.set_page_config(
@@ -764,7 +765,7 @@ benchmark_options = [
 ]
 
 benchmark_preset_map = {
-    "🏫 New Horizon Gurukul (Default)": {"name": "New Horizon Gurukul", "short": "NH Gurukul", "lat": 12.9412, "lng": 77.6968},
+    "🏫 New Horizon Gurukul (Default)": {"name": "New Horizon Gurukul", "short": "NH Gurukul", "lat": 12.9348, "lng": 77.7037},
     "🏢 RMZ Ecospace (Bellandur)": {"name": "RMZ Ecospace", "short": "Ecospace", "lat": 12.9262, "lng": 77.6836},
     "🏢 Prestige Tech Park (Kadubeesanahalli)": {"name": "Prestige Tech Park", "short": "PTP", "lat": 12.9366, "lng": 77.6953},
     "🏢 Embassy TechVillage (ETV)": {"name": "Embassy TechVillage", "short": "ETV", "lat": 12.9298, "lng": 77.6912},
@@ -1106,10 +1107,41 @@ with tab_purchase:
     filtered_props.sort(key=lambda x: x["final_match_score"], reverse=True)
 
     # ---------------------------------------------------------
-    # FOLIUM / GOOGLE MAPS INTEGRATION
+    # FOLIUM / GOOGLE MAPS INTEGRATION & INTERACTIVE PROPERTY FOCUS
     # ---------------------------------------------------------
-    center_lat = search_center.get("lat", 12.9325)
-    center_lng = search_center.get("lng", 77.6850)
+    st.markdown("### 🗺️ Interactive Live Geolocation & Property Radar Map")
+    st.caption("Inspect exact spatial coordinates, compare distances to New Horizon Gurukul, and visualize road transit alignments.")
+
+    # Property Focus Selector
+    map_focus_options = ["-- View All Properties & Highlights --"]
+    for p in filtered_props:
+        map_focus_options.append(f"🏢 {p['name']} ({p.get('micro_market', '')})")
+    if show_nearby_on_map:
+        for nb in nearby_properties:
+            map_focus_options.append(f"🧭 {nb['name']} ({nb.get('micro_market', '')})")
+
+    selected_focus_prop_label = st.selectbox(
+        "🎯 Choose Property to Focus & Compare on Map (Pin Highlight & Driving Route to NH Gurukul):",
+        options=map_focus_options,
+        index=0,
+        help="Select any property to zoom in, highlight with a golden halo & red focus pin, draw the road route directly to New Horizon Gurukul, and inspect exact distances."
+    )
+
+    focused_prop_obj = None
+    if selected_focus_prop_label != "-- View All Properties & Highlights --":
+        for p in filtered_props:
+            if f"🏢 {p['name']} ({p.get('micro_market', '')})" == selected_focus_prop_label:
+                focused_prop_obj = p
+                break
+        if focused_prop_obj is None and show_nearby_on_map:
+            for nb in nearby_properties:
+                if f"🧭 {nb['name']} ({nb.get('micro_market', '')})" == selected_focus_prop_label:
+                    focused_prop_obj = nb
+                    break
+
+    center_lat = focused_prop_obj.get("lat") if (focused_prop_obj and focused_prop_obj.get("lat")) else search_center.get("lat", 12.9325)
+    center_lng = focused_prop_obj.get("lng") if (focused_prop_obj and focused_prop_obj.get("lng")) else search_center.get("lng", 77.6850)
+    map_zoom_level = 14 if focused_prop_obj else 13
 
     # Configure Map Tile Layer based on user selection
     if "Google Maps (Roadmap)" in map_provider:
@@ -1130,7 +1162,7 @@ with tab_purchase:
 
     m = folium.Map(
         location=[center_lat, center_lng],
-        zoom_start=13,
+        zoom_start=map_zoom_level,
         tiles=tiles_url,
         attr=tiles_attr,
         control_scale=True
@@ -1236,13 +1268,42 @@ with tab_purchase:
             icon=folium.Icon(color="purple", icon="briefcase", prefix="fa")
         ).add_to(m)
 
-    for school in anchors.get("school_anchors", []):
-        folium.Marker(
-            location=[school["lat"], school["lng"]],
-            popup=f"<b>🎓 {school['name']}</b>",
-            tooltip=f"🎓 {school['name']}",
-            icon=folium.Icon(color="cadetblue", icon="graduation-cap", prefix="fa")
-        ).add_to(m)
+    # Render Benchmark: New Horizon Gurukul (Exact Ground Truth Coordinates: 12.9348, 77.7037)
+    folium.Marker(
+        location=[12.9348, 77.7037],
+        popup=folium.Popup(
+            "<b>🏫 New Horizon Gurukul (Default Benchmark)</b><br>"
+            "📍 Panathur Main Road, Kaverappa Layout, Kadubeesanahalli<br>"
+            "🛰️ Coordinates: 12.9348° N, 77.7037° E<br>"
+            "⭐ Rating: 4.6 / 5.0 | Affiliation: CBSE Co-ed<br>"
+            "💰 Annual Fees: ₹1.35 Lakh - ₹2.10 Lakh / year",
+            max_width=300
+        ),
+        tooltip="🏫 New Horizon Gurukul (Benchmark Landmark: 12.9348° N, 77.7037° E)",
+        icon=folium.Icon(color="orange", icon="graduation-cap", prefix="fa")
+    ).add_to(m)
+
+    # Render Verified CBSE Schools on Map
+    for cs in load_cbse_schools():
+        if cs.get("id") == "school_nhg":
+            continue  # Already rendered above
+        cs_lat, cs_lng = cs.get("lat"), cs.get("lng")
+        if cs_lat and cs_lng:
+            cs_popup = f"""
+            <div style="font-family: sans-serif; width: 240px;">
+                <h4 style="margin:0; color:#0F172A;">🎓 {cs['name']}</h4>
+                <p style="margin:2px 0; font-size:11px; color:#065F46;"><b>Affiliation:</b> {cs['curriculum']} &nbsp;|&nbsp; ⭐ {cs['rating']}/5</p>
+                <p style="margin:2px 0; font-size:11px; color:#475569;">📍 {cs['address']}</p>
+                <p style="margin:3px 0; font-size:11px; color:#B45309;"><b>Fee Band:</b> {cs['annual_fee_band']}</p>
+                <a href="{cs['website']}" target="_blank" style="font-size:11px; color:#0284C7; font-weight:bold;">Visit Official Portal ↗</a>
+            </div>
+            """
+            folium.Marker(
+                location=[cs_lat, cs_lng],
+                popup=folium.Popup(cs_popup, max_width=260),
+                tooltip=f"🎓 {cs['name']} (CBSE | ⭐ {cs['rating']})",
+                icon=folium.Icon(color="cadetblue", icon="graduation-cap", prefix="fa")
+            ).add_to(m)
 
     # Add Property Pins with Age & Match Score
     for prop in filtered_props:
@@ -1260,6 +1321,7 @@ with tab_purchase:
                 Radar Match Score: {score} / 100
             </p>
             <p style="margin: 3px 0; font-size: 12px;"><b>Rate:</b> ₹{prop['price_per_sqft']:,} / sqft (~₹{prop['total_price_cr']} Cr)</p>
+            <p style="margin: 3px 0; font-size: 11px; color: #64748B;"><b>Location:</b> {prop.get('micro_market', '')}</p>
             <a href="https://www.google.com/maps/search/?api=1&query={prop['lat']},{prop['lng']}" target="_blank" style="font-size: 11px; color: #0D9488; font-weight: bold;">
                 📍 Open in Google Maps ↗
             </a>
@@ -1295,19 +1357,100 @@ with tab_purchase:
                 icon=folium.Icon(color="darkpurple", icon="bookmark", prefix="fa")
             ).add_to(m)
 
+    # Focused Property Highlight & Direct Road Route to NH Gurukul
+    if focused_prop_obj:
+        f_lat = focused_prop_obj.get("lat")
+        f_lng = focused_prop_obj.get("lng")
+        if f_lat and f_lng:
+            # Golden pulsing beacon circle
+            folium.Circle(
+                location=[f_lat, f_lng],
+                radius=260,
+                color="#F59E0B",
+                weight=3,
+                fill=True,
+                fill_color="#F59E0B",
+                fill_opacity=0.35,
+                tooltip=f"🎯 Focused Property: {focused_prop_obj['name']}"
+            ).add_to(m)
+
+            # Prominent Red Bullseye Marker
+            folium.Marker(
+                location=[f_lat, f_lng],
+                popup=folium.Popup(
+                    f"<b>🎯 SELECTED FOCUS PROPERTY</b><br>"
+                    f"<b>{focused_prop_obj['name']}</b><br>"
+                    f"📍 Actual Location: {focused_prop_obj.get('micro_market', '')}<br>"
+                    f"🛰️ Coords: {f_lat:.4f}° N, {f_lng:.4f}° E<br>"
+                    f"🛣️ Road to NH Gurukul: {calculate_road_distance_km(f_lat, f_lng, 12.9348, 77.7037)} km",
+                    max_width=260
+                ),
+                tooltip=f"🎯 Selected Focus: {focused_prop_obj['name']}",
+                icon=folium.Icon(color="red", icon="bullseye", prefix="fa")
+            ).add_to(m)
+
+            # High-contrast golden route connecting Property to New Horizon Gurukul
+            dist_to_nhg = calculate_road_distance_km(f_lat, f_lng, 12.9348, 77.7037)
+            folium.PolyLine(
+                locations=[[f_lat, f_lng], [12.9348, 77.7037]],
+                color="#F59E0B",
+                weight=4,
+                dash_array="6, 8",
+                tooltip=f"🛣️ Road Route to NH Gurukul: {dist_to_nhg} km"
+            ).add_to(m)
+
     # Render Folium Map (Use container width for responsive mobile view)
     map_col, info_col = st.columns([7, 3])
     with map_col:
         map_output = st_folium(m, use_container_width=True, height=450, returned_objects=["last_clicked"])
 
     with info_col:
+        if focused_prop_obj:
+            f_lat = focused_prop_obj.get("lat")
+            f_lng = focused_prop_obj.get("lng")
+            dist_to_nhg = calculate_road_distance_km(f_lat, f_lng, 12.9348, 77.7037)
+            gmaps_dir_url = f"https://www.google.com/maps/dir/?api=1&origin={f_lat},{f_lng}&destination=12.9348,77.7037"
+            gmaps_pin_url = f"https://www.google.com/maps/search/?api=1&query={f_lat},{f_lng}"
+
+            st.markdown(f"""
+            <div style="background: #1E293B; border: 2px solid #F59E0B; border-radius: 8px; padding: 10px; margin-bottom: 10px;">
+                <div style="font-size: 0.74rem; font-weight: 800; color: #F59E0B; text-transform: uppercase;">🎯 Focused Property Comparison</div>
+                <h4 style="margin: 4px 0 2px 0; color: #F8FAFC; font-size: 1.05rem;">{focused_prop_obj['name']}</h4>
+                <div style="font-size: 0.82rem; color: #38BDF8;">📍 <b>Actual Location:</b> {focused_prop_obj.get('micro_market', '')}</div>
+                <div style="font-size: 0.78rem; color: #94A3B8; margin-top: 2px;">🛰️ <code>{f_lat:.4f}° N, {f_lng:.4f}° E</code></div>
+                <div style="margin-top: 6px; background: #0F172A; border-radius: 4px; padding: 6px 8px;">
+                    <div style="font-size: 0.78rem; color: #FDE68A; font-weight: 700;">🏫 Road Distance to NH Gurukul:</div>
+                    <div style="font-size: 1.25rem; font-weight: 800; color: #F59E0B;">{dist_to_nhg} km</div>
+                </div>
+                <div style="display: flex; gap: 4px; margin-top: 8px;">
+                    <a href="{gmaps_dir_url}" target="_blank" style="flex: 1; text-decoration: none;">
+                        <div style="background: #0D9488; color: white; text-align: center; padding: 6px 4px; border-radius: 6px; font-weight: 700; font-size: 0.74rem;">
+                            🚗 Driving Route ↗
+                        </div>
+                    </a>
+                    <a href="{gmaps_pin_url}" target="_blank" style="flex: 1; text-decoration: none;">
+                        <div style="background: #334155; color: #38BDF8; text-align: center; padding: 6px 4px; border-radius: 6px; font-weight: 700; font-size: 0.74rem;">
+                            📍 Exact Pin ↗
+                        </div>
+                    </a>
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+
+            st.markdown("**🎓 Nearby Top CBSE Schools:**")
+            nearby_s = get_nearby_cbse_schools(f_lat, f_lng, top_n=2)
+            for ns in nearby_s:
+                st.markdown(f"- **{ns['name']}**: `{ns['road_distance_km']} km` (⭐ {ns['rating']}/5) — *{ns['annual_fee_band']}*")
+            st.markdown("---")
+
         st.markdown("#### 🗺️ Map Guide & Quick Pins")
         st.markdown(f"**Layer:** `{map_provider}`")
         st.markdown("""
+        - 🏫 **Orange Pin**: New Horizon Gurukul (Exact Benchmark)
+        - 🎓 **Cadet Blue Pins**: Verified CBSE Schools
         - 🟢 **Green Zones / Pins**: Target radar check areas
         - 🔴 **Red Zones / Pins**: Choke points / excluded (-50 pts)
-        - 🟣 **Purple Pins**: Nearby Worth-Considering
-        - 🚇 **Blue Line**: ORR Metro Alignment
+        - 🎯 **Red Bullseye + Gold Ring**: Currently focused property
         - 📍 Tap map or any pin to inspect/interact.
         """)
 
@@ -1401,7 +1544,7 @@ with tab_purchase:
             "Builder & Hierarchy": f"{p['builder']} ({p['builder_tier']})",
             "Date Posted": p.get("formatted_posted_date", f"{p.get('date_posted', '2026-10-02')} (Fresh 🟢)"),
             col4_col_name: f"{road_dist_p} km",
-            "Micro-Market": p["micro_market"],
+            "Actual Map Location": p["micro_market"],
             "Zone": "🟢 Green" if p["zone_type"] == "Green" else "🔴 Red (Choke)",
             "Age (Yrs)": f"{p.get('age_years', 8)} yrs ({p.get('year_built', 2018)})",
             "Resident Rating": f"⭐ {p.get('resident_rating', 4.5)} / 5",
@@ -1823,6 +1966,9 @@ with tab_purchase:
                 st.markdown(f"- **1st Year Annual Maintenance:** ₹{a_maint:,}")
                 st.markdown(f"🏆 **GRAND TOTAL OWNERSHIP COST (TOC):** <b style='color:#38BDF8; font-size:1.2rem;'>₹{total_ownership_cost_cr} Cr (₹{total_ownership_cost:,})</b>", unsafe_allow_html=True)
 
+            # Collapsible Nearby Top CBSE Schools & Class 1-12 Fee Structure
+            st.markdown(render_schools_collapsible_html(prop.get("lat"), prop.get("lng")), unsafe_allow_html=True)
+
             if is_red:
                 st.error(f"🛑 **Bottleneck Penalty Warning:** {prop['traffic_notes']}")
 
@@ -1908,7 +2054,7 @@ with tab_rental:
             "Unit Title": r["unit_title"],
             "Date Posted": r.get("formatted_posted_date", f"{r.get('date_posted', '2026-10-02')} (Fresh 🟢)"),
             col4_col_name: f"{road_dist_r} km",
-            "Micro-Market": r["micro_market"],
+            "Actual Map Location": r["micro_market"],
             "BHK": r["bhk"],
             "Area (sqft)": r["area_sqft"],
             "Age (Yrs)": f"{r.get('age_years', 7)} yrs ({r.get('year_built', 2019)})",
@@ -2282,6 +2428,9 @@ with tab_rental:
             </div>
             """, unsafe_allow_html=True)
 
+            # Collapsible Nearby Top CBSE Schools & Class 1-12 Fee Structure
+            st.markdown(render_schools_collapsible_html(r.get("lat"), r.get("lng")), unsafe_allow_html=True)
+
             st.markdown("---")
 
 # =============================================================
@@ -2443,7 +2592,7 @@ with tab_nearby:
             col4_col_name: f"{road_dist_nb} km",
             "Unified Rank": f"{rank_badge} (Score: {item['unified_score']})",
             "Radar Origin": item["scope_label"],
-            "Micro-Market": item["micro_market"],
+            "Actual Map Location": item["micro_market"],
             "Dist to Core (km)": f"{item['distance_to_bellandur_km']} km",
             "Age (Yrs)": f"{item['age_years']} yrs ({item['year_built']})",
             "Resident Rating": f"⭐ {item['resident_rating']} / 5",
@@ -2568,6 +2717,11 @@ with tab_nearby:
                 </div>
                 """, unsafe_allow_html=True)
 
+            # Collapsible Nearby Top CBSE Schools & Class 1-12 Fee Structure
+            raw_lat = raw_obj.get("lat")
+            raw_lng = raw_obj.get("lng")
+            st.markdown(render_schools_collapsible_html(raw_lat, raw_lng), unsafe_allow_html=True)
+
             st.markdown("---")
 
 # =============================================================
@@ -2606,7 +2760,7 @@ with tab_plots:
             "Developer & Pedigree": f"{pl['builder']} ({pl['builder_tier']})",
             "Date Posted": pl.get("formatted_posted_date", f"{pl.get('date_posted', '2026-10-02')} (Fresh 🟢)"),
             col4_col_name: f"{road_dist_pl} km",
-            "Micro-Market Corridor": pl["micro_market"],
+            "Actual Map Location": pl["micro_market"],
             "Dist to Core (km)": f"{pl['distance_to_bellandur_km']} km",
             "Plot Sizes Available": dims_str,
             "Rate / sqft": f"₹{pl['price_per_sqft']:,}",
@@ -2746,6 +2900,9 @@ with tab_plots:
                         </ul>
                     </div>
                     """, unsafe_allow_html=True)
+
+            # Collapsible Nearby Top CBSE Schools & Class 1-12 Fee Structure
+            st.markdown(render_schools_collapsible_html(pl.get("lat"), pl.get("lng")), unsafe_allow_html=True)
 
             st.markdown("---")
 
@@ -3014,7 +3171,7 @@ with tab_ai_copilot:
             road_dist_ai = calculate_road_distance_km(prop_rec.get("lat"), prop_rec.get("lng"), active_benchmark["lat"], active_benchmark["lng"])
             ai_matrix_rows.append({
                 "Property Name": prop_rec["name"],
-                "Micro-Market": prop_rec["micro_market"],
+                "Actual Map Location": prop_rec["micro_market"],
                 "Date Posted": prop_rec.get("formatted_posted_date", f"{prop_rec.get('date_posted', '2026-10-02')} (Fresh 🟢)"),
                 col4_col_name: f"{road_dist_ai} km",
                 "Composite AI Score": f"{prop_rec['ai_score']} / 100",
@@ -3029,7 +3186,7 @@ with tab_ai_copilot:
             })
 
         df_ai_matrix = pd.DataFrame(ai_matrix_rows)
-        st.caption(f"📌 **Locked 4-Columns Grid by Default**: First 4 columns (*Property Name*, *Micro-Market*, *Date Posted*, and *{col4_col_name}*) remain permanently pinned on the left as you scroll horizontally across all AI scores.")
+        st.caption(f"📌 **Locked 4-Columns Grid by Default**: First 4 columns (*Property Name*, *Actual Map Location*, *Date Posted*, and *{col4_col_name}*) remain permanently pinned on the left as you scroll horizontally across all AI scores.")
         render_sticky_frozen_table(df_ai_matrix, frozen_cols=4, table_id="ai_matrix_sticky_table", max_height="480px")
 
         st.markdown("---")

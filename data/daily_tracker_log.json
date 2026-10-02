@@ -1,6 +1,6 @@
 {
-  "status": "MANUAL_FORCE_RECORDED",
-  "last_run_utc": "2026-10-02 18:05:34 UTC",
+  "status": "UPDATED_ON_PARAMETER_CHANGE",
+  "last_run_utc": "2026-10-02 18:24:17 UTC",
   "scheduled_time_ist": "5:00 PM IST",
   "date_recorded": "2026-10-02",
   "all_purchase_saved": 10,
@@ -8,9 +8,9 @@
   "top_10_purchase_saved": 10,
   "top_5_rental_saved": 5,
   "audit_sources_verified": 16,
-  "changes_detected_count": 0,
+  "changes_detected_count": 2,
   "bellandur_core_psqft": 14133,
   "green_glen_layout_psqft": 13200,
-  "kadubeesanahalli_gurukul_psqft": 14500,
+  "kadubeesanahalli_gurukul_psqft": 11500,
   "panathur_road_choke_psqft": 7350
 }

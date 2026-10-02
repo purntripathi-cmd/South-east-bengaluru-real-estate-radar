@@ -1,0 +1,200 @@
+[
+  {
+    "id": "school_nhg",
+    "name": "New Horizon Gurukul",
+    "curriculum": "CBSE",
+    "rating": 4.6,
+    "review_count": "1,420+ Parent Reviews",
+    "lat": 12.9348,
+    "lng": 77.7037,
+    "area": "Kadubeesanahalli / Panathur Main Road",
+    "address": "Ring Road, Panathur Main Road, Behind NHCE, Kaverappa Layout, Kadubeesanahalli, Bengaluru - 560103",
+    "annual_fee_band": "₹1.35 Lakh - ₹2.10 Lakh / annum",
+    "fee_breakdown": {
+      "Primary (Class 1st - 5th)": "₹1,35,000 - ₹1,55,000 / year",
+      "Middle School (Class 6th - 8th)": "₹1,50,000 - ₹1,70,000 / year",
+      "Secondary (Class 9th - 10th)": "₹1,65,000 - ₹1,85,000 / year",
+      "Sr. Secondary (Class 11th - 12th)": "₹1,80,000 - ₹2,10,000 / year"
+    },
+    "admission_fee_onetime": "₹35,000 - ₹50,000",
+    "bus_transport_annual": "₹38,000 - ₹52,000 (Based on distance slab)",
+    "highlights": "Top tier CBSE academic track record, Bhagavad Gita & values integration, sports arena, robotics & AI lab.",
+    "website": "https://newhorizongurukul.in"
+  },
+  {
+    "id": "school_dps_east",
+    "name": "Delhi Public School (DPS) Bangalore East",
+    "curriculum": "CBSE",
+    "rating": 4.7,
+    "review_count": "2,180+ Parent Reviews",
+    "lat": 12.8876,
+    "lng": 77.7291,
+    "area": "Dommasandra / Sarjapur Road",
+    "address": "Survey No 43/1B & 45, Sulikunte Village, Dommasandra Post, Sarjapur Road, Bengaluru - 562125",
+    "annual_fee_band": "₹1.40 Lakh - ₹2.25 Lakh / annum",
+    "fee_breakdown": {
+      "Primary (Class 1st - 5th)": "₹1,40,000 - ₹1,65,000 / year",
+      "Middle School (Class 6th - 8th)": "₹1,60,000 - ₹1,80,000 / year",
+      "Secondary (Class 9th - 10th)": "₹1,75,000 - ₹1,95,000 / year",
+      "Sr. Secondary (Class 11th - 12th)": "₹1,90,000 - ₹2,25,000 / year"
+    },
+    "admission_fee_onetime": "₹50,000 - ₹65,000",
+    "bus_transport_annual": "₹42,000 - ₹58,000",
+    "highlights": "Premier DPS society institution, expansive 20-acre sports infrastructure, Olympic swimming, high board exam percentiles.",
+    "website": "https://east.dpsbangalore.edu.in"
+  },
+  {
+    "id": "school_gear",
+    "name": "GEAR Innovative International School",
+    "curriculum": "CBSE / International",
+    "rating": 4.5,
+    "review_count": "960+ Parent Reviews",
+    "lat": 12.9150,
+    "lng": 77.6890,
+    "area": "Doddakannelli / Bellandur Outer Ring Road",
+    "address": "175, Outer Ring Road, Doddakannelli, Bellandur, Bengaluru - 560035",
+    "annual_fee_band": "₹1.50 Lakh - ₹2.40 Lakh / annum",
+    "fee_breakdown": {
+      "Primary (Class 1st - 5th)": "₹1,50,000 - ₹1,75,000 / year",
+      "Middle School (Class 6th - 8th)": "₹1,70,000 - ₹1,95,000 / year",
+      "Secondary (Class 9th - 10th)": "₹1,85,000 - ₹2,15,000 / year",
+      "Sr. Secondary (Class 11th - 12th)": "₹2,05,000 - ₹2,40,000 / year"
+    },
+    "admission_fee_onetime": "₹40,000 - ₹60,000",
+    "bus_transport_annual": "₹36,000 - ₹50,000",
+    "highlights": "Howard Gardner Multiple Intelligence framework, lush green eco-campus, walking proximity to Bellandur residential societies.",
+    "website": "https://gear.ac.in"
+  },
+  {
+    "id": "school_nps_hsr",
+    "name": "National Public School (NPS) HSR Layout",
+    "curriculum": "CBSE",
+    "rating": 4.8,
+    "review_count": "1,850+ Parent Reviews",
+    "lat": 12.9065,
+    "lng": 77.6520,
+    "area": "HSR Layout Sector 4 (Close to Bellandur & Kudlu)",
+    "address": "17th Cross, 19th Main, Sector 4, HSR Layout, Bengaluru - 560102",
+    "annual_fee_band": "₹1.60 Lakh - ₹2.55 Lakh / annum",
+    "fee_breakdown": {
+      "Primary (Class 1st - 5th)": "₹1,60,000 - ₹1,85,000 / year",
+      "Middle School (Class 6th - 8th)": "₹1,75,000 - ₹2,05,000 / year",
+      "Secondary (Class 9th - 10th)": "₹1,95,000 - ₹2,25,000 / year",
+      "Sr. Secondary (Class 11th - 12th)": "₹2,15,000 - ₹2,55,000 / year"
+    },
+    "admission_fee_onetime": "₹60,000 - ₹75,000",
+    "bus_transport_annual": "₹40,000 - ₹55,000",
+    "highlights": "Benchmark academic rigor in Karnataka, highest IIT-JEE & NEET conversion ratios, structured disciplined learning.",
+    "website": "https://npshsr.com"
+  },
+  {
+    "id": "school_vibgyor",
+    "name": "Vibgyor High School (Kadubeesanahalli / Marathahalli)",
+    "curriculum": "CBSE / ICSE",
+    "rating": 4.4,
+    "review_count": "1,120+ Parent Reviews",
+    "lat": 12.9360,
+    "lng": 77.6975,
+    "area": "Kadubeesanahalli (Behind Cessna Business Park)",
+    "address": "Survey No. 58/1, Behind Cessna Tech Park, Kadubeesanahalli, Bengaluru - 560103",
+    "annual_fee_band": "₹1.45 Lakh - ₹2.35 Lakh / annum",
+    "fee_breakdown": {
+      "Primary (Class 1st - 5th)": "₹1,45,000 - ₹1,70,000 / year",
+      "Middle School (Class 6th - 8th)": "₹1,65,000 - ₹1,90,000 / year",
+      "Secondary (Class 9th - 10th)": "₹1,80,000 - ₹2,10,000 / year",
+      "Sr. Secondary (Class 11th - 12th)": "₹2,00,000 - ₹2,35,000 / year"
+    },
+    "admission_fee_onetime": "₹45,000 - ₹55,000",
+    "bus_transport_annual": "₹38,000 - ₹54,000",
+    "highlights": "Low student-to-teacher ratio (1:12), swimming, basketball, arts & drama integrated into regular school hours.",
+    "website": "https://vibgyorhigh.com"
+  },
+  {
+    "id": "school_orchids",
+    "name": "Orchids The International School (Haralur / Bellandur)",
+    "curriculum": "CBSE",
+    "rating": 4.3,
+    "review_count": "890+ Parent Reviews",
+    "lat": 12.9180,
+    "lng": 77.6710,
+    "area": "Haralur Road / Off Sarjapur Road",
+    "address": "Survey No. 24, Haralur Road, Off Sarjapur Road, Bellandur Sub-corridor, Bengaluru - 560102",
+    "annual_fee_band": "₹1.15 Lakh - ₹1.85 Lakh / annum",
+    "fee_breakdown": {
+      "Primary (Class 1st - 5th)": "₹1,15,000 - ₹1,35,000 / year",
+      "Middle School (Class 6th - 8th)": "₹1,30,000 - ₹1,50,000 / year",
+      "Secondary (Class 9th - 10th)": "₹1,45,000 - ₹1,68,000 / year",
+      "Sr. Secondary (Class 11th - 12th)": "₹1,60,000 - ₹1,85,000 / year"
+    },
+    "admission_fee_onetime": "₹30,000 - ₹45,000",
+    "bus_transport_annual": "₹32,000 - ₹46,000",
+    "highlights": "Smart digital classrooms, astronomy & robotics labs, convenient bus routes across Green Glen Layout and Bellandur.",
+    "website": "https://orchidsinternationalschool.com"
+  },
+  {
+    "id": "school_christ_academy",
+    "name": "Christ Academy CBSE School (Begur Corridor)",
+    "curriculum": "CBSE",
+    "rating": 4.7,
+    "review_count": "2,450+ Parent Reviews",
+    "lat": 12.8590,
+    "lng": 77.6250,
+    "area": "Begur - Koppa Road (Near Begur Lake)",
+    "address": "Christ Academy Campus, Hullahalli, Begur - Koppa Road, South Bengaluru - 560083",
+    "annual_fee_band": "₹0.95 Lakh - ₹1.50 Lakh / annum",
+    "fee_breakdown": {
+      "Primary (Class 1st - 5th)": "₹95,000 - ₹1,15,000 / year",
+      "Middle School (Class 6th - 8th)": "₹1,10,000 - ₹1,25,000 / year",
+      "Secondary (Class 9th - 10th)": "₹1,20,000 - ₹1,35,000 / year",
+      "Sr. Secondary (Class 11th - 12th)": "₹1,30,000 - ₹1,50,000 / year"
+    },
+    "admission_fee_onetime": "₹30,000 - ₹40,000",
+    "bus_transport_annual": "₹28,000 - ₹42,000",
+    "highlights": "Vast 35-acre sprawling campus, premier Catholic management discipline, state-of-the-art sports complex, top CBSE choice for Begur residents.",
+    "website": "https://christacademy.in"
+  },
+  {
+    "id": "school_st_francis",
+    "name": "St. Francis School (Begur Road / Hongasandra)",
+    "curriculum": "CBSE / ICSE",
+    "rating": 4.5,
+    "review_count": "1,310+ Parent Reviews",
+    "lat": 12.8820,
+    "lng": 77.6310,
+    "area": "Begur Main Road / Hongasandra",
+    "address": "Begur Main Road, Hongasandra, Begur Hobli, Bengaluru - 560068",
+    "annual_fee_band": "₹0.85 Lakh - ₹1.40 Lakh / annum",
+    "fee_breakdown": {
+      "Primary (Class 1st - 5th)": "₹85,000 - ₹1,05,000 / year",
+      "Middle School (Class 6th - 8th)": "₹98,000 - ₹1,15,000 / year",
+      "Secondary (Class 9th - 10th)": "₹1,10,000 - ₹1,25,000 / year",
+      "Sr. Secondary (Class 11th - 12th)": "₹1,20,000 - ₹1,40,000 / year"
+    },
+    "admission_fee_onetime": "₹25,000 - ₹35,000",
+    "bus_transport_annual": "₹26,000 - ₹38,000",
+    "highlights": "High academic discipline, established 30+ year legacy, economical fee structure, walkable for Begur-Kudlu community.",
+    "website": "https://stfrancisschoolbangalore.com"
+  },
+  {
+    "id": "school_inventure",
+    "name": "Inventure Academy & Green Acres",
+    "curriculum": "CBSE / IGCSE / ICSE",
+    "rating": 4.8,
+    "review_count": "1,150+ Parent Reviews",
+    "lat": 12.8980,
+    "lng": 77.7490,
+    "area": "Sarjapur - Varthur Road",
+    "address": "Whitefield - Sarjapur Road, Chikkavaderapura, Bengaluru - 562125",
+    "annual_fee_band": "₹1.85 Lakh - ₹3.30 Lakh / annum",
+    "fee_breakdown": {
+      "Primary (Class 1st - 5th)": "₹1,85,000 - ₹2,20,000 / year",
+      "Middle School (Class 6th - 8th)": "₹2,15,000 - ₹2,55,000 / year",
+      "Secondary (Class 9th - 10th)": "₹2,40,000 - ₹2,85,000 / year",
+      "Sr. Secondary (Class 11th - 12th)": "₹2,75,000 - ₹3,30,000 / year"
+    },
+    "admission_fee_onetime": "₹75,000 - ₹1,00,000",
+    "bus_transport_annual": "₹45,000 - ₹62,000",
+    "highlights": "Ranked among Top 3 Co-ed Day Schools in India, exceptional sports & creative arts, maker spaces and entrepreneurship modules.",
+    "website": "https://inventureacademy.com"
+  }
+]

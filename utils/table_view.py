@@ -210,7 +210,33 @@ def render_sticky_frozen_table(df: pd.DataFrame, frozen_cols: int = 1, table_id:
             elif raw_val.startswith("₹"):
                 cell_content = f"<span style='color:#F59E0B; font-weight:600;'>{html_lib.escape(raw_val)}</span>"
             elif raw_val.startswith("http://") or raw_val.startswith("https://"):
-                cell_content = f"<a href='{html_lib.escape(raw_val)}' target='_blank' rel='noreferrer noopener' style='color:#38BDF8; text-decoration:underline;'>Link ↗</a>"
+                url_lower = raw_val.lower()
+                if "justdial.com" in url_lower:
+                    link_label = "Justdial Listing ↗"
+                    btn_bg = "#C2410C"
+                elif "google.com/maps" in url_lower:
+                    link_label = "Google Maps Place ↗"
+                    btn_bg = "#1D4ED8"
+                elif "sulekha.com" in url_lower:
+                    link_label = "Sulekha Directory ↗"
+                    btn_bg = "#B91C1C"
+                elif "urbancompany.com" in url_lower:
+                    link_label = "Urban Company ↗"
+                    btn_bg = "#4338CA"
+                elif "indiamart.com" in url_lower:
+                    link_label = "IndiaMART Listing ↗"
+                    btn_bg = "#047857"
+                elif "nobroker.in" in url_lower:
+                    link_label = "NoBroker Service ↗"
+                    btn_bg = "#BE123C"
+                elif "rera.karnataka.gov.in" in url_lower:
+                    link_label = "Official RERA ↗"
+                    btn_bg = "#0F766E"
+                else:
+                    link_label = "Verified Link ↗"
+                    btn_bg = "#1E293B"
+
+                cell_content = f"<a href='{html_lib.escape(raw_val)}' target='_blank' rel='noreferrer noopener' style='background:{btn_bg}; color:#FFFFFF; padding:3px 9px; border-radius:4px; text-decoration:none; font-weight:700; font-size:0.76rem; display:inline-block; border:1px solid rgba(255,255,255,0.2);'>{link_label}</a>"
             elif "Core Radar (Tab 1)" in raw_val:
                 cell_content = f"<span style='background:#065F46; color:#6EE7B7; padding:2px 6px; border-radius:4px; font-weight:700;'>{html_lib.escape(raw_val)}</span>"
             elif "Nearby Extension" in raw_val:

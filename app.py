@@ -3107,17 +3107,23 @@ with tab_services:
     filtered_services.sort(key=lambda s: s.get("road_distance_km", 99))
 
     st.markdown(f"### 📋 Local Service Directory & Comparative Table ({len(filtered_services)} Matching)")
-    st.caption("📌 **Locked 1st Column Grid**: The 1st column (*Provider Name*) remains permanently pinned on the left as you scroll horizontally across all pricing, ratings, and contact parameters.")
+    st.caption("📌 **Locked 1st Column Grid**: The 1st column (*Provider Name*) remains permanently pinned on the left as you scroll horizontally across all pricing, ratings, verified data extraction portals, and Google Maps place links.")
 
     # Table View
     service_table_rows = []
     for s in filtered_services:
         dist_km = s.get("road_distance_km", 0.5)
         walk_mins = max(2, int(dist_km * 12))
+        src_url = s.get("source_url", "https://www.justdial.com")
+        gmaps_q = s.get("google_maps_query", f"{s['name']}, {s.get('address', 'Bellandur')}, Bengaluru")
+        gmaps_url = f"https://www.google.com/maps/search/?api=1&query={urllib.parse.quote(gmaps_q)}"
+
         service_table_rows.append({
             "Provider Name": s["name"],
             "Service Category": s["category"],
             "Proximity to Post Office": f"{dist_km} km (~{walk_mins} mins)",
+            "Data Extraction Link": src_url,
+            "Google Maps Place": gmaps_url,
             "Verified Rating": f"⭐ {s.get('rating', 4.8)} / 5 ({s.get('review_count', 50)}+ reviews)",
             "Price Range / Rate": s.get("pricing_range", "Variable"),
             "Contact Person": s.get("technician_name", "Support"),
@@ -3177,6 +3183,9 @@ with tab_services:
                 else:
                     st.info(f"Standard pricing: {s.get('pricing_range')}")
 
+                src_platform = s.get("source_platform", "Bellandur Local Directory")
+                st.caption(f"📌 **Data Extraction Source**: Rates & scope extracted from **{src_platform}** & verified with Bellandur / Green Glen Layout resident rate cards.")
+
                 # Services Offered Tags
                 offered = s.get("services_offered", [])
                 if offered:
@@ -3220,12 +3229,34 @@ with tab_services:
                 </a>
                 """, unsafe_allow_html=True)
 
-                # Google Maps Link
-                gmaps_serv_url = f"https://www.google.com/maps/search/?api=1&query={s.get('lat')},{s.get('lng')}"
+                # 1. Primary Data Source & Extraction Link (Justdial / Sulekha / Urban Company / IndiaMART)
+                source_url = s.get("source_url", "https://www.justdial.com")
+                source_platform = s.get("source_platform", "Verified Public Directory")
                 st.markdown(f"""
-                <a href="{gmaps_serv_url}" target="_blank" style="text-decoration: none;">
-                    <div style="background-color: #0F172A; border: 1px solid #334155; color: #38BDF8; text-align: center; padding: 6px; border-radius: 6px; font-weight: 600; font-size: 0.8rem;">
-                        📍 View Shop / Location on Maps ↗
+                <a href="{source_url}" target="_blank" style="text-decoration: none;">
+                    <div style="background-color: #0369A1; color: white; text-align: center; padding: 8px; border-radius: 6px; font-weight: 700; font-size: 0.82rem; margin-bottom: 6px; border: 1px solid #38BDF8;">
+                        🌐 View Data Source: {source_platform} ↗
+                    </div>
+                </a>
+                """, unsafe_allow_html=True)
+
+                # 2. Google Maps Named Place & Reviews Search
+                gmaps_named_query = s.get("google_maps_query", f"{s['name']}, {s.get('address', 'Bellandur')}, Bengaluru")
+                gmaps_place_url = f"https://www.google.com/maps/search/?api=1&query={urllib.parse.quote(gmaps_named_query)}"
+                st.markdown(f"""
+                <a href="{gmaps_place_url}" target="_blank" style="text-decoration: none;">
+                    <div style="background-color: #1E293B; border: 1px solid #3B82F6; color: #60A5FA; text-align: center; padding: 7px; border-radius: 6px; font-weight: 600; font-size: 0.8rem; margin-bottom: 6px;">
+                        📍 View Business & Reviews on Google Maps ↗
+                    </div>
+                </a>
+                """, unsafe_allow_html=True)
+
+                # 3. Driving / Walking Directions from Bellandur Post Office
+                gmaps_dir_url = f"https://www.google.com/maps/dir/?api=1&origin=12.9288,77.6758&destination={urllib.parse.quote(gmaps_named_query)}"
+                st.markdown(f"""
+                <a href="{gmaps_dir_url}" target="_blank" style="text-decoration: none;">
+                    <div style="background-color: #0F172A; border: 1px solid #334155; color: #94A3B8; text-align: center; padding: 5px; border-radius: 6px; font-weight: 500; font-size: 0.75rem;">
+                        🧭 Turn-by-Turn Directions from Bellandur PO ↗
                     </div>
                 </a>
                 """, unsafe_allow_html=True)

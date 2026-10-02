@@ -1,46 +1,47 @@
 # 🧭 East Bengaluru Real Estate Radar & Rental Discovery Platform
 
 [![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://share.streamlit.io)
-[![Daily Price & Rental Tracker](https://github.com/purntripathi-cmd/South-east-bengaluru-real-estate-radar/actions/workflows/daily_tracker.yml/badge.svg)](https://github.com/purntripathi-cmd/South-east-bengaluru-real-estate-radar/actions/workflows/daily_tracker.yml)
+[![Daily 5 PM IST Radar Tracker](https://github.com/purntripathi-cmd/South-east-bengaluru-real-estate-radar/actions/workflows/daily_tracker.yml/badge.svg)](https://github.com/purntripathi-cmd/South-east-bengaluru-real-estate-radar/actions/workflows/daily_tracker.yml)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-> **Precision Real Estate & Rental Intelligence System** for the East Bengaluru Outer Ring Road (ORR) corridor: **Bellandur Core**, **Green Glen Layout**, and **Kadubeesanahalli strictly up to New Horizon Gurukul**. Enforces algorithmic traffic geofencing, filters out chronic bottlenecks (Panathur), scores builder pedigree, tracks multi-year capital appreciation, and delivers direct-from-owner rental discovery with multi-platform price arbitrage.
+> **Precision Real Estate & Rental Intelligence System** for the East Bengaluru Outer Ring Road (ORR) corridor: **Bellandur Core**, **Green Glen Layout**, and **Kadubeesanahalli strictly up to New Horizon Gurukul**. Enforces algorithmic traffic geofencing, filters chronic bottlenecks (Panathur), scores builder pedigree, tracks multi-year capital appreciation, evaluates property age, computes Total Cost of Ownership (TOC) & upfront down payments, and records daily Top 10 Purchase & Top 5 Rental CSVs at **5:00 PM IST**.
 
 ---
 
 ## 📑 Table of Contents
 1. [Executive Summary & Project Architecture](#1-executive-summary--project-architecture)
 2. [Micro-Market Zoning & Traffic Constraint Rules](#2-micro-market-zoning--traffic-constraint-rules)
-3. [Core Parameter Matrix & Weighted Scoring Engine](#3-core-parameter-matrix--weighted-scoring-engine)
-4. [Builder Pedigree Hierarchy](#4-builder-pedigree-hierarchy)
-5. [Quality & Land Title Verification Checklist (4 Pillars)](#5-quality--land-title-verification-checklist-4-pillars)
-6. [Interactive Map UI & Geofencing Specification](#6-interactive-map-ui--geofencing-specification)
+3. [Property Age & Structural Longevity Metrics](#3-property-age--structural-longevity-metrics)
+4. [Financial Engine: Total Maintenance, Advance Cash & Total Ownership Cost (TOC)](#4-financial-engine-total-maintenance-advance-cash--total-ownership-cost-toc)
+5. [Interactive Map UI & Google Maps Integration](#5-interactive-map-ui--google-maps-integration)
+6. [Mobile-First Responsive Design](#6-mobile-first-responsive-design)
 7. [Rental House Discovery Radar (Tab 2)](#7-rental-house-discovery-radar-tab-2)
-8. [Automated Daily Tracker Architecture (GitHub Actions)](#8-automated-daily-tracker-architecture-github-actions)
-9. [Repository Structure](#9-repository-structure)
+8. [Automated Daily Tracker at 5:00 PM IST (Top 10 Purchase & Top 5 Rental CSVs)](#8-automated-daily-tracker-at-500-pm-ist)
+9. [Builder Pedigree Hierarchy & Due Diligence Checklist](#9-builder-pedigree-hierarchy--due-diligence-checklist)
 10. [Local Quickstart & Streamlit Cloud Deployment](#10-local-quickstart--streamlit-cloud-deployment)
 
 ---
 
 ## 1. Executive Summary & Project Architecture
 
-The **East Bengaluru Real Estate Radar** is a production-grade Streamlit application engineered to eliminate emotion and speculation from home acquisition and renting in Bengaluru's primary tech corridor (ORR).
+The **East Bengaluru Real Estate Radar** is a production-grade Streamlit application engineered to eliminate emotion and speculation from home buying and renting in Bengaluru's primary tech corridor (Outer Ring Road).
 
 ```mermaid
 flowchart TD
     A["Raw Property & Rental Data"] --> B["Micro-Market Geofencing Engine"]
     B --> C{"Zone Check"}
     C -->|Green Zone: Bellandur, Green Glen, Gurukul| D["Multi-Criteria Scoring Engine"]
-    C -->|Red Zone: Panathur Corridor / Underpass| E["Apply -50 Pts Choke Penalty / Exclusion"]
-    D --> F["Dynamic Match Score (0 - 100)"]
+    C -->|Red Zone: Panathur Corridor / Underpass| E["Apply -50 Pts Choke Penalty"]
+    D --> F["Match Score (0-100) + Age + TOC Engine"]
     E --> F
-    F --> G["Interactive Folium Map & UI"]
-    F --> H["Tab 1: Purchase & Investment Radar"]
-    F --> I["Tab 2: Rental Discovery & Price Arbitrage"]
-    J["Daily GitHub Actions Cron (06:00 UTC)"] --> K["scripts/daily_tracker.py"]
-    K --> L["Append data/historical_prices.csv"]
-    L --> M["Tab 3: Micro-Market Trend Charts"]
+    F --> G["Mobile-First Interactive Folium / Google Map UI"]
+    F --> H["Tab 1: Purchase & Upfront Cash Breakdown"]
+    F --> I["Tab 2: Rental Discovery & Arbitrage"]
+    J["Daily Cron at 5:00 PM IST (11:30 UTC)"] --> K["scripts/daily_tracker.py"]
+    K --> L["Export data/top_10_purchase_daily.csv"]
+    K --> M["Export data/top_5_rental_daily.csv"]
+    K --> N["Append data/historical_prices.csv"]
 ```
 
 ---
@@ -50,178 +51,141 @@ flowchart TD
 The application enforces strict geographic zoning boundaries to eliminate properties trapped behind chronic congestion bottlenecks:
 
 ### 🟢 Allowed 'Green' Zones
-* **Bellandur Core Grid**: Established residential core with wide 60ft/40ft egress corridors onto the Outer Ring Road. High rental velocity and walking access to the upcoming Blue Line Metro station.
-* **Green Glen Layout**: Highly structured, tree-lined internal grid layout. Features multiple ingress/egress routes to ORR, walking distance to RMZ Ecospace, and high elevation ridge safety.
-* **Kadubeesanahalli (Gurukul Corridor)**: Strictly bounded to the **NCC Nagarjuna Green Woods side up to New Horizon Gurukul**. Directly accessible from the ORR service road without entering Panathur Road.
+* **Bellandur Core Grid**: Wide arterial access onto Outer Ring Road, high rental velocity, walking access to upcoming Blue Line metro.
+* **Green Glen Layout**: Highly structured internal grid layout, walking distance to RMZ Ecospace, elevated drainage ridge.
+* **Kadubeesanahalli (Gurukul Side)**: Strictly bounded to the **NCC Nagarjuna Green Woods side up to New Horizon Gurukul**, directly accessible from ORR without crossing Panathur Road.
 
 ### 🔴 Strictly Blacklisted 'Red' Zones
 * **Panathur Main Road Choke Corridor**: Unregulated narrow 20ft road carrying 50x designed density.
 * **Panathur Railway Underpass & S-Curve**: Chronic single-lane bottleneck subject to extreme monsoon flooding and 45–75 minute delays for a 2km stretch.
 * **Panathur Post Office Junction**: Commercial choke point with no bypass options.
-* **Penalty Enforcement**: Any property whose daily transit routes through these choke points triggers an **instant -50 points penalty** or automated disqualification.
+* **Penalty Enforcement**: Any property routing through these choke points triggers an automatic **-50 points penalty** or disqualification.
 
 ---
 
-## 3. Core Parameter Matrix & Weighted Scoring Engine
+## 3. Property Age & Structural Longevity Metrics
 
-The engine computes a dynamic **Match Score ($0 - 100$)** using a weighted sum formula:
-
-$$\text{Match Score} = \max\left(0, \min\left(100, \sum_{i=1}^{7} w_i \cdot s_i + \text{Penalties}\right)\right)$$
-
-| Parameter Category | Focus & Metric | Scoring Logic | Default Weight |
-|---|---|---|---|
-| **Metro Proximity** | Distance to Bellandur / Kadubeesanahalli Blue Line Metro | $< 1\text{ km} = 100\%$, $1-2\text{ km} = 75\%$, $2-3\text{ km} = 50\%$, $> 3\text{ km} = 30\%$ | **15%** |
-| **Traffic & Route Integrity** | Absence of bottlenecks (Zero Panathur dependency) | Zero Panathur route = $100\%$. Panathur route = **-50 pts penalty** | **20%** |
-| **Exact Distances** | Travel time & distance to Office, School, Airport, Hospitals, Malls | Congestion-weighted decay curve across anchors | **15%** |
-| **Builder Pedigree** | Developer classification & institutional liquidity | Tier 1 Top 10 = $100\%$, Tier 2 = $80\%$, Local = $20\%$ | **15%** |
-| **Water Logging & Drainage** | Elevation (MASL), lake buffer elevation, storm drains | Elevation bonus ($\ge 895\text{m}$), French drain infrastructure | **10%** |
-| **Financials & Appreciation** | Price/sqft, historical YoY appreciation trend, rental yield | $> 12\%$ YoY growth = $100\%$, Yield ($3.5\% - 4.5\%$) | **15%** |
-| **Land Title & Gated Tech** | Legal title compliance & construction technology | A-Khata BBMP ($50\text{ pts}$), RERA ($30\text{ pts}$), Mivan Formwork ($20\text{ pts}$) | **10%** |
+Both purchase and rental inventories feature prominent **Property Age Indicators**:
+* **Age in Years**: Calculated dynamically against the year of construction (`year_built`).
+* **Categorization**:
+  * 🆕 **Brand New (0–3 Years)**: Highest energy efficiency, modern Mivan monolithic casting, zero maintenance backlog.
+  * 💎 **Prime Modern (4–7 Years)**: Settled society governance, active Cauvery water connections, mature landscape.
+  * 🏛️ **Mature Gated (8–12 Years)**: Established resident association, proven flood resistance during Bengaluru monsoons.
+  * ⚠️ **Older (12+ Years)**: Potential plumbing and lift retrofitting requirements.
+* **Interactive Filter**: Filter inventory by age category directly from the UI.
 
 ---
 
-## 4. Builder Pedigree Hierarchy
+## 4. Financial Engine: Total Maintenance, Advance Cash & Total Ownership Cost (TOC)
 
-Properties are evaluated against a rigorous developer hierarchy to protect capital appreciation and structural longevity:
+Buying a property in Bengaluru involves significant legal, statutory, and society charges beyond the base agreement value. The application calculates the complete financial footprint:
 
-### 🏆 Primary Choices (Top 10 Tier 1 Developers)
-1. **Sobha Limited** — German precision engineering, in-house precast factory, flawless title history.
-2. **Prestige Group** — Largest listed developer in South India, institutional asset maintenance.
-3. **Brigade Group** — World Trade Center & Orion Mall developer, punctual project completion.
-4. **Total Environment Building Systems** — Bespoke craftsmanship, earth-sheltered green roofs, terracotta brick.
-5. **Godrej Properties** — Transparent governance, publicly listed, strict RERA escrow discipline.
-6. **Embassy Group** — Institutional commercial & residential powerhouse, Embassy REIT sponsor.
-7. **Puravankara Limited** — 45+ years track record, world-class precast engineering.
-8. **Assetz Property Group** — Contemporary architectural design, Singaporean equity backing, high green cover.
-9. **Century Real Estate** — Substantial land bank owner, master-planned residential enclaves.
-10. **Salarpuria Sattva Group** — Premier ORR commercial park and residential developer.
+### 1. Total Maintenance Outflow
+* **Purchase**: Monthly maintenance per sqft (e.g. ₹4.5/sqft/mo $\times$ 1,950 sqft = **₹8,775/mo** $\rightarrow$ **₹1,05,300/year**).
+* **Rental**: Monthly rent + monthly maintenance = **Total Monthly Outflow** (e.g. ₹68,000 rent + ₹5,500 maintenance = **₹73,500/mo**).
 
-### 🥈 Secondary Choices (Tier 2 Renowned Developers)
-* **Sumadhura Infracon**
-* **Rohan Builders** (Famous for *Plus Home* zero common walls in Green Glen Layout)
-* **Arvind SmartSpaces** (Lalbhai Group)
-* **Vajram Group**
-* **Shriram Properties**
-* **NCC Urban** (e.g., Nagarjuna Green Woods)
+### 2. Upfront Advance & Down Payment Required
+* **20% Home Loan Down Payment**: Paid in cash from personal funds.
+* **Karnataka Stamp Duty (5.6%)**: Urban stamp duty (5.0%) + BBMP surcharge/cess (0.6%). Required 100% upfront before registration.
+* **Government Registration Fee (1.0%)**: Required upfront in cash/bank transfer.
+* **Legal Advocate Title Vetting & BBMP e-Aasthi Khata Transfer**: ~₹60,000.
+* **Society Sinking / Corpus Fund**: ₹1.5 Lakhs – ₹3.5 Lakhs paid upfront to Association.
+* **Total Upfront Cash Required**:
+  $$\text{Upfront Cash} = 20\%\text{ Down Payment} + \text{Stamp Duty (5.6\%)} + \text{Registration (1.0\%)} + \text{Legal/Khata} + \text{Corpus Fund}$$
+
+### 3. Grand Total Cost of Ownership (TOC)
+$$\text{TOC} = \text{Base Price} + \text{Registration (6.6\%)} + \text{Legal \& Khata} + \text{Corpus Fund} + \text{Interiors (₹15L-₹35L)} + \text{1st Year Maintenance}$$
 
 ---
 
-## 5. Quality & Land Title Verification Checklist (4 Pillars)
+## 5. Interactive Map UI & Google Maps Integration
 
-Every property undergoes a 4-pillar verification audit before shortlisting:
+### ❓ Why was the map blank before?
+1. Default Leaflet / CartoDB tiles (`cartocdn.com`) are frequently blocked by Indian ISP firewalls, enterprise VPNs, or browser adblockers (Brave Shields, uBlock Origin).
+2. Fixed iframe pixel widths can collapse to 0px on certain mobile viewports.
 
-1. **A-Khata & Legal Title**: Must hold verified BBMP/BDA A-Khata. Transitional B-Khata and panchayat approvals are strictly flagged as high legal risks.
-2. **Karnataka RERA Compliance**: Verification on [rera.karnataka.gov.in](https://rera.karnataka.gov.in) for active registration, litigation history, and delay records.
-3. **Dual Water Source Assurance**: Active BWSSB Cauvery piped water supply + licensed high-yield borewells + dual-piping Sewage Treatment Plant (STP).
-4. **Rajakaluve Setback Safety**: Strict verification confirming zero infringement on 30m primary or 15m secondary storm-water drain buffers.
+### 💡 How Google Maps is Integrated:
+1. **Google Maps Tile Layers (Zero API Key Required)**:
+   The application now includes native Google Maps CDN tile layers:
+   * **Google Maps (Roadmap)**: High-contrast arterial roads and landmark names.
+   * **Google Maps (Satellite / Hybrid)**: High-resolution satellite imagery with overlaid street labels.
+   * **Google Maps (Terrain)**: Topographical elevation and drainage slopes.
+   These tiles load directly from Google's high-speed servers (`mt1.google.com`) without any API keys or quota limits!
+2. **Optional Google Cloud API Key**:
+   If you have a Google Cloud Maps API Key, you can input it in the sidebar for Google Places and Geocoding APIs.
+3. **1-Click Google Maps Deep Links**:
+   Every property and rental card includes a **"📍 Open Exact Pin in Google Maps ↗"** button that opens directly in your Google Maps mobile app with coordinates!
 
 ---
 
-## 6. Interactive Map UI & Geofencing Specification
+## 6. Mobile-First Responsive Design
 
-The UI features an interactive **Folium (`streamlit-folium`)** mapping component:
-* **Visual Zoning Boundaries**: Allowed Green Zones (Bellandur Core, Green Glen, Kadubeesanahalli Gurukul) rendered in translucent green; Blacklisted Red Zones (Panathur choke points) rendered with high-contrast red warning polygons.
-* **Metro Alignment Polyline**: Full ORR Blue Line Phase 2A route from Silk Board to KR Puram with station markers.
-* **Dynamic Location Pins**: Click anywhere on the map to dynamically reposition your search center coordinates.
-* **Property Markers**: Color-coded pins with rich HTML cards showing price/sqft, builder tier, match score, and direct route status.
-* **Preference Persistence**: Configured weights and coordinates persist across sessions in `data/user_preferences.json`.
+* **Fluid Breakpoints**: Custom media queries (`@media (max-width: 768px)`) ensure seamless viewing on iPhones, Androids, and tablets.
+* **Touch-Friendly Controls**: Large touch targets for buttons, sliders, and tabs.
+* **Auto-Stacking Layout**: Multi-column data collapses into vertical cards without horizontal scrollbars.
+* **Responsive Map Container**: Folium container scales to 380px on mobile screens with pan/zoom gestures enabled.
 
 ---
 
 ## 7. Rental House Discovery Radar (Tab 2)
 
-Specially designed for tech executives and families seeking quality rental homes in the Bellandur / Green Glen / Kadubeesanahalli corridor:
-
-* **Vicinity Filtering**: Instant filtering for Bellandur Core, Green Glen Layout, and Kadubeesanahalli (Gurukul side).
+* **Vicinity Filtering**: Search rentals strictly in **Bellandur Core**, **Green Glen Layout**, and **Kadubeesanahalli (Gurukul side)**.
 * **Multi-Platform Price Comparison**: Side-by-side pricing listed across **NoBroker**, **99acres**, **MagicBricks**, **Housing.com**, and **Direct Owner**.
-* **Zero-Brokerage Deal Finder**: Highlights Direct-from-Owner listings, showing potential brokerage savings of **₹50,000 to ₹1,45,000**.
-* **Direct 1-Click WhatsApp Contact**: Click to open a direct WhatsApp chat (`https://wa.me/...`) with a pre-formatted message referencing the unit name and configuration.
-* **Bottleneck Alert**: Direct warning if the rental requires navigating the Panathur underpass.
-* **Micro-Market Fair Rent Calculator**: Computes fair market rent and estimated landlord yield based on area and furnishing.
-* **Interactive Site Visit Scheduler**: Schedule and track property inspection reminders within the application.
+* **Zero-Brokerage Deal Finder**: Highlights Direct-from-Owner listings, showing potential brokerage savings of **₹52,000 to ₹1,45,000**.
+* **Direct 1-Click WhatsApp Contact**: Click to launch a WhatsApp chat (`https://wa.me/...`) with a pre-filled inquiry referencing the unit and society name.
+* **Total Monthly Outflow**: Displays rent + maintenance combined.
 
 ---
 
-## 8. Automated Daily Tracker Architecture (GitHub Actions)
+## 8. Automated Daily Tracker at 5:00 PM IST
 
-An automated cron workflow runs daily to track price movements and appreciation:
-
-* **Workflow**: `.github/workflows/daily_tracker.yml`
-* **Cron Schedule**: `0 6 * * *` (Daily at 06:00 UTC / 11:30 AM IST)
-* **Script**: `scripts/daily_tracker.py`
-* **Storage**: Appends daily market snapshots and spread analysis to `data/historical_prices.csv` and logs to `data/daily_tracker_log.json`.
-* **Zero Manual Effort**: Git commits and pushes updates automatically.
+The radar executes daily at **5:00 PM IST (11:30 UTC)**:
+* **Workflow**: `.github/workflows/daily_tracker.yml` and `workflows/daily_tracker.yml`
+* **Cron Expression**: `30 11 * * *`
+* **Daily Exported CSVs**:
+  * `data/top_10_purchase_daily.csv`: Top 10 purchase properties with Age, Rate/sqft, Upfront Advance, Total Ownership Cost, and Traffic Verdict.
+  * `data/top_5_rental_daily.csv`: Top 5 rental properties with Age, Monthly Rent, Total Outflow, Brokerage Savings, and WhatsApp Contact Links.
+  * `data/historical_prices.csv`: Multi-year price progression dataset.
+* **Local Trigger**: Run `scripts/run_daily_5pm_ist.bat` on Windows or click **"Run 5:00 PM IST Snapshot Now"** in Tab 5.
 
 ---
 
-## 9. Repository Structure
+## 9. Builder Pedigree Hierarchy & Due Diligence Checklist
 
-```
-South-east-bengaluru-real-estate-radar/
-├── .github/
-│   └── workflows/
-│       └── daily_tracker.yml        # Scheduled GitHub Actions cron workflow
-├── .streamlit/
-│   └── config.toml                  # Streamlit dark theme & layout configuration
-├── data/
-│   ├── anchors.json                 # Tech parks, schools, hospitals, metro stations
-│   ├── daily_tracker_log.json       # Execution log of latest daily tracker run
-│   ├── historical_prices.csv        # 2020-2026 quarterly micro-market price dataset
-│   ├── market_zones.json            # Geofencing polygons for Green and Red zones
-│   ├── properties.json              # Curated purchase property inventory
-│   ├── rental_properties.json       # Rental units with multi-platform price listings
-│   └── user_preferences.json        # Persistent scoring weights & search parameters
-├── scripts/
-│   └── daily_tracker.py             # Autonomous daily scraper & snapshot generator
-├── utils/
-│   ├── geo.py                       # Haversine distance & polygon containment
-│   ├── scoring.py                   # 7-factor weighted scoring algorithm & penalties
-│   └── storage.py                   # Data persistence & retrieval helpers
-├── app.py                           # Main production Streamlit web application
-├── requirements.txt                 # Application dependencies
-└── README.md                        # Documentation & technical blueprint
-```
+### 🏆 Top 10 Tier 1 Developers
+1. Sobha Limited | 2. Prestige Group | 3. Brigade Group | 4. Total Environment Building Systems | 5. Godrej Properties | 6. Embassy Group | 7. Puravankara Limited | 8. Assetz Property Group | 9. Century Real Estate | 10. Salarpuria Sattva Group
+
+### 🥈 Secondary Choices (Tier 2)
+Sumadhura Infracon, Rohan Builders, Arvind SmartSpaces, Vajram Group, Shriram Properties, NCC Urban.
+
+### 📋 4 Mandatory Due Diligence Pillars
+1. BBMP / BDA A-Khata Title Verification
+2. Karnataka RERA active registration & litigation check
+3. Dual Water Source (Cauvery connection + Borewells + STP)
+4. Storm-Water Drain (Rajakaluve) Setback Buffer clearance (30m primary / 15m secondary)
 
 ---
 
 ## 10. Local Quickstart & Streamlit Cloud Deployment
 
-### 💻 Local Installation
+### 💻 Local Run
+```bash
+git clone https://github.com/purntripathi-cmd/South-east-bengaluru-real-estate-radar.git
+cd South-east-bengaluru-real-estate-radar
+pip install -r requirements.txt
+streamlit run app.py
+```
 
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/purntripathi-cmd/South-east-bengaluru-real-estate-radar.git
-   cd South-east-bengaluru-real-estate-radar
-   ```
+### ⚡ Manual 5 PM IST Snapshot Trigger
+```bash
+python scripts/daily_tracker.py --force
+```
 
-2. **Create a virtual environment & install dependencies:**
-   ```bash
-   python -m venv venv
-   source venv/bin/activate  # On Windows: .\venv\Scripts\activate
-   pip install -r requirements.txt
-   ```
-
-3. **Run the Streamlit application:**
-   ```bash
-   streamlit run app.py
-   ```
-   Open your browser at `http://localhost:8501`.
-
-4. **Test the Daily Tracker script:**
-   ```bash
-   python scripts/daily_tracker.py --dry-run
-   ```
+### ☁️ Streamlit Cloud Deployment
+1. Log in to [share.streamlit.io](https://share.streamlit.io).
+2. Select `purntripathi-cmd/South-east-bengaluru-real-estate-radar`.
+3. Set Main file path to `app.py` and click **Deploy**!
 
 ---
 
-### ☁️ Streamlit Cloud Deployment (1-Click)
-
-1. Fork or push this repository to your GitHub account: `purntripathi-cmd/South-east-bengaluru-real-estate-radar`.
-2. Visit **[share.streamlit.io](https://share.streamlit.io)** and log in with GitHub.
-3. Click **"New app"**, select this repository, set Branch to `main`, and Main file path to `app.py`.
-4. Click **"Deploy"**!
-5. The scheduled GitHub Action will automatically keep your live deployed app updated with daily market rate snapshots!
-
----
-
-**Developed with precision for East Bengaluru home buyers, investors, and tenants.**
+**Built with precision for East Bengaluru home buyers, investors, and tenants.**

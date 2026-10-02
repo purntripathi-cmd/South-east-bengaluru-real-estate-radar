@@ -1,14 +1,11 @@
 {
-  "last_run_utc": "2026-10-02T20:22:55.282827",
   "status": "SUCCESS",
-  "properties_count": 10,
-  "rental_count": 7,
-  "rates_snapshot": {
-    "bellandur_core": 14133.33,
-    "green_glen_layout": 13200.0,
-    "kadubeesanahalli_gurukul": 14500.0,
-    "panathur_choke_zone": 7350.0
-  },
-  "panathur_bottleneck_spread_pct": 48.0,
-  "avg_rental_yield_pct": 4.05
+  "last_run_utc": "2026-10-02 15:19:07 UTC",
+  "scheduled_time_ist": "5:00 PM IST",
+  "top_10_purchase_saved": 10,
+  "top_5_rental_saved": 5,
+  "bellandur_core_psqft": 14133,
+  "green_glen_layout_psqft": 13200,
+  "kadubeesanahalli_gurukul_psqft": 14500,
+  "panathur_road_choke_psqft": 7350
 }

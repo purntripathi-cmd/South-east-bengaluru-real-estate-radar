@@ -1,48 +1,38 @@
-name: Daily Real Estate Price & Rental Radar Tracker
+name: Daily Real Estate & Rental Radar Tracker (5 PM IST)
 
 on:
   schedule:
-    # Runs daily at 06:00 UTC (11:30 AM IST)
-    - cron: '0 6 * * *'
-  workflow_dispatch: # Allows manual trigger from GitHub Actions tab
-
-permissions:
-  contents: write
+    # 5:00 PM IST is 11:30 UTC daily
+    - cron: '30 11 * * *'
+  workflow_dispatch:
 
 jobs:
   track-and-commit:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Repository
+      - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Set up Python
+      - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
           cache: 'pip'
 
-      - name: Install Dependencies
+      - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Execute Daily Tracker Script
+      - name: Execute 5:00 PM IST Daily Tracker
         run: |
-          python scripts/daily_tracker.py
+          python scripts/daily_tracker.py --force
 
-      - name: Check for Changes and Commit Snapshot
+      - name: Commit and Push Daily Snapshots & Top CSVs
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          
-          if [ -n "$(git status --porcelain data/)" ]; then
-            git add data/historical_prices.csv data/daily_tracker_log.json
-            git commit -m "chore(data): automated daily market rate snapshot [skip ci]"
-            git push origin main
-            echo "Successfully updated and committed daily market snapshot."
-          else
-            echo "No price delta detected; snapshot is already up to date."
-          fi
+          git add data/top_10_purchase_daily.csv data/top_5_rental_daily.csv data/historical_prices.csv data/daily_tracker_log.json
+          git diff --quiet && git diff --staged --quiet || (git commit -m "chore(data): automated 5 PM IST radar snapshot [skip ci]" && git push origin main)

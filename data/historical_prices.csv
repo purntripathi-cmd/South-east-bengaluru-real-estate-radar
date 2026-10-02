@@ -1,29 +1,30 @@
-quarter,date,bellandur_core_psqft,green_glen_layout_psqft,kadubeesanahalli_gurukul_psqft,panathur_road_choke_psqft,sarjapur_road_psqft,avg_rental_yield_pct,notes
-2020-Q1,2020-03-31,7600.0,7100.0,6700.0,5100.0,6300.0,3.5,Pre-covid baseline
-2020-Q2,2020-06-30,7500.0,7050.0,6650.0,5050.0,6250.0,3.4,Lockdown slowdown
-2020-Q3,2020-09-30,7650.0,7150.0,6750.0,5120.0,6350.0,3.5,Initial recovery
-2020-Q4,2020-12-31,7800.0,7300.0,6900.0,5200.0,6500.0,3.6,Tech hiring acceleration
-2021-Q1,2021-03-31,8100.0,7550.0,7150.0,5350.0,6700.0,3.6,ORR tech park demand surge
-2021-Q2,2021-06-30,8300.0,7750.0,7350.0,5450.0,6850.0,3.7,Phase 2 metro sanction
-2021-Q3,2021-09-30,8650.0,8050.0,7600.0,5600.0,7100.0,3.8,ORR return-to-office announcements
-2021-Q4,2021-12-31,9000.0,8400.0,7950.0,5800.0,7400.0,3.9,Inventory absorption record
-2022-Q1,2022-03-31,9500.0,8900.0,8400.0,6100.0,7800.0,4.0,Blue Line Metro construction commences
-2022-Q2,2022-06-30,10100.0,9450.0,8900.0,6350.0,8250.0,4.1,Rental rates jump 25% post-covid
-2022-Q3,2022-09-30,10500.0,9900.0,9300.0,6400.0,8600.0,4.1,Monsoon test: Green Glen elevated safety validated
-2022-Q4,2022-12-31,11100.0,10400.0,9800.0,6700.0,9050.0,4.2,Panathur bottleneck widening delay penalizes prices
-2023-Q1,2023-03-31,11700.0,11000.0,10350.0,7050.0,9500.0,4.3,High tech executive inflow
-2023-Q2,2023-06-30,12300.0,11600.0,10900.0,7300.0,9950.0,4.3,Rents hit ₹65k+ for 3BHKs
-2023-Q3,2023-09-30,12850.0,12100.0,11400.0,7550.0,10400.0,4.4,Ecospace & PTP expansion
-2023-Q4,2023-12-31,13300.0,12550.0,11850.0,7800.0,10800.0,4.4,Prestige Tech Park peak occupancy
-2024-Q1,2024-03-31,13750.0,12950.0,12250.0,8000.0,11150.0,4.3,Blue Line viaduct 70% completed
-2024-Q2,2024-06-30,14100.0,13300.0,12600.0,8200.0,11450.0,4.3,Summer rental cycle surge
-2024-Q3,2024-09-30,14450.0,13600.0,12900.0,8350.0,11750.0,4.2,Strong secondary market liquidity
-2024-Q4,2024-12-31,14800.0,13900.0,13200.0,8500.0,12000.0,4.2,Year-end valuation benchmark
-2025-Q1,2025-03-31,15150.0,14200.0,13500.0,8600.0,12250.0,4.2,Metro test runs planned
-2025-Q2,2025-06-30,15450.0,14500.0,13750.0,8700.0,12500.0,4.3,Rental yield outpaces Bengaluru average
-2025-Q3,2025-09-30,15750.0,14800.0,14000.0,8800.0,12750.0,4.3,Green Glen premium reaches 75% over Panathur
-2025-Q4,2025-12-31,16050.0,15050.0,14250.0,8900.0,13000.0,4.2,Institutional investment in ORR assets
-2026-Q1,2026-03-31,16350.0,15300.0,14500.0,9000.0,13200.0,4.2,Metro trial runs near Bellandur station
-2026-Q2,2026-06-30,16600.0,15550.0,14700.0,9080.0,13400.0,4.3,Peak rental demand season
-2026-Q3,2026-09-30,16850.0,15800.0,14900.0,9150.0,13600.0,4.3,Current active radar snapshot
-2026-Q4,2026-10-02,14133.0,13200.0,14500.0,7350.0,13600.0,4.05,Automated daily snapshot 2026-10-02 UTC
+quarter,date,bellandur_core_psqft,green_glen_layout_psqft,kadubeesanahalli_gurukul_psqft,panathur_road_choke_psqft,sarjapur_road_psqft,avg_rental_yield_pct,notes,rental_yield_avg_pct
+2020-Q1,2020-03-31,7600.0,7100.0,6700.0,5100.0,6300.0,3.5,Pre-covid baseline,
+2020-Q2,2020-06-30,7500.0,7050.0,6650.0,5050.0,6250.0,3.4,Lockdown slowdown,
+2020-Q3,2020-09-30,7650.0,7150.0,6750.0,5120.0,6350.0,3.5,Initial recovery,
+2020-Q4,2020-12-31,7800.0,7300.0,6900.0,5200.0,6500.0,3.6,Tech hiring acceleration,
+2021-Q1,2021-03-31,8100.0,7550.0,7150.0,5350.0,6700.0,3.6,ORR tech park demand surge,
+2021-Q2,2021-06-30,8300.0,7750.0,7350.0,5450.0,6850.0,3.7,Phase 2 metro sanction,
+2021-Q3,2021-09-30,8650.0,8050.0,7600.0,5600.0,7100.0,3.8,ORR return-to-office announcements,
+2021-Q4,2021-12-31,9000.0,8400.0,7950.0,5800.0,7400.0,3.9,Inventory absorption record,
+2022-Q1,2022-03-31,9500.0,8900.0,8400.0,6100.0,7800.0,4.0,Blue Line Metro construction commences,
+2022-Q2,2022-06-30,10100.0,9450.0,8900.0,6350.0,8250.0,4.1,Rental rates jump 25% post-covid,
+2022-Q3,2022-09-30,10500.0,9900.0,9300.0,6400.0,8600.0,4.1,Monsoon test: Green Glen elevated safety validated,
+2022-Q4,2022-12-31,11100.0,10400.0,9800.0,6700.0,9050.0,4.2,Panathur bottleneck widening delay penalizes prices,
+2023-Q1,2023-03-31,11700.0,11000.0,10350.0,7050.0,9500.0,4.3,High tech executive inflow,
+2023-Q2,2023-06-30,12300.0,11600.0,10900.0,7300.0,9950.0,4.3,Rents hit ₹65k+ for 3BHKs,
+2023-Q3,2023-09-30,12850.0,12100.0,11400.0,7550.0,10400.0,4.4,Ecospace & PTP expansion,
+2023-Q4,2023-12-31,13300.0,12550.0,11850.0,7800.0,10800.0,4.4,Prestige Tech Park peak occupancy,
+2024-Q1,2024-03-31,13750.0,12950.0,12250.0,8000.0,11150.0,4.3,Blue Line viaduct 70% completed,
+2024-Q2,2024-06-30,14100.0,13300.0,12600.0,8200.0,11450.0,4.3,Summer rental cycle surge,
+2024-Q3,2024-09-30,14450.0,13600.0,12900.0,8350.0,11750.0,4.2,Strong secondary market liquidity,
+2024-Q4,2024-12-31,14800.0,13900.0,13200.0,8500.0,12000.0,4.2,Year-end valuation benchmark,
+2025-Q1,2025-03-31,15150.0,14200.0,13500.0,8600.0,12250.0,4.2,Metro test runs planned,
+2025-Q2,2025-06-30,15450.0,14500.0,13750.0,8700.0,12500.0,4.3,Rental yield outpaces Bengaluru average,
+2025-Q3,2025-09-30,15750.0,14800.0,14000.0,8800.0,12750.0,4.3,Green Glen premium reaches 75% over Panathur,
+2025-Q4,2025-12-31,16050.0,15050.0,14250.0,8900.0,13000.0,4.2,Institutional investment in ORR assets,
+2026-Q1,2026-03-31,16350.0,15300.0,14500.0,9000.0,13200.0,4.2,Metro trial runs near Bellandur station,
+2026-Q2,2026-06-30,16600.0,15550.0,14700.0,9080.0,13400.0,4.3,Peak rental demand season,
+2026-Q3,2026-09-30,16850.0,15800.0,14900.0,9150.0,13600.0,4.3,Current active radar snapshot,
+2026-Q4,2026-10-02,14133.0,13200.0,14500.0,7350.0,13600.0,4.05,Automated daily snapshot 2026-10-02 UTC,
+2026-D1002,2026-10-02,14133.0,13200.0,14500.0,7350.0,10800.0,,Automated 5 PM IST snapshot. Recorded Top 10 Purchase & Top 5 Rental.,4.1

@@ -93,11 +93,15 @@ Beyond the core radar (Bellandur, Green Glen, Gurukul), the system scans immedia
 
 ---
 
-## 5. Micro-Market Zoning & Traffic Rules
+## 5. Micro-Market Zoning, Dynamic Custom Pinning & Traffic Rules
 
 * **🟢 Allowed Green Zones**: Bellandur Core, Green Glen Layout, Kadubeesanahalli strictly to the NCC Nagarjuna Green Woods side up to New Horizon Gurukul.
-* **🔴 Blacklisted Red Zones**: Panathur Main Road, Panathur Railway Underpass, Panathur Post Office junction.
-* **Penalty**: Properties trapped in Red Zones trigger an instant **-50 points penalty** or disqualification.
+* **🔴 Blacklisted Red Zones**: Panathur Main Road, Panathur Railway Underpass, Panathur Post Office junction (-50 pts penalty).
+* **🛠️ Custom Area Mode & Dynamic Pin Manager**:
+  * Users can override or extend default corridor boundaries to inspect **any vicinity across Bengaluru**.
+  * **🟢 Green Pins**: Define custom target check vicinities (with customizable coverage radius, e.g., 1,200m).
+  * **🔴 Red Pins**: Define custom choke points or blacklist vicinities (with customizable radius and penalty points, e.g., Silk Board, Carmelaram, Panathur).
+  * **Tap-to-Pin on Map**: Tap anywhere on the interactive Folium/Google Maps layer and click `[🟢 Pin as Green Target]` or `[🔴 Pin as Red Choke]` for instant geofenced re-scoring!
 
 ---
 
@@ -123,7 +127,7 @@ Beyond the core radar (Bellandur, Green Glen, Gurukul), the system scans immedia
 
 ---
 
-## 7. Interactive Map UI & Google Maps Integration
+## 7. Interactive Map UI, Google Maps & Direct Validation Links
 
 * **Native Google Maps Tile Layers (Zero API Key Needed)**:
   * Google Maps (Roadmap) [Default]
@@ -132,25 +136,34 @@ Beyond the core radar (Bellandur, Green Glen, Gurukul), the system scans immedia
   * OpenStreetMap & CartoDB Positron
 * **1-Click Google Maps Direct Deep Links**:
   Every property card includes a **"📍 Open Exact Pin in Google Maps ↗"** button that opens directly in your Google Maps mobile app with coordinates.
+* **Direct Post Validation & RERA Verification Links**:
+  * **Purchase Units**: Direct buttons for `[🔗 Verify Official Post / Site ↗]` and `[📋 Karnataka RERA Portal ↗]` linking directly to official Karnataka RERA project filings.
+  * **Rental Units**: Direct buttons for `[🔗 Verify Post / Listing ↗]` and `[💬 Community Listing ↗]`.
 * **Optional Google Cloud API Key**: Supported via sidebar.
 
 ---
 
-## 8. Mobile-First Responsive Design
+## 8. Mobile-First Responsive Design & Unattended Daily Auto-Refresh
 
 * Custom CSS media queries (`@media (max-width: 768px)`) ensure seamless viewing on smartphones and tablets.
 * Touch targets $\ge 44\text{px}$, responsive map height (380px on mobile), and auto-stacking comparison cards.
+* **Autonomous 24-Hour Page Auto-Refresh**: Embedded client-side script checks for calendar day rollover every 45s and automatically reloads to fetch fresh scheduled data even if the dashboard is left open unattended on a screen or mobile browser.
 
 ---
 
-## 9. Automated 5:00 PM IST Daily Tracker
+## 9. Automated 5:00 PM IST Daily Tracker & Delta Validation Engine
 
 * **Scheduled Time**: Every day at **5:00 PM IST (11:30 UTC)** via GitHub Actions (`cron: '30 11 * * *'`).
-* **Exported CSVs**:
-  * `data/top_10_purchase_daily.csv`: Top 10 purchase properties with Age, Ratings, Complaints, Maintenance, Upfront Advance, and Total Ownership Cost.
-  * `data/top_5_rental_daily.csv`: Top 5 rental properties with Age, Ratings, Complaints, Rent, Maintenance, Total Monthly Outflow, and Direct Owner WhatsApp Links.
-* **In-App Download Center (Tab 6)**: Download both CSV files with 1 click.
-* **Local Windows Script**: Run `scripts/run_daily_5pm_ist.bat` to update locally.
+* **Records ALL Available Options**:
+  * `data/all_purchase_properties_daily.csv`: Full daily snapshot of **all** available purchase properties.
+  * `data/all_rental_properties_daily.csv`: Full daily snapshot of **all** available rental properties.
+  * `data/top_10_purchase_daily.csv`: Top 10 purchase properties scored by radar.
+  * `data/top_5_rental_daily.csv`: Top 5 rental properties scored by radar.
+* **Parameter Delta Validation Engine**:
+  * Compares live parameters against `data/property_audit_ledger.json`.
+  * **Zero Duplicate Redundant Writes**: If today's files exist and no parameters changed, it logs `VALIDATED_NO_CHANGES` and skips writing.
+  * **Change Logging**: If rates, maintenance, ratings, or bottlenecks change, it automatically logs changes to `data/property_parameter_changes.csv` and updates daily snapshots.
+* **Manual Snapshot Trigger (Tab 6)**: 1-click execution button with live visual audit feedback.
 
 ---
 

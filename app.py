@@ -9,8 +9,9 @@ import plotly.graph_objects as go
 import streamlit as st
 import folium
 from streamlit_folium import st_folium
+import streamlit.components.v1 as components
 
-from utils.geo import haversine_distance_km, check_zone_membership
+from utils.geo import haversine_distance_km, check_zone_membership, check_custom_pins
 from utils.scoring import compute_property_match_score, TIER_1_BUILDERS, TIER_2_BUILDERS
 from utils.storage import (
     get_user_preferences,
@@ -19,9 +20,17 @@ from utils.storage import (
     get_rental_properties,
     get_nearby_properties,
     get_market_zones,
+    get_custom_zones,
+    save_custom_zones,
     get_anchors,
     get_historical_prices_df,
-    get_tracker_log
+    get_tracker_log,
+    get_parameter_changes_df,
+    ALL_PURCHASE_CSV,
+    ALL_RENTAL_CSV,
+    TOP_10_PURCHASE_CSV,
+    TOP_5_RENTAL_CSV,
+    CHANGES_CSV_FILE
 )
 
 # Set page configuration
@@ -31,6 +40,21 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="collapsed", # Better UX on mobile devices
 )
+
+# Client-side daily auto-refresh component (continues refreshing radar even when unattended)
+components.html("""
+<script>
+let lastCheckedDay = new Date().toDateString();
+setInterval(function() {
+    let currentDay = new Date().toDateString();
+    if (currentDay !== lastCheckedDay) {
+        console.log("Calendar date changed (" + currentDay + "). Auto-refreshing Real Estate Radar...");
+        lastCheckedDay = currentDay;
+        window.parent.location.reload();
+    }
+}, 45000);
+</script>
+""", height=0, width=0)
 
 # -------------------------------------------------------------
 # Mobile-First & Desktop Responsive CSS
@@ -197,6 +221,9 @@ if "scheduled_visits" not in st.session_state:
 if "audit_checklist" not in st.session_state:
     st.session_state.audit_checklist = {}
 
+if "custom_zones" not in st.session_state:
+    st.session_state.custom_zones = get_custom_zones()
+
 prefs = st.session_state.preferences
 search_center = prefs.get("search_center", {"lat": 12.9325, "lng": 77.6850, "radius_km": 3.5})
 weights = prefs.get("weights", {
@@ -350,11 +377,178 @@ with tab_purchase:
     st.subheader("🗺️ Micro-Market Geofenced Radar (Bellandur • Green Glen • Gurukul)")
     st.caption("Allowed Green Zones are protected. Red Zones (Panathur Choke Corridor) receive an instant -50 points penalty.")
 
-    # Calculate scores for all properties
+    # ---------------------------------------------------------
+    # AREA ZONING & CUSTOM PINNING CONTROLS
+    # ---------------------------------------------------------
+    corridor_mode = st.radio(
+        "Zoning & Radar Check Vicinity Mode:",
+        [
+            "🟢 Default Corridor (Bellandur Core • Green Glen • Gurukul vs Panathur Choke)",
+            "🛠️ Custom Vicinities & Pins (Define Where to Check with Green Pins & Exclude with Red Pins)"
+        ],
+        horizontal=True,
+        help="Default mode uses East Bengaluru corridor boundaries. Custom mode allows defining target areas anywhere across Bengaluru via custom Green & Red pins."
+    )
+
+    with st.expander("📍 Custom Area Pinning & Geofence Manager (Add Green / Red Pins)", expanded=(corridor_mode.startswith("🛠️"))):
+        st.markdown("""
+        Customize where the radar performs its property check:
+        - 🟢 **Green Pins**: Target vicinities where check is to be done (allowed safe zones).
+        - 🔴 **Red Pins**: Bottlenecks / choke areas to heavily penalize or exclude (-50 pts).
+        """)
+
+        c_pin_col1, c_pin_col2 = st.columns(2)
+        with c_pin_col1:
+            st.markdown("##### 🟢 Active Green Pins (Target Check Areas)")
+            active_gp = st.session_state.custom_zones.get("green_pins", [])
+            if not active_gp:
+                st.info("No active green pins. Click below or tap map to add.")
+            for i, gp in enumerate(active_gp):
+                gp_c1, gp_c2 = st.columns([4, 1])
+                with gp_c1:
+                    st.markdown(f"**{gp['name']}** (`{gp['lat']:.4f}, {gp['lng']:.4f}`) - Radius: `{gp['radius_meters']}m`")
+                with gp_c2:
+                    if st.button("🗑️", key=f"del_gp_{gp.get('id', i)}_{i}", help="Delete Green Pin"):
+                        st.session_state.custom_zones["green_pins"].pop(i)
+                        save_custom_zones(st.session_state.custom_zones)
+                        st.rerun()
+
+        with c_pin_col2:
+            st.markdown("##### 🔴 Active Red Pins (Excluded Choke Points)")
+            active_rp = st.session_state.custom_zones.get("red_pins", [])
+            if not active_rp:
+                st.info("No active red pins. Click below or tap map to add.")
+            for i, rp in enumerate(active_rp):
+                rp_c1, rp_c2 = st.columns([4, 1])
+                with rp_c1:
+                    st.markdown(f"**{rp['name']}** (`{rp['lat']:.4f}, {rp['lng']:.4f}`) - Radius: `{rp['radius_meters']}m` (Penalty: `{rp.get('penalty_points', -50)}` pts)")
+                with rp_c2:
+                    if st.button("🗑️", key=f"del_rp_{rp.get('id', i)}_{i}", help="Delete Red Pin"):
+                        st.session_state.custom_zones["red_pins"].pop(i)
+                        save_custom_zones(st.session_state.custom_zones)
+                        st.rerun()
+
+        st.markdown("---")
+        st.markdown("##### ➕ Add New Custom Vicinity Pin")
+
+        pin_presets = {
+            "-- Choose Bengaluru Landmark Preset or Enter Custom --": None,
+            "Bellandur Core Grid": (12.9325, 77.6795),
+            "Green Glen Layout": (12.9288, 77.6750),
+            "Kadubeesanahalli / Gurukul": (12.9390, 77.6950),
+            "Panathur Railway Underpass Choke": (12.9335, 77.7045),
+            "Panathur Main Road Choke": (12.9360, 77.7085),
+            "Sarjapur Road / Kaikondrahalli Lake": (12.9140, 77.6710),
+            "HSR Layout Sector 1 / 2": (12.9110, 77.6520),
+            "Outer Ring Road Ecospace": (12.9260, 77.6830),
+            "Marathahalli Bridge Junction": (12.9560, 77.7010),
+            "Silk Board Junction": (12.9175, 77.6235),
+            "Carmelaram Railway Gate Choke": (12.9105, 77.7015),
+            "Varthur Kodi Junction": (12.9420, 77.7450),
+            "Whitefield Hope Farm": (12.9830, 77.7510)
+        }
+
+        form_c1, form_c2 = st.columns(2)
+        with form_c1:
+            pin_type = st.radio("Pin Type", ["🟢 Green Pin (Target Area to Check)", "🔴 Red Pin (Excluded / Blacklist Choke)"], horizontal=True)
+            preset_choice = st.selectbox("Landmark Preset", list(pin_presets.keys()))
+            default_name = preset_choice if preset_choice != "-- Choose Bengaluru Landmark Preset or Enter Custom --" else "Custom Bengaluru Vicinity"
+            pin_name = st.text_input("Pin Name / Label", value=default_name)
+
+        with form_c2:
+            if preset_choice and pin_presets[preset_choice]:
+                p_lat, p_lng = pin_presets[preset_choice]
+            else:
+                p_lat = search_center.get("lat", 12.9325)
+                p_lng = search_center.get("lng", 77.6850)
+
+            in_lat = st.number_input("Latitude", value=float(p_lat), format="%.5f")
+            in_lng = st.number_input("Longitude", value=float(p_lng), format="%.5f")
+            default_rad = 1200 if "Green" in pin_type else 800
+            in_radius = st.slider("Zone Radius (meters)", 300, 5000, default_rad, step=100)
+            in_penalty = -50 if "Red" in pin_type else 0
+
+        action_c1, action_c2, action_c3 = st.columns([2, 1, 1])
+        with action_c1:
+            if st.button("➕ Add Pin to Radar Vicinity", use_container_width=True):
+                new_id = f"pin_{int(datetime.now().timestamp())}"
+                if "Green" in pin_type:
+                    st.session_state.custom_zones["green_pins"].append({
+                        "id": new_id,
+                        "name": pin_name,
+                        "lat": in_lat,
+                        "lng": in_lng,
+                        "radius_meters": in_radius,
+                        "description": "User defined target check area"
+                    })
+                else:
+                    st.session_state.custom_zones["red_pins"].append({
+                        "id": new_id,
+                        "name": pin_name,
+                        "lat": in_lat,
+                        "lng": in_lng,
+                        "radius_meters": in_radius,
+                        "penalty_points": in_penalty,
+                        "reason": "User defined traffic choke point"
+                    })
+                save_custom_zones(st.session_state.custom_zones)
+                st.success(f"Added {pin_name}!")
+                st.rerun()
+
+        with action_c2:
+            if st.button("💾 Save Custom Pins", use_container_width=True):
+                save_custom_zones(st.session_state.custom_zones)
+                st.success("Custom pins persisted to disk!")
+
+        with action_c3:
+            if st.button("🔄 Reset Corridor", use_container_width=True):
+                st.session_state.custom_zones = {
+                    "use_custom": False,
+                    "green_pins": [
+                        {"id": "gp_1", "name": "Bellandur Core Grid", "lat": 12.9325, "lng": 77.6795, "radius_meters": 1300},
+                        {"id": "gp_2", "name": "Green Glen Layout", "lat": 12.9288, "lng": 77.6750, "radius_meters": 900},
+                        {"id": "gp_3", "name": "Kadubeesanahalli (Gurukul)", "lat": 12.9390, "lng": 77.6950, "radius_meters": 1100}
+                    ],
+                    "red_pins": [
+                        {"id": "rp_1", "name": "Panathur Main Road Choke", "lat": 12.9360, "lng": 77.7085, "radius_meters": 1000, "penalty_points": -50},
+                        {"id": "rp_2", "name": "Panathur Railway Underpass", "lat": 12.9335, "lng": 77.7045, "radius_meters": 550, "penalty_points": -50}
+                    ]
+                }
+                save_custom_zones(st.session_state.custom_zones)
+                st.rerun()
+
+    # Active pins for live scoring
+    active_green = st.session_state.custom_zones.get("green_pins", [])
+    active_red = st.session_state.custom_zones.get("red_pins", [])
+
+    # Calculate dynamic scores for all properties
     scored_properties = []
     for p in properties:
-        breakdown = compute_property_match_score(p, weights=active_weights)
         p_copy = dict(p)
+        # Check against active custom Red & Green pins first
+        zone_status, zone_label, zone_penalty = check_custom_pins(p["lat"], p["lng"], active_green, active_red)
+
+        if zone_status == "Red":
+            p_copy["zone_type"] = "Red"
+            p_copy["panathur_routing"] = True
+            p_copy["zone_notes"] = f"Flagged in Excluded Red Zone: {zone_label}"
+        elif zone_status == "Green":
+            p_copy["zone_type"] = "Green"
+            p_copy["panathur_routing"] = False
+            p_copy["zone_notes"] = f"In Target Green Zone: {zone_label}"
+        else:
+            if corridor_mode.startswith("🟢"):
+                # Use default polygon boundary
+                def_status, def_name, def_pen = check_zone_membership(p["lat"], p["lng"], market_zones)
+                p_copy["zone_type"] = def_status
+                p_copy["panathur_routing"] = (def_status == "Red")
+                p_copy["zone_notes"] = def_name
+            else:
+                p_copy["zone_type"] = "Neutral"
+                p_copy["panathur_routing"] = False
+                p_copy["zone_notes"] = "Outside Configured Green Pins"
+
+        breakdown = compute_property_match_score(p_copy, weights=active_weights)
         p_copy.update(breakdown)
         scored_properties.append(p_copy)
 
@@ -363,7 +557,7 @@ with tab_purchase:
     with f_c1:
         zone_filter = st.selectbox(
             "Zone Filter",
-            ["All Zones", "Green Zones Only (Safe from Panathur)", "Red Zones (Choke Corridor)"]
+            ["All Zones", "Green Target Pins Only (Safe Vicinities)", "Red Zones (Excluded Choke Points)"]
         )
     with f_c2:
         builder_filter = st.selectbox(
@@ -386,9 +580,9 @@ with tab_purchase:
     # Filter properties
     filtered_props = []
     for p in scored_properties:
-        if zone_filter == "Green Zones Only (Safe from Panathur)" and p["zone_type"] != "Green":
+        if zone_filter == "Green Target Pins Only (Safe Vicinities)" and p["zone_type"] != "Green":
             continue
-        if zone_filter == "Red Zones (Choke Corridor)" and p["zone_type"] != "Red":
+        if zone_filter == "Red Zones (Excluded Choke Points)" and p["zone_type"] != "Red":
             continue
         if builder_filter != "All Developers" and builder_filter.split()[0].lower() not in p["builder_tier_label"].lower():
             continue
@@ -441,33 +635,72 @@ with tab_purchase:
         control_scale=True
     )
 
-    # Add Green Zones
-    for gz in market_zones.get("green_zones", []):
-        poly = gz.get("polygon")
-        if poly:
-            folium.Polygon(
-                locations=poly,
-                color="#10B981",
-                weight=2,
-                fill=True,
-                fill_color="#10B981",
-                fill_opacity=0.20,
-                tooltip=f"<b>Allowed Green Zone</b>: {gz['name']}"
-            ).add_to(m)
+    # Add Default Polygons if in Default Corridor mode
+    if corridor_mode.startswith("🟢"):
+        for gz in market_zones.get("green_zones", []):
+            poly = gz.get("polygon")
+            if poly:
+                folium.Polygon(
+                    locations=poly,
+                    color="#10B981",
+                    weight=2,
+                    fill=True,
+                    fill_color="#10B981",
+                    fill_opacity=0.15,
+                    tooltip=f"<b>Allowed Green Zone</b>: {gz['name']}"
+                ).add_to(m)
 
-    # Add Red Zones (Panathur Bottlenecks)
-    for rz in market_zones.get("red_zones", []):
-        poly = rz.get("polygon")
-        if poly:
-            folium.Polygon(
-                locations=poly,
-                color="#EF4444",
-                weight=3,
-                fill=True,
-                fill_color="#EF4444",
-                fill_opacity=0.30,
-                tooltip=f"<b>Strict Red Zone (Choke Point)</b>: {rz['name']}<br>⚠️ Penalty: {rz['penalty_points']} pts"
-            ).add_to(m)
+        for rz in market_zones.get("red_zones", []):
+            poly = rz.get("polygon")
+            if poly:
+                folium.Polygon(
+                    locations=poly,
+                    color="#EF4444",
+                    weight=3,
+                    fill=True,
+                    fill_color="#EF4444",
+                    fill_opacity=0.25,
+                    tooltip=f"<b>Strict Red Zone (Choke Point)</b>: {rz['name']}<br>⚠️ Penalty: {rz['penalty_points']} pts"
+                ).add_to(m)
+
+    # Render All Active Custom Green Pins on Map
+    for gp in active_green:
+        folium.Circle(
+            location=[gp["lat"], gp["lng"]],
+            radius=gp["radius_meters"],
+            color="#10B981",
+            weight=2,
+            fill=True,
+            fill_color="#10B981",
+            fill_opacity=0.20,
+            tooltip=f"🟢 Target Check Area: {gp['name']} ({gp['radius_meters']}m radius)"
+        ).add_to(m)
+        folium.Marker(
+            location=[gp["lat"], gp["lng"]],
+            popup=f"<b>🟢 Target Check Area</b><br>{gp['name']}<br>Radius: {gp['radius_meters']}m",
+            tooltip=f"🟢 {gp['name']}",
+            icon=folium.Icon(color="green", icon="check-circle", prefix="fa")
+        ).add_to(m)
+
+    # Render All Active Custom Red Pins on Map
+    for rp in active_red:
+        folium.Circle(
+            location=[rp["lat"], rp["lng"]],
+            radius=rp["radius_meters"],
+            color="#EF4444",
+            weight=2,
+            fill=True,
+            fill_color="#EF4444",
+            fill_opacity=0.28,
+            dash_array="6, 6",
+            tooltip=f"🔴 Excluded Choke Point: {rp['name']} (Penalty: {rp.get('penalty_points', -50)} pts)"
+        ).add_to(m)
+        folium.Marker(
+            location=[rp["lat"], rp["lng"]],
+            popup=f"<b>🔴 Excluded Choke Zone</b><br>{rp['name']}<br>Radius: {rp['radius_meters']}m<br>Penalty: {rp.get('penalty_points', -50)} pts",
+            tooltip=f"🔴 {rp['name']}",
+            icon=folium.Icon(color="red", icon="ban", prefix="fa")
+        ).add_to(m)
 
     # Add Metro Line Phase 2A Polyline
     metro_coords = [
@@ -567,22 +800,22 @@ with tab_purchase:
         map_output = st_folium(m, use_container_width=True, height=450, returned_objects=["last_clicked"])
 
     with info_col:
-        st.markdown("#### 🗺️ Map Guide")
-        st.markdown(f"**Current Map Tile:** `{map_provider}`")
+        st.markdown("#### 🗺️ Map Guide & Quick Pins")
+        st.markdown(f"**Layer:** `{map_provider}`")
         st.markdown("""
-        - 🟢 **Green Zones**: Bellandur Core, Green Glen, Gurukul Side
-        - 🔴 **Red Zones**: Panathur Choke Corridor (-50 pts)
-        - 🟣 **Purple Pins**: Nearby Worth-Considering (Sarjapur, HSR, Varthur)
+        - 🟢 **Green Zones / Pins**: Target radar check areas
+        - 🔴 **Red Zones / Pins**: Choke points / excluded (-50 pts)
+        - 🟣 **Purple Pins**: Nearby Worth-Considering
         - 🚇 **Blue Line**: ORR Metro Alignment
-        - 📍 Tap any pin to view property details & Google Maps link.
+        - 📍 Tap map or any pin to inspect/interact.
         """)
 
         # Fallback Direct Google Maps link for mobile users
         gmaps_corridor_url = f"https://www.google.com/maps/search/?api=1&query=Green+Glen+Layout+Bellandur+Bengaluru"
         st.markdown(f"""
         <a href="{gmaps_corridor_url}" target="_blank" style="text-decoration: none;">
-            <div style="background-color: #0F172A; border: 1px solid #334155; color: #38BDF8; text-align: center; padding: 8px; border-radius: 8px; font-weight: 600; font-size: 0.85rem;">
-                📍 Open East Bengaluru Corridor in Google Maps ↗
+            <div style="background-color: #0F172A; border: 1px solid #334155; color: #38BDF8; text-align: center; padding: 7px; border-radius: 8px; font-weight: 600; font-size: 0.82rem; margin-bottom: 8px;">
+                📍 Open Corridor in Google Maps ↗
             </div>
         </a>
         """, unsafe_allow_html=True)
@@ -590,8 +823,46 @@ with tab_purchase:
         if map_output and map_output.get("last_clicked"):
             lat_c = map_output["last_clicked"]["lat"]
             lng_c = map_output["last_clicked"]["lng"]
-            st.info(f"📍 Clicked: Lat `{lat_c:.4f}`, Lng `{lng_c:.4f}`")
-            if st.button("Set as Radar Center", use_container_width=True):
+            st.markdown(f"""
+            <div style="background:#1E293B; border:1px solid #0D9488; border-radius:8px; padding:8px; margin-bottom:8px;">
+                <b style="color:#38BDF8; font-size:0.85rem;">📍 Map Coordinate Selected:</b><br>
+                <code style="font-size:0.8rem;">Lat: {lat_c:.4f}, Lng: {lng_c:.4f}</code>
+            </div>
+            """, unsafe_allow_html=True)
+
+            col_q_g, col_q_r = st.columns(2)
+            with col_q_g:
+                if st.button("🟢 Pin as Green Target", key="quick_add_green_pin", use_container_width=True):
+                    new_id = f"gp_{int(datetime.now().timestamp())}"
+                    st.session_state.custom_zones["green_pins"].append({
+                        "id": new_id,
+                        "name": f"Target Area ({lat_c:.3f}, {lng_c:.3f})",
+                        "lat": lat_c,
+                        "lng": lng_c,
+                        "radius_meters": 1200,
+                        "description": "User defined target check area"
+                    })
+                    save_custom_zones(st.session_state.custom_zones)
+                    st.toast("🟢 Added new Green Pin target area!")
+                    st.rerun()
+
+            with col_q_r:
+                if st.button("🔴 Pin as Red Choke", key="quick_add_red_pin", use_container_width=True):
+                    new_id = f"rp_{int(datetime.now().timestamp())}"
+                    st.session_state.custom_zones["red_pins"].append({
+                        "id": new_id,
+                        "name": f"Choke Point ({lat_c:.3f}, {lng_c:.3f})",
+                        "lat": lat_c,
+                        "lng": lng_c,
+                        "radius_meters": 800,
+                        "penalty_points": -50,
+                        "reason": "User defined traffic choke point"
+                    })
+                    save_custom_zones(st.session_state.custom_zones)
+                    st.toast("🔴 Added new Red Pin exclusion zone!")
+                    st.rerun()
+
+            if st.button("🎯 Set as Radar Center", use_container_width=True):
                 st.session_state.preferences["search_center"]["lat"] = lat_c
                 st.session_state.preferences["search_center"]["lng"] = lng_c
                 save_user_preferences(st.session_state.preferences)
@@ -643,6 +914,8 @@ with tab_purchase:
             "Metro Dist (km)": f"{p['dist_metro_km']} km",
             "PTP / Ecospace Dist (km)": f"{p['dist_office_km']} km",
             "Land Title": p["land_title"],
+            "Validation URL": p.get("validation_url", "https://rera.karnataka.gov.in"),
+            "RERA Portal Link": p.get("rera_portal_url", "https://rera.karnataka.gov.in"),
             "Common Complaints": complaints_short
         })
 
@@ -835,10 +1108,27 @@ with tab_purchase:
                 gmaps_pin_url = f"https://www.google.com/maps/search/?api=1&query={prop['lat']},{prop['lng']}"
                 st.markdown(f"""
                 <a href="{gmaps_pin_url}" target="_blank" style="text-decoration: none;">
-                    <div style="background-color: #0D9488; color: white; text-align: center; padding: 8px 12px; border-radius: 8px; font-weight: 700; font-size: 0.9rem; margin-bottom: 8px;">
+                    <div style="background-color: #0D9488; color: white; text-align: center; padding: 8px 12px; border-radius: 8px; font-weight: 700; font-size: 0.9rem; margin-bottom: 6px;">
                         📍 Open Exact Pin in Google Maps ↗
                     </div>
                 </a>
+                """, unsafe_allow_html=True)
+
+                val_url = prop.get("validation_url", "https://rera.karnataka.gov.in")
+                rera_url = prop.get("rera_portal_url", "https://rera.karnataka.gov.in")
+                st.markdown(f"""
+                <div style="display: flex; gap: 6px; margin-bottom: 8px; flex-wrap: wrap;">
+                    <a href="{val_url}" target="_blank" style="flex: 1; text-decoration: none; min-width: 130px;">
+                        <div style="background-color: #1E3A8A; color: #BFDBFE; text-align: center; padding: 7px 8px; border-radius: 6px; font-weight: 700; font-size: 0.78rem; border: 1px solid #3B82F6;">
+                            🔗 Verify Official Post / Site ↗
+                        </div>
+                    </a>
+                    <a href="{rera_url}" target="_blank" style="flex: 1; text-decoration: none; min-width: 130px;">
+                        <div style="background-color: #334155; color: #F1F5F9; text-align: center; padding: 7px 8px; border-radius: 6px; font-weight: 700; font-size: 0.78rem; border: 1px solid #64748B;">
+                            📋 Karnataka RERA Portal ↗
+                        </div>
+                    </a>
+                </div>
                 """, unsafe_allow_html=True)
 
                 st.markdown(f"""
@@ -992,6 +1282,8 @@ with tab_rental:
             "Brokerage Savings": f"₹{r.get('brokerage_savings_inr', 0):,}",
             "Best Platform": r.get("best_platform", "Direct Owner"),
             "Panathur Free": "🟢 Yes (Safe)" if r["panathur_bottleneck_free"] else "🔴 No (Choke)",
+            "Validation URL": r.get("validation_url", "#"),
+            "Community Post": r.get("source_post_url", "#"),
             "Contact Person": f"{contact.get('name', 'Owner')} ({contact.get('type')})",
             "Common Complaints": complaints_short
         })
@@ -1188,10 +1480,27 @@ with tab_rental:
                 gmaps_society_url = f"https://www.google.com/maps/search/?api=1&query={r['lat']},{r['lng']}"
                 st.markdown(f"""
                 <a href="{gmaps_society_url}" target="_blank" style="text-decoration: none;">
-                    <div style="background-color: #0F172A; border: 1px solid #334155; color: #38BDF8; text-align: center; padding: 6px; border-radius: 6px; font-weight: 600; font-size: 0.8rem;">
+                    <div style="background-color: #0F172A; border: 1px solid #334155; color: #38BDF8; text-align: center; padding: 6px; border-radius: 6px; font-weight: 600; font-size: 0.8rem; margin-bottom: 5px;">
                         📍 View Society on Google Maps ↗
                     </div>
                 </a>
+                """, unsafe_allow_html=True)
+
+                val_url = r.get("validation_url", "#")
+                source_post = r.get("source_post_url", "#")
+                st.markdown(f"""
+                <div style="display: flex; gap: 6px; margin-bottom: 6px; flex-wrap: wrap;">
+                    <a href="{val_url}" target="_blank" style="flex: 1; text-decoration: none; min-width: 120px;">
+                        <div style="background-color: #1E3A8A; color: #BFDBFE; text-align: center; padding: 6px; border-radius: 6px; font-weight: 700; font-size: 0.78rem; border: 1px solid #3B82F6;">
+                            🔗 Verify Post / Listing ↗
+                        </div>
+                    </a>
+                    <a href="{source_post}" target="_blank" style="flex: 1; text-decoration: none; min-width: 120px;">
+                        <div style="background-color: #065F46; color: #A7F3D0; text-align: center; padding: 6px; border-radius: 6px; font-weight: 700; font-size: 0.78rem; border: 1px solid #10B981;">
+                            💬 Community Listing ↗
+                        </div>
+                    </a>
+                </div>
                 """, unsafe_allow_html=True)
 
             # Common Complaints Box for Rental
@@ -1278,6 +1587,7 @@ with tab_nearby:
             "Total Cost of Ownership": f"₹{nb.get('total_ownership_cost_cr', 2.0)} Cr",
             "Commute to Ecospace": f"{nb['commute_to_ecospace_mins']} mins",
             "Commute to PTP": f"{nb['commute_to_ptp_mins']} mins",
+            "Validation URL": nb.get("validation_url", "#"),
             "Why Worth Considering (Pros)": nb["why_worth_considering"],
             "Key Trade-offs / Complaints (Cons)": nb["key_tradeoffs_complaints"]
         })
@@ -1331,12 +1641,20 @@ with tab_nearby:
                 st.markdown(f"- **Commute to Prestige Tech Park (PTP):** `{nb['commute_to_ptp_mins']} mins`")
                 st.markdown(f"- **Water Source:** `{nb['water_source']}`")
 
+                val_nb_url = nb.get("validation_url", "#")
                 st.markdown(f"""
-                <a href="{gmaps_nb_url}" target="_blank" style="text-decoration: none;">
-                    <div style="background-color: #6D28D9; color: white; text-align: center; padding: 8px 12px; border-radius: 8px; font-weight: 700; font-size: 0.9rem; margin-top: 8px;">
-                        📍 Open Pin in Google Maps ↗
-                    </div>
-                </a>
+                <div style="display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap;">
+                    <a href="{gmaps_nb_url}" target="_blank" style="flex: 1; text-decoration: none; min-width: 120px;">
+                        <div style="background-color: #6D28D9; color: white; text-align: center; padding: 7px; border-radius: 6px; font-weight: 700; font-size: 0.82rem;">
+                            📍 Google Maps ↗
+                        </div>
+                    </a>
+                    <a href="{val_nb_url}" target="_blank" style="flex: 1; text-decoration: none; min-width: 120px;">
+                        <div style="background-color: #1E3A8A; color: #BFDBFE; text-align: center; padding: 7px; border-radius: 6px; font-weight: 700; font-size: 0.82rem; border: 1px solid #3B82F6;">
+                            🔗 Verify Project Post ↗
+                        </div>
+                    </a>
+                </div>
                 """, unsafe_allow_html=True)
 
             st.markdown("---")
@@ -1419,47 +1737,178 @@ with tab_pedigree:
         st.checkbox("4. Storm-Water Drain (Rajakaluve) Buffer Clearance (30m/15m)", key="due_4")
 
 # =============================================================
-# TAB 6: DAILY TRACKER (5 PM IST) & CSV DOWNLOADS
+# TAB 6: DAILY TRACKER (5 PM IST) & ALL OPTIONS CSV ARCHIVE
 # =============================================================
 with tab_architecture:
-    st.subheader("⚙️ Automated Daily Tracker & Local CSV Snapshots (5:00 PM IST)")
-    st.markdown(
-        "The radar executes an automated daily snapshot at **5:00 PM IST (11:30 UTC)**. "
-        "It updates rate metrics and records the **Top 10 Purchase Properties** and **Top 5 Rental Properties** "
-        "with complete ratings, complaints, and ownership costs into dedicated local CSV files."
-    )
+    st.subheader("⚙️ Automated Daily Tracker & Parameter Delta Validation (5:00 PM IST)")
+    st.markdown("""
+    The radar maintains strict daily synchronization running automatically at **5:00 PM IST (11:30 UTC)**:
+    - 📋 **All Available Options**: Records full snapshots of **all purchase properties** (`data/all_purchase_properties_daily.csv`) and **all rental options** (`data/all_rental_properties_daily.csv`).
+    - 🏆 **Ranked Selections**: Records **Top 10 Purchase** and **Top 5 Rental** lists.
+    - 🔍 **Parameter Delta Validation**: Compares live rates, maintenance, outflows, resident ratings, feedback scores, and bottleneck statuses against `data/property_audit_ledger.json`.
+    - ⚡ **Intelligent Storage**: If today's record exists and no parameters have changed, it validates the data without redundant duplicate writes. If any parameter changes, it updates the snapshot and logs an entry to the audit trail.
+    - 🔄 **Autonomous Page Auto-Refresh**: The dashboard automatically checks date rollover every 45s and refreshes to reflect today's data even if left unattended on a screen or mobile device.
+    """)
 
-    col_tr1, col_tr2 = st.columns(2)
-    with col_tr1:
-        st.markdown("### 📥 Top 10 Purchase Properties (Daily CSV)")
-        top_10_csv_path = os.path.join(os.path.dirname(__file__), "data", "top_10_purchase_daily.csv")
-        if os.path.exists(top_10_csv_path):
-            df_top_10 = pd.read_csv(top_10_csv_path)
-            st.dataframe(df_top_10[["Property_Name", "Resident_Rating", "Feedback_Score", "Age_Years", "Rate_Per_Sqft_INR", "Base_Price_Cr", "Upfront_Cash_Required_INR", "Total_Ownership_Cost_Cr", "Panathur_Bottleneck"]], use_container_width=True, hide_index=True)
-            with open(top_10_csv_path, "rb") as f:
-                st.download_button("📥 Download Top 10 Purchase CSV", f, file_name="top_10_purchase_daily.csv", mime="text/csv", use_container_width=True)
-        else:
-            st.info("Top 10 Purchase CSV awaiting first scheduled trigger.")
+    # Validation Engine & Last Execution Summary Box
+    t_status = tracker_log.get("status", "Awaiting initial execution") if tracker_log else "Awaiting initial execution"
+    t_time = tracker_log.get("timestamp", "N/A") if tracker_log else "N/A"
+    t_date = tracker_log.get("date", "N/A") if tracker_log else "N/A"
+    t_changes = tracker_log.get("changes_count", 0) if tracker_log else 0
 
-    with col_tr2:
-        st.markdown("### 📥 Top 5 Rental Properties (Daily CSV)")
-        top_5_csv_path = os.path.join(os.path.dirname(__file__), "data", "top_5_rental_daily.csv")
-        if os.path.exists(top_5_csv_path):
-            df_top_5 = pd.read_csv(top_5_csv_path)
-            rental_preview_cols = [c for c in ["Society_Name", "Resident_Rating", "Feedback_Score", "Age_Years", "BHK", "Monthly_Rent_INR", "Total_Monthly_Outflow_INR", "Monthly_Summary_With_Deposit", "Effective_Monthly_Cost_INR", "Best_Platform"] if c in df_top_5.columns]
-            st.dataframe(df_top_5[rental_preview_cols], use_container_width=True, hide_index=True)
-            with open(top_5_csv_path, "rb") as f:
-                st.download_button("📥 Download Top 5 Rental CSV", f, file_name="top_5_rental_daily.csv", mime="text/csv", use_container_width=True)
-        else:
-            st.info("Top 5 Rental CSV awaiting first scheduled trigger.")
+    status_color = "#10B981" if "VALIDATED" in t_status or "RECORDED" in t_status else "#38BDF8"
+
+    st.markdown(f"""
+    <div style="background: #1E293B; border-left: 6px solid {status_color}; padding: 12px 16px; border-radius: 8px; margin-bottom: 16px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+            <div>
+                <b style="color: #F8FAFC; font-size: 1rem;">🛡️ Daily Validation Engine Status: <span style="color: {status_color};">{t_status}</span></b>
+                <div style="font-size: 0.85rem; color: #94A3B8; margin-top: 3px;">
+                    Last Validated Date: <code>{t_date}</code> | Audit Timestamp: <code>{t_time}</code>
+                </div>
+            </div>
+            <div>
+                <span class="badge-deal">📊 Detected Changes: {t_changes}</span>
+                <span class="badge-age">✅ All Options Monitored</span>
+            </div>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # ---------------------------------------------------------
+    # MANUAL SNAPSHOT CAPTURE & VALIDATION
+    # ---------------------------------------------------------
+    st.markdown("### ⚡ Manual Daily Capture & Validation Trigger")
+    man_c1, man_c2 = st.columns([3, 2])
+    with man_c1:
+        force_snapshot = st.checkbox("Force Re-recording (Overwrite even if all parameters are identical)", value=False)
+        if st.button("🚀 Validate & Capture Today's Snapshot Now", use_container_width=True):
+            from scripts.daily_tracker import run_daily_tracker
+            with st.spinner("Auditing property parameters and validating snapshot..."):
+                res = run_daily_tracker(dry_run=False, force=force_snapshot)
+                if res["status"] == "VALIDATED_NO_CHANGES":
+                    st.info(f"✅ **State Verified & Intact**: Existing snapshot for {res['date']} contains all {res['purchase_count']} purchase and {res['rental_count']} rental options. Zero parameter divergence detected. Redundant re-recording safely skipped.")
+                elif res["status"] == "UPDATED_ON_PARAMETER_CHANGE":
+                    st.success(f"⚡ **Parameter Changes Detected ({res['changes_count']})**! Updated all daily CSV files and logged change audit trail.")
+                else:
+                    st.success(f"🚀 **Successfully Recorded New Daily Snapshot** ({res['purchase_count']} purchase options, {res['rental_count']} rental options)!")
+                st.rerun()
+
+    with man_c2:
+        st.markdown("""
+        <div style="font-size: 0.82rem; color: #94A3B8; background: #0F172A; padding: 10px; border-radius: 8px; border: 1px solid #334155;">
+            <b>Automated Cron Schedule:</b><br>
+            Runs daily at <b>11:30 UTC (5:00 PM IST)</b> via GitHub Actions.<br>
+            Commits directly to the GitHub repository: <code>data/all_purchase_properties_daily.csv</code>, <code>data/all_rental_properties_daily.csv</code>.
+        </div>
+        """, unsafe_allow_html=True)
 
     st.markdown("---")
-    st.markdown("### ⚡ Manual Daily Tracker Trigger & Logs")
-    if st.button("🚀 Run 5:00 PM IST Snapshot Now (Update CSVs)", use_container_width=True):
-        from scripts.daily_tracker import run_daily_tracker
-        res = run_daily_tracker(dry_run=False, force=True)
-        if res:
-            st.success("Successfully generated and updated Top 10 Purchase & Top 5 Rental CSVs!")
-            st.rerun()
 
+    # ---------------------------------------------------------
+    # DOWNLOAD ALL DATASETS
+    # ---------------------------------------------------------
+    st.markdown("### 📥 Download Daily CSV Datasets (All Options & Ranked Lists)")
+    
+    dl_col1, dl_col2, dl_col3, dl_col4 = st.columns(4)
+
+    with dl_col1:
+        if os.path.exists(ALL_PURCHASE_CSV):
+            with open(ALL_PURCHASE_CSV, "rb") as f:
+                st.download_button(
+                    "📥 ALL Purchase CSV",
+                    f,
+                    file_name="all_purchase_properties_daily.csv",
+                    mime="text/csv",
+                    use_container_width=True,
+                    help="Records all available purchase properties in corridor"
+                )
+        else:
+            st.button("📥 ALL Purchase CSV (Pending)", disabled=True, use_container_width=True)
+
+    with dl_col2:
+        if os.path.exists(ALL_RENTAL_CSV):
+            with open(ALL_RENTAL_CSV, "rb") as f:
+                st.download_button(
+                    "📥 ALL Rental CSV",
+                    f,
+                    file_name="all_rental_properties_daily.csv",
+                    mime="text/csv",
+                    use_container_width=True,
+                    help="Records all available rental properties in corridor"
+                )
+        else:
+            st.button("📥 ALL Rental CSV (Pending)", disabled=True, use_container_width=True)
+
+    with dl_col3:
+        if os.path.exists(TOP_10_PURCHASE_CSV):
+            with open(TOP_10_PURCHASE_CSV, "rb") as f:
+                st.download_button(
+                    "📥 Top 10 Purchase CSV",
+                    f,
+                    file_name="top_10_purchase_daily.csv",
+                    mime="text/csv",
+                    use_container_width=True,
+                    help="Top 10 purchase properties scored by radar"
+                )
+        else:
+            st.button("📥 Top 10 Purchase (Pending)", disabled=True, use_container_width=True)
+
+    with dl_col4:
+        if os.path.exists(TOP_5_RENTAL_CSV):
+            with open(TOP_5_RENTAL_CSV, "rb") as f:
+                st.download_button(
+                    "📥 Top 5 Rental CSV",
+                    f,
+                    file_name="top_5_rental_daily.csv",
+                    mime="text/csv",
+                    use_container_width=True,
+                    help="Top 5 rental properties scored by radar"
+                )
+        else:
+            st.button("📥 Top 5 Rental (Pending)", disabled=True, use_container_width=True)
+
+    # ---------------------------------------------------------
+    # DATA PREVIEWS: ALL OPTIONS
+    # ---------------------------------------------------------
+    st.markdown("---")
+    pv_c1, pv_c2 = st.columns(2)
+    with pv_c1:
+        st.markdown("#### 🏢 All Available Purchase Properties Monitored")
+        if os.path.exists(ALL_PURCHASE_CSV):
+            df_all_p = pd.read_csv(ALL_PURCHASE_CSV)
+            p_show_cols = [c for c in ["Property_Name", "Resident_Rating", "Feedback_Score", "Age_Years", "Rate_Per_Sqft_INR", "Base_Price_Cr", "Upfront_Cash_Required_INR", "Total_Ownership_Cost_Cr", "Validation_Status"] if c in df_all_p.columns]
+            st.dataframe(df_all_p[p_show_cols], use_container_width=True, hide_index=True)
+            st.caption(f"Total monitored purchase options: {len(df_all_p)}")
+
+    with pv_c2:
+        st.markdown("#### 🏡 All Available Rental Properties Monitored")
+        if os.path.exists(ALL_RENTAL_CSV):
+            df_all_r = pd.read_csv(ALL_RENTAL_CSV)
+            r_show_cols = [c for c in ["Society_Name", "Resident_Rating", "Feedback_Score", "Age_Years", "Monthly_Rent_INR", "Total_Monthly_Outflow_INR", "Monthly_Summary_With_Deposit", "Effective_Monthly_Cost_INR", "Best_Platform"] if c in df_all_r.columns]
+            st.dataframe(df_all_r[r_show_cols], use_container_width=True, hide_index=True)
+            st.caption(f"Total monitored rental options: {len(df_all_r)}")
+
+    # ---------------------------------------------------------
+    # PARAMETER CHANGE AUDIT TRAIL
+    # ---------------------------------------------------------
+    st.markdown("---")
+    st.markdown("### 🔍 Parameter Change Detection Audit Trail")
+    df_changes = get_parameter_changes_df()
+    if not df_changes.empty:
+        st.dataframe(df_changes, use_container_width=True, hide_index=True)
+        if os.path.exists(CHANGES_CSV_FILE):
+            with open(CHANGES_CSV_FILE, "rb") as f:
+                st.download_button(
+                    "📥 Download Parameter Changes Audit Log CSV",
+                    f,
+                    file_name="property_parameter_changes.csv",
+                    mime="text/csv",
+                    use_container_width=True
+                )
+    else:
+        st.info("No parameter deltas recorded yet. Parameters are currently in lock-step with base records.")
+
+    st.markdown("---")
+    st.markdown("#### 📜 Live Tracker Execution Log JSON")
     st.json(tracker_log if tracker_log else {"status": "Awaiting initial cron execution"})

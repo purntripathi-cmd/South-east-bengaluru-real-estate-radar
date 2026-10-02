@@ -70,3 +70,33 @@ def check_zone_membership(lat, lng, market_zones):
             return "Green", gz.get("name", "Allowed Green Zone"), 0
             
     return "Neutral", "Corridor Buffer", 0
+
+
+def check_custom_pins(lat, lng, green_pins, red_pins):
+    """
+    Evaluates whether a point (lat, lng) falls within any custom Red Pin (exclusion)
+    or Green Pin (target check area).
+    Returns: (zone_type, zone_name, penalty)
+    zone_type is 'Red', 'Green', or 'Neutral'
+    """
+    # 1. Red Pins always take precedence (exclusion/bottleneck check)
+    for rp in red_pins:
+        r_lat = rp.get("lat")
+        r_lng = rp.get("lng")
+        r_radius_km = rp.get("radius_meters", 800) / 1000.0
+        if r_lat is not None and r_lng is not None:
+            dist = haversine_distance_km(lat, lng, r_lat, r_lng)
+            if dist <= r_radius_km:
+                return "Red", rp.get("name", "Custom Excluded Choke"), rp.get("penalty_points", -50)
+
+    # 2. Green Pins (target area check)
+    for gp in green_pins:
+        g_lat = gp.get("lat")
+        g_lng = gp.get("lng")
+        g_radius_km = gp.get("radius_meters", 1000) / 1000.0
+        if g_lat is not None and g_lng is not None:
+            dist = haversine_distance_km(lat, lng, g_lat, g_lng)
+            if dist <= g_radius_km:
+                return "Green", gp.get("name", "Custom Target Green Zone"), 0
+
+    return "Neutral", "Outside Defined Pins", 0

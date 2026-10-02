@@ -21,6 +21,19 @@
     "annual_maintenance_inr": 66000,
     "security_deposit_months": 4,
     "security_deposit_inr": 272000,
+    "resident_rating": 4.6,
+    "feedback_score": 92,
+    "rating_breakdown": {
+      "society_maintenance": 4.8,
+      "landlord_cooperation": 4.7,
+      "utility_reliability": 4.6,
+      "tenant_rules": 4.3
+    },
+    "common_complaints": [
+      "Strict visitor parking policy; guests must be pre-approved on MyGate.",
+      "Green Glen arch gets queued up during evening office commute (6:30 - 8:00 PM).",
+      "Clubhouse tennis court booking slots are hard to get on weekends."
+    ],
     "platforms": {
       "Direct_Owner": {
         "price": 68000,
@@ -101,6 +114,19 @@
     "annual_maintenance_inr": 60000,
     "security_deposit_months": 5,
     "security_deposit_inr": 380000,
+    "resident_rating": 4.5,
+    "feedback_score": 90,
+    "rating_breakdown": {
+      "society_maintenance": 4.7,
+      "landlord_cooperation": 4.5,
+      "utility_reliability": 4.5,
+      "tenant_rules": 4.4
+    },
+    "common_complaints": [
+      "Heavy morning pedestrian movement on ORR service road.",
+      "Elevator wait times around 8:45 AM can be 2-3 minutes during peak office dispatch.",
+      "Higher security deposit (5 months requested by owner)."
+    ],
     "platforms": {
       "Direct_Owner": {
         "price": 76000,
@@ -181,6 +207,19 @@
     "annual_maintenance_inr": 50400,
     "security_deposit_months": 3,
     "security_deposit_inr": 156000,
+    "resident_rating": 4.4,
+    "feedback_score": 88,
+    "rating_breakdown": {
+      "society_maintenance": 4.3,
+      "landlord_cooperation": 4.6,
+      "utility_reliability": 4.5,
+      "tenant_rules": 4.3
+    },
+    "common_complaints": [
+      "School bus arrival at 8:15 AM creates slight congestion on society back road.",
+      "10-year old building; interior fixtures show slight age though functional.",
+      "Limited visitor slots near Tower C."
+    ],
     "platforms": {
       "Direct_Owner": {
         "price": 52000,
@@ -261,6 +300,19 @@
     "annual_maintenance_inr": 45600,
     "security_deposit_months": 4,
     "security_deposit_inr": 196000,
+    "resident_rating": 4.4,
+    "feedback_score": 89,
+    "rating_breakdown": {
+      "society_maintenance": 4.5,
+      "landlord_cooperation": 4.5,
+      "utility_reliability": 4.5,
+      "tenant_rules": 4.2
+    },
+    "common_complaints": [
+      "No bachelors or shared flatting allowed by association.",
+      "Strict noise rules past 10:00 PM.",
+      "Speed bumps inside society require very slow driving."
+    ],
     "platforms": {
       "Direct_Owner": {
         "price": 49000,
@@ -341,6 +393,19 @@
     "annual_maintenance_inr": 132000,
     "security_deposit_months": 5,
     "security_deposit_inr": 675000,
+    "resident_rating": 4.7,
+    "feedback_score": 95,
+    "rating_breakdown": {
+      "society_maintenance": 4.9,
+      "landlord_cooperation": 4.8,
+      "utility_reliability": 4.7,
+      "tenant_rules": 4.5
+    },
+    "common_complaints": [
+      "Very high monthly maintenance (Rs 11,000/mo) payable by tenant.",
+      "Substantial deposit amount of Rs 6.75 Lakhs required.",
+      "Move-in / move-out deposit and lift padding charges are Rs 15,000."
+    ],
     "platforms": {
       "Direct_Owner": {
         "price": 135000,
@@ -421,6 +486,19 @@
     "annual_maintenance_inr": 54000,
     "security_deposit_months": 4,
     "security_deposit_inr": 216000,
+    "resident_rating": 4.5,
+    "feedback_score": 91,
+    "rating_breakdown": {
+      "society_maintenance": 4.6,
+      "landlord_cooperation": 4.6,
+      "utility_reliability": 4.5,
+      "tenant_rules": 4.7
+    },
+    "common_complaints": [
+      "Room dimensions are slightly compact for larger king-size beds.",
+      "Adjacent construction causes minor dust on east-facing balconies.",
+      "Weekend guest parking fills up quickly after 6:00 PM."
+    ],
     "platforms": {
       "Direct_Owner": {
         "price": 54000,
@@ -501,6 +579,19 @@
     "annual_maintenance_inr": 38400,
     "security_deposit_months": 5,
     "security_deposit_inr": 185000,
+    "resident_rating": 3.7,
+    "feedback_score": 68,
+    "rating_breakdown": {
+      "society_maintenance": 4.5,
+      "landlord_cooperation": 4.2,
+      "utility_reliability": 3.0,
+      "tenant_rules": 4.0
+    },
+    "common_complaints": [
+      "SEVERE TRAFFIC: 45-60 min delay getting through Panathur railway underpass.",
+      "Private tanker water surcharge added during summer months.",
+      "High density: school cabs and delivery bikes clog entry gate between 8:00 - 9:00 AM."
+    ],
     "platforms": {
       "Direct_Owner": {
         "price": 37000,

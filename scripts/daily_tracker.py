@@ -3,8 +3,8 @@ Automated Daily Tracker Script for East Bengaluru Real Estate Radar
 Executes daily at 5:00 PM IST (11:30 UTC).
 - Tracks micro-market price appreciation across Bellandur, Green Glen, Kadubeesanahalli (Gurukul)
 - Evaluates the Panathur Choke Point penalty spread
-- Records TOP 10 Purchase Properties with Total Ownership Cost, Upfront Advance, & Age in data/top_10_purchase_daily.csv
-- Records TOP 5 Rental Properties with Total Maintenance, Brokerage Savings, & Direct Owner Contacts in data/top_5_rental_daily.csv
+- Records TOP 10 Purchase Properties with Total Ownership Cost, Upfront Advance, Age, Resident Ratings & Complaints in data/top_10_purchase_daily.csv
+- Records TOP 5 Rental Properties with Total Maintenance, Brokerage Savings, Direct Owner Contacts, Ratings & Complaints in data/top_5_rental_daily.csv
 - Appends historical timeline in data/historical_prices.csv
 - Logs status to data/daily_tracker_log.json
 """
@@ -12,7 +12,7 @@ Executes daily at 5:00 PM IST (11:30 UTC).
 import os
 import sys
 import json
-from datetime import datetime
+from datetime import datetime, timezone
 import pandas as pd
 
 # Fix Windows console UTF-8 encoding
@@ -47,7 +47,7 @@ def load_json(filepath):
 
 
 def run_daily_tracker(dry_run=False, force=False):
-    now_utc = datetime.utcnow()
+    now_utc = datetime.now(timezone.utc)
     date_str = now_utc.strftime("%Y-%m-%d")
     timestamp_iso = now_utc.strftime("%Y-%m-%d %H:%M:%S UTC")
 
@@ -89,7 +89,6 @@ def run_daily_tracker(dry_run=False, force=False):
     # ---------------------------------------------------------
     purchase_records = []
     for p in properties:
-        # Calculate ownership costs
         base_cost = p.get("base_cost_inr", int(p.get("total_price_cr", 1.0) * 10000000))
         stamp_duty = round(base_cost * (p.get("stamp_duty_pct", 5.6) / 100.0))
         reg_fee = round(base_cost * (p.get("registration_fee_pct", 1.0) / 100.0))
@@ -103,10 +102,7 @@ def run_daily_tracker(dry_run=False, force=False):
         upfront_advance_required = down_payment_20pct + stamp_duty + reg_fee + legal_fee + khata_fee + corpus_fund
         total_ownership_cost = base_cost + stamp_duty + reg_fee + legal_fee + khata_fee + corpus_fund + interiors + annual_maint
 
-        # Mock score if not computed
-        score = 90.0 if not p.get("panathur_routing") else 40.0
-        if p.get("builder_tier") == "Tier 1":
-            score += 5.0
+        complaints_str = " | ".join(p.get("common_complaints", []))
 
         purchase_records.append({
             "Snapshot_Date": date_str,
@@ -118,6 +114,8 @@ def run_daily_tracker(dry_run=False, force=False):
             "Year_Built": p.get("year_built", 2018),
             "Age_Years": p.get("age_years", 8),
             "Age_Category": p.get("age_category", "Mature Gated"),
+            "Resident_Rating": p.get("resident_rating", 4.5),
+            "Feedback_Score": p.get("feedback_score", 90),
             "Rate_Per_Sqft_INR": p.get("price_per_sqft"),
             "Config": p.get("avg_bhk"),
             "Area_Sqft": p.get("avg_sqft"),
@@ -136,11 +134,11 @@ def run_daily_tracker(dry_run=False, force=False):
             "Panathur_Bottleneck": "YES (Severe Choke)" if p.get("panathur_routing") else "NO (Green Route)",
             "Metro_Distance_KM": p.get("dist_metro_km"),
             "Land_Title": p.get("land_title"),
-            "RERA_Status": p.get("rera_status")
+            "RERA_Status": p.get("rera_status"),
+            "Common_Complaints": complaints_str
         })
 
-    # Sort by Green zone first, then base price
-    purchase_records.sort(key=lambda x: (x["Zone_Type"] != "Green", -x["Rate_Per_Sqft_INR"]))
+    purchase_records.sort(key=lambda x: (x["Zone_Type"] != "Green", -x["Resident_Rating"], -x["Rate_Per_Sqft_INR"]))
     top_10_purchase_df = pd.DataFrame(purchase_records[:10])
 
     # ---------------------------------------------------------
@@ -153,6 +151,7 @@ def run_daily_tracker(dry_run=False, force=False):
         total_monthly = r.get("total_monthly_outflow", rent + maint)
         annual_maint = r.get("annual_maintenance_inr", maint * 12)
         contact = r.get("contact", {})
+        r_complaints = " | ".join(r.get("common_complaints", []))
 
         rental_records.append({
             "Snapshot_Date": date_str,
@@ -164,6 +163,8 @@ def run_daily_tracker(dry_run=False, force=False):
             "Furnishing": r.get("furnishing"),
             "Year_Built": r.get("year_built", 2019),
             "Age_Years": r.get("age_years", 7),
+            "Resident_Rating": r.get("resident_rating", 4.5),
+            "Feedback_Score": r.get("feedback_score", 90),
             "Monthly_Rent_INR": rent,
             "Monthly_Maintenance_INR": maint,
             "Total_Monthly_Outflow_INR": total_monthly,
@@ -175,14 +176,14 @@ def run_daily_tracker(dry_run=False, force=False):
             "Water_Supply": r.get("water_supply"),
             "Power_Backup": r.get("power_backup"),
             "Panathur_Free": "YES (Safe)" if r.get("panathur_bottleneck_free") else "NO (Traffic Choke)",
+            "Common_Complaints": r_complaints,
             "Contact_Type": contact.get("type", "Owner"),
             "Contact_Name": contact.get("name", "Owner"),
             "Contact_Phone": contact.get("phone", ""),
             "WhatsApp_Chat": f"https://wa.me/{contact.get('whatsapp', '')}"
         })
 
-    # Sort rental by Zero Panathur first, then highest brokerage savings, then lowest rent
-    rental_records.sort(key=lambda x: (x["Panathur_Free"] != "YES (Safe)", -x["Brokerage_Savings_INR"], x["Monthly_Rent_INR"]))
+    rental_records.sort(key=lambda x: (x["Panathur_Free"] != "YES (Safe)", -x["Resident_Rating"], -x["Brokerage_Savings_INR"]))
     top_5_rental_df = pd.DataFrame(rental_records[:5])
 
     # ---------------------------------------------------------
@@ -195,7 +196,6 @@ def run_daily_tracker(dry_run=False, force=False):
         top_5_rental_df.to_csv(TOP_5_RENTAL_CSV, index=False, encoding="utf-8")
         safe_print(f"Recorded TOP 5 Rental properties to {TOP_5_RENTAL_CSV}")
 
-        # Update historical price dataset
         if os.path.exists(HISTORICAL_CSV):
             hist_df = pd.read_csv(HISTORICAL_CSV)
             if force or (date_str not in hist_df["date"].values):
@@ -208,13 +208,12 @@ def run_daily_tracker(dry_run=False, force=False):
                     "panathur_road_choke_psqft": panathur_avg,
                     "sarjapur_road_psqft": 10800,
                     "rental_yield_avg_pct": 4.1,
-                    "notes": f"Automated 5 PM IST snapshot. Recorded Top 10 Purchase & Top 5 Rental."
+                    "notes": f"Automated 5 PM IST snapshot. Recorded Top 10 Purchase & Top 5 Rental with Ratings & Complaints."
                 }
                 hist_df = pd.concat([hist_df, pd.DataFrame([new_row])], ignore_index=True)
                 hist_df.to_csv(HISTORICAL_CSV, index=False)
                 safe_print(f"Appended snapshot to {HISTORICAL_CSV}")
 
-        # Save tracker log
         log_entry = {
             "status": "SUCCESS",
             "last_run_utc": timestamp_iso,

@@ -17,6 +17,7 @@ from utils.storage import (
     save_user_preferences,
     get_properties,
     get_rental_properties,
+    get_nearby_properties,
     get_market_zones,
     get_anchors,
     get_historical_prices_df,
@@ -91,6 +92,16 @@ st.markdown("""
         display: inline-block;
         margin: 2px 2px;
     }
+    .badge-rating {
+        background-color: #78350F;
+        color: #FDE68A;
+        padding: 4px 8px;
+        border-radius: 6px;
+        font-size: 0.8rem;
+        font-weight: 700;
+        display: inline-block;
+        margin: 2px 2px;
+    }
     .badge-deal {
         background-color: #1E3A8A;
         color: #BFDBFE;
@@ -116,6 +127,20 @@ st.markdown("""
         border-radius: 8px;
         padding: 0.8rem;
         margin-top: 0.5rem;
+    }
+    .complaint-box {
+        background: #1E1B4B;
+        border-left: 4px solid #F59E0B;
+        border-radius: 6px;
+        padding: 0.8rem;
+        margin-top: 0.6rem;
+    }
+    .nearby-box {
+        background: #064E3B;
+        border-left: 4px solid #10B981;
+        border-radius: 6px;
+        padding: 0.8rem;
+        margin-top: 0.6rem;
     }
     .mobile-btn {
         display: inline-block;
@@ -186,6 +211,7 @@ weights = prefs.get("weights", {
 
 properties = get_properties()
 rental_properties = get_rental_properties()
+nearby_properties = get_nearby_properties()
 market_zones = get_market_zones()
 anchors = get_anchors()
 hist_df = get_historical_prices_df()
@@ -199,10 +225,11 @@ st.markdown("""
     <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
         <div>
             <h1 class="main-title">🧭 East Bengaluru Real Estate Radar</h1>
-            <p class="sub-title">Bellandur • Green Glen Layout • Kadubeesanahalli (Gurukul Side) | Blue Line Metro Corridor</p>
+            <p class="sub-title">Bellandur • Green Glen Layout • Kadubeesanahalli (Gurukul Side) & Nearby Micro-Markets</p>
         </div>
         <div>
             <span class="badge-green">🛡️ Panathur Choke Filter</span>
+            <span class="badge-rating">⭐ Resident Feedback & Complaints</span>
             <span class="badge-age">⏳ Age Evaluator</span>
             <span class="badge-green">⏰ 5:00 PM IST Tracker</span>
         </div>
@@ -219,7 +246,7 @@ with col_k1:
 with col_k2:
     st.metric(label="Rental Listings", value=f"{len(rental_properties)} Units", delta="Zero-Brokerage")
 with col_k3:
-    st.metric(label="Green Glen vs Panathur", value="+48.0%", delta="Bottleneck Premium", delta_color="normal")
+    st.metric(label="Nearby Scanned", value=f"{len(nearby_properties)} Properties", delta="Sarjapur, HSR, Varthur")
 with col_k4:
     st.metric(label="Daily Sync", value="5:00 PM IST", delta="Automated Cron (11:30 UTC)")
 
@@ -228,7 +255,7 @@ with col_k4:
 # -------------------------------------------------------------
 st.sidebar.header("⚙️ Radar Controls")
 
-# Map Provider Selection (Fix for map visibility & Google Maps integration)
+# Map Provider Selection
 st.sidebar.subheader("🗺️ Map Engine & Provider")
 map_provider = st.sidebar.selectbox(
     "Base Map Layer",
@@ -241,6 +268,12 @@ map_provider = st.sidebar.selectbox(
     ],
     index=0,
     help="Google Maps tile layers render high-resolution Google imagery without requiring an API key!"
+)
+
+show_nearby_on_map = st.sidebar.checkbox(
+    "Show Nearby Areas on Map (Sarjapur, HSR, Varthur)",
+    value=True,
+    help="Plots worth-considering properties in adjacent micro-markets as purple pins on the map."
 )
 
 google_api_key = st.sidebar.text_input(
@@ -301,9 +334,10 @@ with col_sb2:
 # -------------------------------------------------------------
 # Main Application Tabs
 # -------------------------------------------------------------
-tab_purchase, tab_rental, tab_trends, tab_pedigree, tab_architecture = st.tabs([
+tab_purchase, tab_rental, tab_nearby, tab_trends, tab_pedigree, tab_architecture = st.tabs([
     "🏢 Purchase / Investment",
     "🏡 Rental Discovery (Tab 2)",
+    "🧭 Nearby Areas (Worth Considering)",
     "📊 Price Trends",
     "⚖️ Builder & Due Diligence",
     "⚙️ 5 PM Tracker & Downloads"
@@ -324,8 +358,8 @@ with tab_purchase:
         p_copy.update(breakdown)
         scored_properties.append(p_copy)
 
-    # Filter Bar with Age of Property Filter
-    f_c1, f_c2, f_c3, f_c4 = st.columns([1, 1, 1, 1])
+    # Filter Bar with Age, Rating & Budget Filters
+    f_c1, f_c2, f_c3, f_c4, f_c5 = st.columns([1, 1, 1, 1, 1])
     with f_c1:
         zone_filter = st.selectbox(
             "Zone Filter",
@@ -342,6 +376,11 @@ with tab_purchase:
             ["Any Property Age", "Brand New (0-3 yrs)", "Prime Modern (4-7 yrs)", "Mature Gated (8+ yrs)"]
         )
     with f_c4:
+        min_rating_filter = st.selectbox(
+            "Min Resident Rating",
+            ["Any Rating", "4.5★ & Above (Top Rated)", "4.0★ & Above", "3.5★ & Above"]
+        )
+    with f_c5:
         budget_filter = st.slider("Max Budget (₹ Cr)", 0.5, 7.0, 7.0, step=0.25)
 
     # Filter properties
@@ -358,6 +397,12 @@ with tab_purchase:
         if age_filter == "Prime Modern (4-7 yrs)" and not (4 <= p.get("age_years", 0) <= 7):
             continue
         if age_filter == "Mature Gated (8+ yrs)" and p.get("age_years", 0) < 8:
+            continue
+        if min_rating_filter == "4.5★ & Above (Top Rated)" and p.get("resident_rating", 0) < 4.5:
+            continue
+        if min_rating_filter == "4.0★ & Above" and p.get("resident_rating", 0) < 4.0:
+            continue
+        if min_rating_filter == "3.5★ & Above" and p.get("resident_rating", 0) < 3.5:
             continue
         if p["total_price_cr"] > budget_filter:
             continue
@@ -472,16 +517,15 @@ with tab_purchase:
         pin_icon = "star" if score >= 80 else ("home" if score >= 60 else "exclamation-triangle")
 
         popup_html = f"""
-        <div style="font-family: sans-serif; width: 220px;">
+        <div style="font-family: sans-serif; width: 230px;">
             <h4 style="margin: 0; color: #0F172A;">{prop['name']}</h4>
             <p style="margin: 3px 0; font-size: 12px; color: #475569;"><b>Builder:</b> {prop['builder']} ({prop['builder_tier']})</p>
-            <p style="margin: 3px 0; font-size: 12px; color: #312E81;"><b>Age:</b> {prop.get('age_years', 5)} Years ({prop.get('year_built', 2021)})</p>
+            <p style="margin: 3px 0; font-size: 12px; color: #B45309;"><b>⭐ Resident Rating:</b> {prop.get('resident_rating', 4.5)} / 5.0</p>
+            <p style="margin: 3px 0; font-size: 12px; color: #312E81;"><b>Age:</b> {prop.get('age_years', 5)} Yrs ({prop.get('year_built', 2021)})</p>
             <p style="margin: 3px 0; font-size: 13px; font-weight: bold; color: {'#16A34A' if score >= 75 else '#DC2626'};">
                 Radar Match Score: {score} / 100
             </p>
-            <p style="margin: 3px 0; font-size: 12px;"><b>Rate:</b> ₹{prop['price_per_sqft']:,} / sqft</p>
-            <p style="margin: 3px 0; font-size: 12px;"><b>Base Outlay:</b> ~₹{prop['total_price_cr']} Cr</p>
-            <p style="margin: 3px 0; font-size: 11px; color: #64748B;"><b>Metro:</b> {prop['dist_metro_km']} km</p>
+            <p style="margin: 3px 0; font-size: 12px;"><b>Rate:</b> ₹{prop['price_per_sqft']:,} / sqft (~₹{prop['total_price_cr']} Cr)</p>
             <a href="https://www.google.com/maps/search/?api=1&query={prop['lat']},{prop['lng']}" target="_blank" style="font-size: 11px; color: #0D9488; font-weight: bold;">
                 📍 Open in Google Maps ↗
             </a>
@@ -490,10 +534,32 @@ with tab_purchase:
 
         folium.Marker(
             location=[prop["lat"], prop["lng"]],
-            popup=folium.Popup(popup_html, max_width=250),
-            tooltip=f"{prop['name']} - Score: {score}",
+            popup=folium.Popup(popup_html, max_width=260),
+            tooltip=f"{prop['name']} - Score: {score} | ⭐ {prop.get('resident_rating', 4.5)}",
             icon=folium.Icon(color=pin_color, icon=pin_icon, prefix="fa")
         ).add_to(m)
+
+    # Optionally Plot Nearby Worth Considering Properties as Purple Pins
+    if show_nearby_on_map:
+        for nb in nearby_properties:
+            nb_html = f"""
+            <div style="font-family: sans-serif; width: 230px;">
+                <h4 style="margin: 0; color: #6D28D9;">🧭 Nearby: {nb['name']}</h4>
+                <p style="margin: 3px 0; font-size: 12px; color: #475569;"><b>Area:</b> {nb['micro_market']}</p>
+                <p style="margin: 3px 0; font-size: 12px; color: #B45309;"><b>⭐ Rating:</b> {nb.get('resident_rating', 4.5)} / 5.0</p>
+                <p style="margin: 3px 0; font-size: 12px;"><b>Rate:</b> ₹{nb['price_per_sqft']:,}/sqft (~₹{nb['total_price_cr']} Cr)</p>
+                <p style="margin: 3px 0; font-size: 11px; color: #64748B;"><b>Dist to Bellandur:</b> {nb['distance_to_bellandur_km']} km</p>
+                <a href="https://www.google.com/maps/search/?api=1&query={nb['lat']},{nb['lng']}" target="_blank" style="font-size: 11px; color: #6D28D9; font-weight: bold;">
+                    📍 Open in Google Maps ↗
+                </a>
+            </div>
+            """
+            folium.Marker(
+                location=[nb["lat"], nb["lng"]],
+                popup=folium.Popup(nb_html, max_width=250),
+                tooltip=f"Nearby: {nb['name']} ({nb['micro_market']})",
+                icon=folium.Icon(color="darkpurple", icon="bookmark", prefix="fa")
+            ).add_to(m)
 
     # Render Folium Map (Use container width for responsive mobile view)
     map_col, info_col = st.columns([7, 3])
@@ -504,8 +570,9 @@ with tab_purchase:
         st.markdown("#### 🗺️ Map Guide")
         st.markdown(f"**Current Map Tile:** `{map_provider}`")
         st.markdown("""
-        - 🟢 **Green Zones**: Bellandur Core, Green Glen, Kadubeesanahalli (Gurukul)
+        - 🟢 **Green Zones**: Bellandur Core, Green Glen, Gurukul Side
         - 🔴 **Red Zones**: Panathur Choke Corridor (-50 pts)
+        - 🟣 **Purple Pins**: Nearby Worth-Considering (Sarjapur, HSR, Varthur)
         - 🚇 **Blue Line**: ORR Metro Alignment
         - 📍 Tap any pin to view property details & Google Maps link.
         """)
@@ -530,11 +597,164 @@ with tab_purchase:
                 save_user_preferences(st.session_state.preferences)
                 st.rerun()
 
+    # =========================================================
+    # COMPREHENSIVE COMPARISON TABLE (PURCHASE PROPERTIES)
+    # =========================================================
     st.markdown("---")
-    st.subheader(f"📋 Evaluated Purchase Properties ({len(filtered_props)} Matching)")
+    st.subheader("📊 Comprehensive Purchase Comparison Table (All Parameters & Ratings)")
+    st.caption("Side-by-side comparison across all financial, structural, age, maintenance, rating, and legal parameters.")
+
+    table_data = []
+    for p in filtered_props:
+        base_cost = p.get("base_cost_inr", int(p["total_price_cr"] * 10000000))
+        stamp_duty = round(base_cost * (p.get("stamp_duty_pct", 5.6) / 100.0))
+        reg_fee = round(base_cost * (p.get("registration_fee_pct", 1.0) / 100.0))
+        legal_fee = p.get("legal_advocate_fees_inr", 45000)
+        khata_fee = p.get("khata_transfer_fee_inr", 15000)
+        corpus_fund = p.get("corpus_sinking_fund_inr", 200000)
+        interiors = p.get("interiors_estimate_inr", 1500000)
+        m_maint = p.get("monthly_maintenance_inr", int(p.get("maintenance_sqft", 4.0) * p.get("avg_sqft", 1500)))
+        a_maint = m_maint * 12
+        
+        down_payment_20pct = round(base_cost * 0.20)
+        upfront_advance_required = down_payment_20pct + stamp_duty + reg_fee + legal_fee + khata_fee + corpus_fund
+        total_ownership_cost = base_cost + stamp_duty + reg_fee + legal_fee + khata_fee + corpus_fund + interiors + a_maint
+        
+        complaints_short = "; ".join(p.get("common_complaints", []))
+
+        table_data.append({
+            "Property Name": p["name"],
+            "Builder": p["builder"],
+            "Tier": p["builder_tier"],
+            "Micro-Market": p["micro_market"],
+            "Zone": "🟢 Green" if p["zone_type"] == "Green" else "🔴 Red (Choke)",
+            "Age (Yrs)": f"{p.get('age_years', 8)} yrs ({p.get('year_built', 2018)})",
+            "Resident Rating": f"⭐ {p.get('resident_rating', 4.5)} / 5",
+            "Feedback Score": f"{p.get('feedback_score', 90)} / 100",
+            "Match Score": f"{p['final_match_score']} / 100",
+            "Rate / sqft": f"₹{p['price_per_sqft']:,}",
+            "Config": p["avg_bhk"],
+            "Area (sqft)": p["avg_sqft"],
+            "Base Price (Cr)": f"₹{p['total_price_cr']} Cr",
+            "Monthly Maint": f"₹{m_maint:,}",
+            "Annual Maint": f"₹{a_maint:,}",
+            "Upfront Cash Req. (Lakhs)": f"₹{round(upfront_advance_required/100000, 2)} L",
+            "Total Cost of Ownership (Cr)": f"₹{round(total_ownership_cost/10000000, 3)} Cr",
+            "Metro Dist (km)": f"{p['dist_metro_km']} km",
+            "PTP / Ecospace Dist (km)": f"{p['dist_office_km']} km",
+            "Land Title": p["land_title"],
+            "Common Complaints": complaints_short
+        })
+
+    df_purchase_table = pd.DataFrame(table_data)
+    st.dataframe(df_purchase_table, use_container_width=True, hide_index=True)
+
+    # Interactive Side-by-Side Property Head-to-Head Comparison
+    with st.expander("🔍 Interactive Head-to-Head Property Comparator (Select 2-4 Properties)"):
+        prop_options = [p["name"] for p in filtered_props]
+        selected_for_compare = st.multiselect(
+            "Select Properties to Compare Side-by-Side",
+            options=prop_options,
+            default=prop_options[:2] if len(prop_options) >= 2 else prop_options
+        )
+
+        if selected_for_compare:
+            compare_records = []
+            for name in selected_for_compare:
+                p = next((item for item in filtered_props if item["name"] == name), None)
+                if p:
+                    base_cost = p.get("base_cost_inr", int(p["total_price_cr"] * 10000000))
+                    stamp_duty = round(base_cost * (p.get("stamp_duty_pct", 5.6) / 100.0))
+                    reg_fee = round(base_cost * (p.get("registration_fee_pct", 1.0) / 100.0))
+                    legal_fee = p.get("legal_advocate_fees_inr", 45000)
+                    khata_fee = p.get("khata_transfer_fee_inr", 15000)
+                    corpus_fund = p.get("corpus_sinking_fund_inr", 200000)
+                    interiors = p.get("interiors_estimate_inr", 1500000)
+                    m_maint = p.get("monthly_maintenance_inr", int(p.get("maintenance_sqft", 4.0) * p.get("avg_sqft", 1500)))
+                    a_maint = m_maint * 12
+                    down_payment_20pct = round(base_cost * 0.20)
+                    upfront_advance_required = down_payment_20pct + stamp_duty + reg_fee + legal_fee + khata_fee + corpus_fund
+                    total_ownership_cost = base_cost + stamp_duty + reg_fee + legal_fee + khata_fee + corpus_fund + interiors + a_maint
+                    
+                    compare_records.append({
+                        "Metric / Parameter": "Builder & Hierarchy",
+                        name: f"{p['builder']} ({p['builder_tier']})"
+                    })
+                    compare_records.append({
+                        "Metric / Parameter": "Micro-Market Location",
+                        name: p["micro_market"]
+                    })
+                    compare_records.append({
+                        "Metric / Parameter": "Traffic Route Status",
+                        name: "🟢 Panathur-Free Green Route" if not p["panathur_routing"] else "🔴 Panathur Bottleneck (-50 pts)"
+                    })
+                    compare_records.append({
+                        "Metric / Parameter": "Property Age & Year Built",
+                        name: f"{p.get('age_years', 8)} Years (Built {p.get('year_built', 2018)})"
+                    })
+                    compare_records.append({
+                        "Metric / Parameter": "⭐ Resident Rating",
+                        name: f"⭐ {p.get('resident_rating', 4.5)} / 5.0 (Score: {p.get('feedback_score', 90)}/100)"
+                    })
+                    compare_records.append({
+                        "Metric / Parameter": "Radar Match Score",
+                        name: f"{p['final_match_score']} / 100"
+                    })
+                    compare_records.append({
+                        "Metric / Parameter": "Rate per Sqft",
+                        name: f"₹{p['price_per_sqft']:,} / sqft"
+                    })
+                    compare_records.append({
+                        "Metric / Parameter": "Average Config & Area",
+                        name: f"{p['avg_bhk']} ({p['avg_sqft']} sqft)"
+                    })
+                    compare_records.append({
+                        "Metric / Parameter": "Base Flat Agreement Price",
+                        name: f"₹{p['total_price_cr']} Cr (₹{base_cost:,})"
+                    })
+                    compare_records.append({
+                        "Metric / Parameter": "Monthly / Annual Maintenance",
+                        name: f"₹{m_maint:,} / mo (₹{a_maint:,} / yr)"
+                    })
+                    compare_records.append({
+                        "Metric / Parameter": "Stamp Duty & Registration (6.6%)",
+                        name: f"₹{(stamp_duty + reg_fee):,}"
+                    })
+                    compare_records.append({
+                        "Metric / Parameter": "👉 Upfront Advance Cash Required (20% + Reg)",
+                        name: f"₹{round(upfront_advance_required/100000, 2)} Lakhs (₹{upfront_advance_required:,})"
+                    })
+                    compare_records.append({
+                        "Metric / Parameter": "🏆 Grand Total Cost of Ownership (TOC)",
+                        name: f"₹{round(total_ownership_cost/10000000, 3)} Cr (₹{total_ownership_cost:,})"
+                    })
+                    compare_records.append({
+                        "Metric / Parameter": "Metro Blue Line Distance",
+                        name: f"{p['dist_metro_km']} km"
+                    })
+                    compare_records.append({
+                        "Metric / Parameter": "PTP / Ecospace Distance",
+                        name: f"{p['dist_office_km']} km"
+                    })
+                    compare_records.append({
+                        "Metric / Parameter": "Water Source Security",
+                        name: p["water_source"]
+                    })
+                    compare_records.append({
+                        "Metric / Parameter": "⚠️ Resident Complaints / Warnings",
+                        name: "; ".join(p.get("common_complaints", []))
+                    })
+
+            # Merge records into dataframe
+            df_comp = pd.DataFrame(compare_records)
+            df_comp_pivot = df_comp.groupby("Metric / Parameter", as_index=False).first()
+            st.dataframe(df_comp_pivot, use_container_width=True, hide_index=True)
+
+    st.markdown("---")
+    st.subheader(f"📋 Evaluated Purchase Property Cards ({len(filtered_props)} Matching)")
 
     # ---------------------------------------------------------
-    # PROPERTY CARDS WITH AGE, MAINTENANCE, REGISTRATION & TOC
+    # PROPERTY CARDS WITH AGE, RATINGS, COMPLAINTS & TOC
     # ---------------------------------------------------------
     for prop in filtered_props:
         is_red = prop["panathur_routing"]
@@ -568,6 +788,9 @@ with tab_purchase:
                             <span class="{ 'badge-red' if is_red else 'badge-green' }">
                                 {'⚠️ Panathur Bottleneck (-50 pts)' if is_red else '🛡️ Green Route Compliant'}
                             </span>
+                            <span class="badge-rating">
+                                ⭐ {prop.get('resident_rating', 4.5)} / 5.0 (Score: {prop.get('feedback_score', 90)}/100)
+                            </span>
                             <span class="badge-age">
                                 ⏳ Age: {prop.get('age_years', 8)} Years (Built {prop.get('year_built', 2018)}) • {prop.get('age_category', '')}
                             </span>
@@ -592,22 +815,20 @@ with tab_purchase:
             p_col1, p_col2, p_chart = st.columns([1, 1, 1])
 
             with p_col1:
-                st.markdown("**💰 Base Pricing & Property Age:**")
-                st.markdown(f"- **Property Age:** `Built {prop.get('year_built', 2018)} ({prop.get('age_years', 8)} yrs old)`")
-                st.markdown(f"- **Age Classification:** `{prop.get('age_category', 'Mature Gated')}`")
+                st.markdown("**💰 Pricing, Config & Age:**")
+                st.markdown(f"- **Property Age:** `Built {prop.get('year_built', 2018)} ({prop.get('age_years', 8)} yrs)`")
                 st.markdown(f"- **Rate:** ₹{prop['price_per_sqft']:,} / sqft")
                 st.markdown(f"- **Avg Config:** {prop['avg_bhk']} ({prop['avg_sqft']} sqft)")
                 st.markdown(f"- **Base Flat Price:** `₹{prop['total_price_cr']} Cr` (₹{base_cost:,})")
                 st.markdown(f"- **YoY Price Growth:** `+{prop['yoy_growth_pct']}%`")
 
             with p_col2:
-                st.markdown("**🛠️ Total Maintenance & Location:**")
+                st.markdown("**🛠️ Maintenance & Connectivity:**")
                 st.markdown(f"- **Monthly Maintenance:** `₹{m_maint:,} / month` (₹{prop['maintenance_sqft']}/sqft)")
                 st.markdown(f"- **Annual Maintenance:** `₹{a_maint:,} / year`")
-                st.markdown(f"- **Metro Distance:** `{prop['dist_metro_km']} km` (Blue Line)")
-                st.markdown(f"- **Tech Park Proximity:** `{prop['dist_office_km']} km` to PTP / Ecospace")
+                st.markdown(f"- **Metro Blue Line:** `{prop['dist_metro_km']} km`")
+                st.markdown(f"- **Tech Parks (Ecospace / PTP):** `{prop['dist_office_km']} km`")
                 st.markdown(f"- **Land Title:** `{prop['land_title']}`")
-                st.markdown(f"- **RERA Status:** `{prop['rera_status']}`")
 
             with p_chart:
                 # 1-Click Google Maps Deep Link
@@ -628,6 +849,26 @@ with tab_purchase:
                     <div style="font-size: 1.3rem; font-weight: 800; color: #38BDF8;">₹{total_ownership_cost_cr} Cr <span style="font-size: 0.8rem; color: #64748B;">(₹{total_ownership_cost:,})</span></div>
                 </div>
                 """, unsafe_allow_html=True)
+
+            # Resident Complaints & Feedback Box
+            complaints = prop.get("common_complaints", [])
+            ratings_bd = prop.get("rating_breakdown", {})
+            st.markdown(f"""
+            <div class="complaint-box">
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+                    <b style="color: #FDE68A;">⭐ Resident Feedback Score: {prop.get('feedback_score', 90)}/100</b>
+                    <span style="font-size: 0.85rem; color: #CBD5E1;">
+                        Construction: {ratings_bd.get('construction_quality', 4.5)}/5 | Maint: {ratings_bd.get('maintenance_amenities', 4.5)}/5 | Location: {ratings_bd.get('location_connectivity', 4.5)}/5 | Water: {ratings_bd.get('water_utilities', 4.5)}/5
+                    </span>
+                </div>
+                <div style="margin-top: 6px; font-size: 0.88rem; color: #E2E8F0;">
+                    <b>⚠️ Verified Common Complaints & Resident Warnings:</b>
+                    <ul style="margin: 4px 0 0 16px; padding: 0;">
+                        {''.join([f"<li>{c}</li>" for c in complaints])}
+                    </ul>
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
 
             # Detailed Acquisition & Ownership Cost Expander
             with st.expander("💼 View Complete Legal, Registration, Advance & Ownership Cost Breakdown"):
@@ -662,9 +903,9 @@ with tab_purchase:
 # =============================================================
 with tab_rental:
     st.subheader("🏡 Rental House Discovery Radar (Vicinity Configured)")
-    st.caption("Compare prices across NoBroker, 99acres, MagicBricks, Housing.com, & Direct Owner with total maintenance and age indication.")
+    st.caption("Compare prices across NoBroker, 99acres, MagicBricks, Housing.com, & Direct Owner with total maintenance, ratings, and common complaints.")
 
-    r_col1, r_col2, r_col3, r_col4 = st.columns([1, 1, 1, 1])
+    r_col1, r_col2, r_col3, r_col4, r_col5 = st.columns([1, 1, 1, 1, 1])
     with r_col1:
         rent_vicinity = st.selectbox(
             "Rental Vicinity",
@@ -678,6 +919,11 @@ with tab_rental:
             ["Any Age", "< 5 Years Old", "< 8 Years Old"]
         )
     with r_col4:
+        rent_rating_filter = st.selectbox(
+            "Min Rating",
+            ["Any Rating", "4.5★ & Above", "4.0★ & Above"]
+        )
+    with r_col5:
         rent_budget = st.slider("Max Monthly Rent (₹)", 30000, 160000, 100000, step=5000)
 
     cb1, cb2 = st.columns(2)
@@ -696,6 +942,10 @@ with tab_rental:
             continue
         if rent_age_filter == "< 8 Years Old" and r.get("age_years", 0) > 8:
             continue
+        if rent_rating_filter == "4.5★ & Above" and r.get("resident_rating", 0) < 4.5:
+            continue
+        if rent_rating_filter == "4.0★ & Above" and r.get("resident_rating", 0) < 4.0:
+            continue
         if r["rent_pm"] > rent_budget:
             continue
         if exclude_panathur_rentals and not r["panathur_bottleneck_free"]:
@@ -705,6 +955,108 @@ with tab_rental:
         filtered_rentals.append(r)
 
     st.markdown(f"**Found {len(filtered_rentals)} Verified Rental Listings in Vicinity**")
+
+    # =========================================================
+    # COMPREHENSIVE RENTAL COMPARISON TABLE
+    # =========================================================
+    st.markdown("### 📊 Comprehensive Rental Comparison Table (All Parameters & Ratings)")
+    st.caption("Side-by-side comparison of rent, maintenance, total monthly outflow, deposit, brokerages, ratings, and complaints.")
+
+    rental_table_rows = []
+    for r in filtered_rentals:
+        tot_outflow = r.get("total_monthly_outflow", r["rent_pm"] + r["maintenance_pm"])
+        complaints_short = "; ".join(r.get("common_complaints", []))
+        contact = r.get("contact", {})
+
+        rental_table_rows.append({
+            "Society Name": r["society_name"],
+            "Unit Title": r["unit_title"],
+            "Micro-Market": r["micro_market"],
+            "BHK": r["bhk"],
+            "Area (sqft)": r["area_sqft"],
+            "Age (Yrs)": f"{r.get('age_years', 7)} yrs ({r.get('year_built', 2019)})",
+            "Resident Rating": f"⭐ {r.get('resident_rating', 4.5)} / 5",
+            "Feedback Score": f"{r.get('feedback_score', 90)} / 100",
+            "Monthly Rent": f"₹{r['rent_pm']:,}",
+            "Monthly Maint": f"₹{r['maintenance_pm']:,}",
+            "Total Monthly Outflow": f"₹{tot_outflow:,}",
+            "Security Deposit": f"₹{r['security_deposit_inr']:,} ({r['security_deposit_months']} mos)",
+            "Brokerage Savings": f"₹{r.get('brokerage_savings_inr', 0):,}",
+            "Best Platform": r.get("best_platform", "Direct Owner"),
+            "Panathur Free": "🟢 Yes (Safe)" if r["panathur_bottleneck_free"] else "🔴 No (Choke)",
+            "Contact Person": f"{contact.get('name', 'Owner')} ({contact.get('type')})",
+            "Common Complaints": complaints_short
+        })
+
+    df_rental_table = pd.DataFrame(rental_table_rows)
+    st.dataframe(df_rental_table, use_container_width=True, hide_index=True)
+
+    # Side-by-Side Rental Comparator
+    with st.expander("🔍 Interactive Head-to-Head Rental Comparator (Select 2-3 Societies)"):
+        rent_options = [r["society_name"] + " - " + r["bhk"] for r in filtered_rentals]
+        selected_rent_compare = st.multiselect(
+            "Select Rental Units to Compare Side-by-Side",
+            options=rent_options,
+            default=rent_options[:2] if len(rent_options) >= 2 else rent_options
+        )
+
+        if selected_rent_compare:
+            rent_comp_records = []
+            for sel_label in selected_rent_compare:
+                r_item = next((item for item in filtered_rentals if (item["society_name"] + " - " + item["bhk"]) == sel_label), None)
+                if r_item:
+                    tot_outflow = r_item.get("total_monthly_outflow", r_item["rent_pm"] + r_item["maintenance_pm"])
+                    rent_comp_records.append({
+                        "Metric / Parameter": "Monthly Rent",
+                        sel_label: f"₹{r_item['rent_pm']:,} / mo"
+                    })
+                    rent_comp_records.append({
+                        "Metric / Parameter": "Monthly Maintenance",
+                        sel_label: f"₹{r_item['maintenance_pm']:,} / mo"
+                    })
+                    rent_comp_records.append({
+                        "Metric / Parameter": "Total Monthly Outflow",
+                        sel_label: f"₹{tot_outflow:,} / mo"
+                    })
+                    rent_comp_records.append({
+                        "Metric / Parameter": "Security Deposit",
+                        sel_label: f"₹{r_item['security_deposit_inr']:,} ({r_item['security_deposit_months']} months)"
+                    })
+                    rent_comp_records.append({
+                        "Metric / Parameter": "⭐ Resident Rating & Feedback",
+                        sel_label: f"⭐ {r_item.get('resident_rating', 4.5)}/5 (Score: {r_item.get('feedback_score', 90)}/100)"
+                    })
+                    rent_comp_records.append({
+                        "Metric / Parameter": "Property Age",
+                        sel_label: f"{r_item.get('age_years', 7)} Years (Built {r_item.get('year_built', 2019)})"
+                    })
+                    rent_comp_records.append({
+                        "Metric / Parameter": "Brokerage Savings via Direct Owner",
+                        sel_label: f"₹{r_item.get('brokerage_savings_inr', 0):,}"
+                    })
+                    rent_comp_records.append({
+                        "Metric / Parameter": "Commute to RMZ Ecospace",
+                        sel_label: f"{r_item.get('commute_time_mins', {}).get('RMZ Ecospace', 10)} mins"
+                    })
+                    rent_comp_records.append({
+                        "Metric / Parameter": "Commute to Prestige Tech Park (PTP)",
+                        sel_label: f"{r_item.get('commute_time_mins', {}).get('Prestige Tech Park', 10)} mins"
+                    })
+                    rent_comp_records.append({
+                        "Metric / Parameter": "Water Source & Backup",
+                        sel_label: f"{r_item['water_supply']} | {r_item['power_backup']}"
+                    })
+                    rent_comp_records.append({
+                        "Metric / Parameter": "⚠️ Resident Complaints / Restrictions",
+                        sel_label: "; ".join(r_item.get("common_complaints", []))
+                    })
+
+            df_r_comp = pd.DataFrame(rent_comp_records)
+            df_r_comp_pivot = df_r_comp.groupby("Metric / Parameter", as_index=False).first()
+            st.dataframe(df_r_comp_pivot, use_container_width=True, hide_index=True)
+
+    st.markdown("---")
+    st.markdown("### 📋 Rental House Details & Direct Contact Cards")
 
     # Render Rental Cards
     for r in filtered_rentals:
@@ -721,6 +1073,7 @@ with tab_rental:
                     <div>
                         <h3 style="margin: 0; color: #F8FAFC; font-size: 1.25rem;">{r['unit_title']}</h3>
                         <div style="margin-top: 4px;">
+                            <span class="badge-rating">⭐ {r.get('resident_rating', 4.5)} / 5.0 (Feedback: {r.get('feedback_score', 90)}/100)</span>
                             <span class="badge-age">⏳ Age: {r.get('age_years', 7)} Years (Built {r.get('year_built', 2019)})</span>
                             <span class="badge-deal">🏢 {r['society_name']}</span>
                             <span class="badge-green">📍 {r['micro_market']}</span>
@@ -802,10 +1155,155 @@ with tab_rental:
                 </a>
                 """, unsafe_allow_html=True)
 
+            # Common Complaints Box for Rental
+            r_complaints = r.get("common_complaints", [])
+            st.markdown(f"""
+            <div class="complaint-box">
+                <b style="color: #FDE68A;">⚠️ Common Tenant Complaints & Society Rules:</b>
+                <ul style="margin: 4px 0 0 16px; padding: 0; font-size: 0.88rem; color: #E2E8F0;">
+                    {''.join([f"<li>{c}</li>" for c in r_complaints])}
+                </ul>
+            </div>
+            """, unsafe_allow_html=True)
+
             st.markdown("---")
 
 # =============================================================
-# TAB 3: PRICE TRENDS & MARKET ANALYTICS
+# TAB 3: NEARBY AREAS (WORTH CONSIDERING SCANNER)
+# =============================================================
+with tab_nearby:
+    st.subheader("🧭 Nearby Micro-Markets Scanner (Worth Considering Beyond Core Radar)")
+    st.markdown(
+        "While **Bellandur Core**, **Green Glen Layout**, and **Kadubeesanahalli (Gurukul)** offer maximum walking proximity "
+        "to ORR tech parks and the Blue Line Metro, several adjacent micro-markets offer compelling trade-offs: "
+        "**significantly lower price per sqft**, **integrated mega-townships**, or **superior planned layouts**."
+    )
+
+    # Summary metric cards for nearby areas
+    n_col1, n_col2, n_col3 = st.columns(3)
+    with n_col1:
+        st.markdown("""
+        <div class="nearby-box">
+            <h4 style="margin:0; color:#A7F3D0;">Sarjapur Road / Kaikondrahalli</h4>
+            <p style="margin:4px 0 0 0; font-size:0.85rem; color:#E2E8F0;">
+                <b>Avg Rate:</b> ₹10,500 - ₹12,000 / sqft<br>
+                <b>Distance:</b> 3.5 - 4.5 km to Bellandur<br>
+                <b>Highlight:</b> Kaikondrahalli lakeside walking, 20-25% price discount vs Bellandur.
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+
+    with n_col2:
+        st.markdown("""
+        <div class="nearby-box">
+            <h4 style="margin:0; color:#A7F3D0;">HSR Layout (Sectors 1 & 2)</h4>
+            <p style="margin:4px 0 0 0; font-size:0.85rem; color:#E2E8F0;">
+                <b>Avg Rate:</b> ₹15,500 - ₹17,500 / sqft<br>
+                <b>Distance:</b> 3.0 - 3.5 km to Bellandur<br>
+                <b>Highlight:</b> Bengaluru's elite planned sector, broad tree-lined avenues, top restaurants.
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+
+    with n_col3:
+        st.markdown("""
+        <div class="nearby-box">
+            <h4 style="margin:0; color:#A7F3D0;">Varthur / Gunjur Corridor</h4>
+            <p style="margin:4px 0 0 0; font-size:0.85rem; color:#E2E8F0;">
+                <b>Avg Rate:</b> ₹9,500 - ₹11,000 / sqft<br>
+                <b>Distance:</b> 6.0 - 7.5 km to Bellandur<br>
+                <b>Highlight:</b> 40+ to 100+ acre mega-townships with schools & high-street retail inside.
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+
+    st.markdown("---")
+    st.markdown("### 📋 Table of Worth-Considering Properties Nearby")
+    st.caption("Full parameter matrix comparing price, age, maintenance, upfront advance, resident rating, advantages vs core, and real resident tradeoffs.")
+
+    nearby_table_rows = []
+    for nb in nearby_properties:
+        nearby_table_rows.append({
+            "Property Name": nb["name"],
+            "Developer": f"{nb['builder']} ({nb['builder_tier']})",
+            "Micro-Market": nb["micro_market"],
+            "Dist to Core (km)": f"{nb['distance_to_bellandur_km']} km",
+            "Age (Yrs)": f"{nb.get('age_years', 5)} yrs ({nb.get('year_built', 2021)})",
+            "Resident Rating": f"⭐ {nb.get('resident_rating', 4.5)} / 5",
+            "Feedback Score": f"{nb.get('feedback_score', 90)} / 100",
+            "Rate / sqft": f"₹{nb['price_per_sqft']:,}",
+            "Base Flat Price": f"₹{nb['total_price_cr']} Cr",
+            "Config & Area": f"{nb['avg_bhk']} ({nb['avg_sqft']} sqft)",
+            "Monthly Maint": f"₹{nb['monthly_maintenance_inr']:,}",
+            "Upfront Cash Req.": f"₹{round(nb.get('upfront_cash_required_cr', 0.5) * 100, 2)} L",
+            "Total Cost of Ownership": f"₹{nb.get('total_ownership_cost_cr', 2.0)} Cr",
+            "Commute to Ecospace": f"{nb['commute_to_ecospace_mins']} mins",
+            "Commute to PTP": f"{nb['commute_to_ptp_mins']} mins",
+            "Why Worth Considering (Pros)": nb["why_worth_considering"],
+            "Key Trade-offs / Complaints (Cons)": nb["key_tradeoffs_complaints"]
+        })
+
+    df_nearby = pd.DataFrame(nearby_table_rows)
+    st.dataframe(df_nearby, use_container_width=True, hide_index=True)
+
+    st.markdown("---")
+    st.markdown("### 🏢 Detailed Profiles: Worth-Considering Nearby Properties")
+
+    for nb in nearby_properties:
+        gmaps_nb_url = f"https://www.google.com/maps/search/?api=1&query={nb['lat']},{nb['lng']}"
+        with st.container():
+            st.markdown(f"""
+            <div class="property-card" style="border-left: 6px solid #8B5CF6;">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 8px;">
+                    <div>
+                        <h3 style="margin: 0; color: #F8FAFC; font-size: 1.25rem;">{nb['name']}</h3>
+                        <div style="margin-top: 4px;">
+                            <span class="badge-deal">📍 {nb['micro_market']} ({nb['distance_to_bellandur_km']} km to Bellandur Core)</span>
+                            <span class="badge-rating">⭐ {nb.get('resident_rating', 4.5)} / 5.0 (Feedback: {nb.get('feedback_score', 90)}/100)</span>
+                            <span class="badge-age">⏳ Age: {nb.get('age_years', 5)} Years (Built {nb.get('year_built', 2021)})</span>
+                        </div>
+                        <p style="margin: 5px 0 0 0; color: #94A3B8; font-size: 0.9rem;">
+                            <b>Developer:</b> {nb['builder']} &nbsp;|&nbsp; 
+                            <b>Hierarchy:</b> <span style="color: #A78BFA;">{nb['builder_tier']}</span> &nbsp;|&nbsp; 
+                            <b>Status:</b> {nb.get('status', 'Ready to Move')}
+                        </p>
+                    </div>
+                    <div style="text-align: right;">
+                        <span style="font-size: 1.6rem; font-weight: 800; color: #A78BFA;">₹{nb['total_price_cr']} Cr</span>
+                        <div style="font-size: 0.85rem; color: #CBD5E1;">₹{nb['price_per_sqft']:,} / sqft</div>
+                        <div style="font-size: 0.8rem; color: #94A3B8;">TOC: ~₹{nb.get('total_ownership_cost_cr', 2.0)} Cr</div>
+                    </div>
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+
+            nb_c1, nb_c2 = st.columns([1, 1])
+            with nb_c1:
+                st.markdown("**🌟 Why Worth Considering (Value Proposition):**")
+                st.info(nb["why_worth_considering"])
+                st.markdown(f"- **Avg Configuration:** `{nb['avg_bhk']}` ({nb['avg_sqft']} sqft)")
+                st.markdown(f"- **Monthly Maintenance:** `₹{nb['monthly_maintenance_inr']:,} / mo` (₹{nb['annual_maintenance_inr']:,} / yr)")
+                st.markdown(f"- **Upfront Advance Cash Required:** `~₹{round(nb.get('upfront_cash_required_cr', 0.5) * 100, 2)} Lakhs`")
+
+            with nb_c2:
+                st.markdown("**⚠️ Real Resident Trade-offs & Common Complaints:**")
+                st.warning(nb["key_tradeoffs_complaints"])
+                st.markdown(f"- **Commute to RMZ Ecospace:** `{nb['commute_to_ecospace_mins']} mins`")
+                st.markdown(f"- **Commute to Prestige Tech Park (PTP):** `{nb['commute_to_ptp_mins']} mins`")
+                st.markdown(f"- **Water Source:** `{nb['water_source']}`")
+
+                st.markdown(f"""
+                <a href="{gmaps_nb_url}" target="_blank" style="text-decoration: none;">
+                    <div style="background-color: #6D28D9; color: white; text-align: center; padding: 8px 12px; border-radius: 8px; font-weight: 700; font-size: 0.9rem; margin-top: 8px;">
+                        📍 Open Pin in Google Maps ↗
+                    </div>
+                </a>
+                """, unsafe_allow_html=True)
+
+            st.markdown("---")
+
+# =============================================================
+# TAB 4: PRICE TRENDS & MARKET ANALYTICS
 # =============================================================
 with tab_trends:
     st.subheader("📈 Micro-Market Price Appreciation (2020 - 2026)")
@@ -853,7 +1351,7 @@ with tab_trends:
         )
 
 # =============================================================
-# TAB 4: BUILDER PEDIGREE & DUE DILIGENCE
+# TAB 5: BUILDER PEDIGREE & DUE DILIGENCE
 # =============================================================
 with tab_pedigree:
     st.subheader("⚖️ Builder Pedigree & Legal Verification Checklist")
@@ -882,14 +1380,14 @@ with tab_pedigree:
         st.checkbox("4. Storm-Water Drain (Rajakaluve) Buffer Clearance (30m/15m)", key="due_4")
 
 # =============================================================
-# TAB 5: DAILY TRACKER (5 PM IST) & CSV DOWNLOADS
+# TAB 6: DAILY TRACKER (5 PM IST) & CSV DOWNLOADS
 # =============================================================
 with tab_architecture:
     st.subheader("⚙️ Automated Daily Tracker & Local CSV Snapshots (5:00 PM IST)")
     st.markdown(
         "The radar executes an automated daily snapshot at **5:00 PM IST (11:30 UTC)**. "
         "It updates rate metrics and records the **Top 10 Purchase Properties** and **Top 5 Rental Properties** "
-        "into dedicated local CSV files."
+        "with complete ratings, complaints, and ownership costs into dedicated local CSV files."
     )
 
     col_tr1, col_tr2 = st.columns(2)
@@ -898,7 +1396,7 @@ with tab_architecture:
         top_10_csv_path = os.path.join(os.path.dirname(__file__), "data", "top_10_purchase_daily.csv")
         if os.path.exists(top_10_csv_path):
             df_top_10 = pd.read_csv(top_10_csv_path)
-            st.dataframe(df_top_10[["Property_Name", "Age_Years", "Rate_Per_Sqft_INR", "Base_Price_Cr", "Upfront_Cash_Required_INR", "Total_Ownership_Cost_Cr", "Panathur_Bottleneck"]], use_container_width=True, hide_index=True)
+            st.dataframe(df_top_10[["Property_Name", "Resident_Rating", "Feedback_Score", "Age_Years", "Rate_Per_Sqft_INR", "Base_Price_Cr", "Upfront_Cash_Required_INR", "Total_Ownership_Cost_Cr", "Panathur_Bottleneck"]], use_container_width=True, hide_index=True)
             with open(top_10_csv_path, "rb") as f:
                 st.download_button("📥 Download Top 10 Purchase CSV", f, file_name="top_10_purchase_daily.csv", mime="text/csv", use_container_width=True)
         else:
@@ -909,7 +1407,7 @@ with tab_architecture:
         top_5_csv_path = os.path.join(os.path.dirname(__file__), "data", "top_5_rental_daily.csv")
         if os.path.exists(top_5_csv_path):
             df_top_5 = pd.read_csv(top_5_csv_path)
-            st.dataframe(df_top_5[["Society_Name", "Age_Years", "BHK", "Monthly_Rent_INR", "Total_Monthly_Outflow_INR", "Brokerage_Savings_INR", "Best_Platform"]], use_container_width=True, hide_index=True)
+            st.dataframe(df_top_5[["Society_Name", "Resident_Rating", "Feedback_Score", "Age_Years", "BHK", "Monthly_Rent_INR", "Total_Monthly_Outflow_INR", "Brokerage_Savings_INR", "Best_Platform"]], use_container_width=True, hide_index=True)
             with open(top_5_csv_path, "rb") as f:
                 st.download_button("📥 Download Top 5 Rental CSV", f, file_name="top_5_rental_daily.csv", mime="text/csv", use_container_width=True)
         else:

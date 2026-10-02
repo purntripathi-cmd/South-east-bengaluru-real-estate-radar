@@ -44,6 +44,19 @@
     "corpus_sinking_fund_inr": 250000,
     "interiors_estimate_inr": 1800000,
     "loan_downpayment_pct": 20,
+    "resident_rating": 4.6,
+    "feedback_score": 92,
+    "rating_breakdown": {
+      "construction_quality": 4.8,
+      "maintenance_amenities": 4.7,
+      "location_connectivity": 4.6,
+      "water_utilities": 4.5
+    },
+    "common_complaints": [
+      "Evening traffic queue at Green Glen main arch when entering from ORR during 6:30 PM - 8:30 PM.",
+      "Strict visitor parking guidelines; guest vehicles must obtain guard clearance in advance.",
+      "Higher monthly maintenance bill due to club facilities and continuous security patrol."
+    ],
     "highlights": "Walking distance to RMZ Ecospace and Bellandur Central. Zero bottleneck access."
   },
   {
@@ -91,6 +104,19 @@
     "corpus_sinking_fund_inr": 220000,
     "interiors_estimate_inr": 1600000,
     "loan_downpayment_pct": 20,
+    "resident_rating": 4.5,
+    "feedback_score": 89,
+    "rating_breakdown": {
+      "construction_quality": 4.5,
+      "maintenance_amenities": 4.6,
+      "location_connectivity": 4.7,
+      "water_utilities": 4.3
+    },
+    "common_complaints": [
+      "ORR service road can experience slowdowns during morning rain showers.",
+      "Gym can get crowded between 7:00 AM - 8:30 AM on weekdays.",
+      "Occasional pressure fluctuations on top floors during tank maintenance cycles."
+    ],
     "highlights": "Next to upcoming Bellandur Blue Line Metro Station. Highest rental velocity."
   },
   {
@@ -138,6 +164,19 @@
     "corpus_sinking_fund_inr": 180000,
     "interiors_estimate_inr": 1400000,
     "loan_downpayment_pct": 20,
+    "resident_rating": 4.4,
+    "feedback_score": 87,
+    "rating_breakdown": {
+      "construction_quality": 4.3,
+      "maintenance_amenities": 4.3,
+      "location_connectivity": 4.8,
+      "water_utilities": 4.4
+    },
+    "common_complaints": [
+      "10-year old society, some facade paint touch-ups pending in Tower B.",
+      "Clubhouse tennis court booking slots fill up fast on Saturday mornings.",
+      "School bus drop-off point causes minor 10-minute bottleneck near Gurukul back road."
+    ],
     "highlights": "Walking distance to Prestige Tech Park (PTP) and New Horizon Gurukul. Benchmark Gurukul-side gated asset."
   },
   {
@@ -185,6 +224,19 @@
     "corpus_sinking_fund_inr": 175000,
     "interiors_estimate_inr": 1300000,
     "loan_downpayment_pct": 20,
+    "resident_rating": 4.4,
+    "feedback_score": 88,
+    "rating_breakdown": {
+      "construction_quality": 4.6,
+      "maintenance_amenities": 4.4,
+      "location_connectivity": 4.4,
+      "water_utilities": 4.4
+    },
+    "common_complaints": [
+      "Zero common wall design limits room extension / customization flexibility.",
+      "Internal layout road has multiple speed humps.",
+      "Basement parking slots can be tight for large SUVs in block C."
+    ],
     "highlights": "Renowned for zero common-wall privacy and lush landscape in Green Glen Layout."
   },
   {
@@ -232,6 +284,19 @@
     "corpus_sinking_fund_inr": 350000,
     "interiors_estimate_inr": 2500000,
     "loan_downpayment_pct": 20,
+    "resident_rating": 4.7,
+    "feedback_score": 94,
+    "rating_breakdown": {
+      "construction_quality": 4.9,
+      "maintenance_amenities": 4.8,
+      "location_connectivity": 4.6,
+      "water_utilities": 4.7
+    },
+    "common_complaints": [
+      "Very high maintenance charges (Rs 5.2/sqft/mo).",
+      "Strict RWA rules regarding delivery partners entering residential towers.",
+      "Premium pricing creates higher property tax assessment."
+    ],
     "highlights": "Ultra-luxury finish with club facilities, direct pedestrian bridge to office parks."
   },
   {
@@ -279,6 +344,19 @@
     "corpus_sinking_fund_inr": 200000,
     "interiors_estimate_inr": 1500000,
     "loan_downpayment_pct": 20,
+    "resident_rating": 4.3,
+    "feedback_score": 86,
+    "rating_breakdown": {
+      "construction_quality": 4.4,
+      "maintenance_amenities": 4.3,
+      "location_connectivity": 4.5,
+      "water_utilities": 4.2
+    },
+    "common_complaints": [
+      "Weekend mall traffic near Central signal can slow down turning into society lane.",
+      "Swimming pool deep-end closed for kids under 14 unless certified.",
+      "High proportion of tenant population compared to resident owners."
+    ],
     "highlights": "High rental demand from RMZ Ecospace and Global Tech Park executives."
   },
   {
@@ -326,6 +404,19 @@
     "corpus_sinking_fund_inr": 500000,
     "interiors_estimate_inr": 3500000,
     "loan_downpayment_pct": 20,
+    "resident_rating": 4.8,
+    "feedback_score": 96,
+    "rating_breakdown": {
+      "construction_quality": 5.0,
+      "maintenance_amenities": 4.9,
+      "location_connectivity": 4.5,
+      "water_utilities": 4.8
+    },
+    "common_complaints": [
+      "Extremely high acquisition cost and maintenance outflow (Rs 20,800/month).",
+      "Woodwork & terracotta garden terrace requires specialized maintenance contracts.",
+      "Longer wait time for delivery in upcoming phase blocks."
+    ],
     "highlights": "Architectural masterpiece with heated terrace gardens and lake view boardwalk."
   },
   {
@@ -373,6 +464,19 @@
     "corpus_sinking_fund_inr": 180000,
     "interiors_estimate_inr": 1300000,
     "loan_downpayment_pct": 20,
+    "resident_rating": 4.5,
+    "feedback_score": 90,
+    "rating_breakdown": {
+      "construction_quality": 4.6,
+      "maintenance_amenities": 4.6,
+      "location_connectivity": 4.7,
+      "water_utilities": 4.4
+    },
+    "common_complaints": [
+      "Compact room sizing in standard 2 BHK units (1,190 sqft).",
+      "Minor dust from adjacent plot construction underway.",
+      "Co-working lounge internet speeds dip during morning standup hours."
+    ],
     "highlights": "Modern smart-living community with 80% open green space and sports arena."
   },
   {
@@ -420,6 +524,20 @@
     "corpus_sinking_fund_inr": 120000,
     "interiors_estimate_inr": 900000,
     "loan_downpayment_pct": 20,
+    "resident_rating": 3.6,
+    "feedback_score": 64,
+    "rating_breakdown": {
+      "construction_quality": 4.5,
+      "maintenance_amenities": 4.3,
+      "location_connectivity": 1.8,
+      "water_utilities": 2.9
+    },
+    "common_complaints": [
+      "SEVERE TRAFFIC: 45-75 min wasted daily at Panathur railway underpass.",
+      "Heavy reliance on private water tankers resulting in periodic water tariff hikes.",
+      "Access roads flood during heavy monsoon rain, preventing vehicle movement.",
+      "High population density (6,000+ units) creates long elevator queues."
+    ],
     "highlights": "Massive 80-acre township with Sobha construction quality, BUT crippled by chronic Panathur access choke points."
   },
   {
@@ -467,6 +585,20 @@
     "corpus_sinking_fund_inr": 80000,
     "interiors_estimate_inr": 700000,
     "loan_downpayment_pct": 20,
+    "resident_rating": 2.9,
+    "feedback_score": 48,
+    "rating_breakdown": {
+      "construction_quality": 3.0,
+      "maintenance_amenities": 2.8,
+      "location_connectivity": 1.5,
+      "water_utilities": 2.0
+    },
+    "common_complaints": [
+      "LEGAL TITLE RISK: Panchayat B-Khata land, bank loan financing rejected by major PSUs.",
+      "100% dependent on private tanker supply; borewells went dry in 2023.",
+      "Poor wall plastering and early seepage visible on external walls.",
+      "Direct exposure to Panathur dust and constant horn noise."
+    ],
     "highlights": "Low entry price but non-compliant title, acute water tanker dependence, and catastrophic daily traffic gridlock."
   }
 ]

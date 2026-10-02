@@ -7,6 +7,7 @@ DATA_DIR = os.path.join(BASE_DIR, "data")
 PREFS_FILE = os.path.join(DATA_DIR, "user_preferences.json")
 PROPS_FILE = os.path.join(DATA_DIR, "properties.json")
 RENTAL_FILE = os.path.join(DATA_DIR, "rental_properties.json")
+NEARBY_PROPS_FILE = os.path.join(DATA_DIR, "nearby_properties.json")
 ZONES_FILE = os.path.join(DATA_DIR, "market_zones.json")
 ANCHORS_FILE = os.path.join(DATA_DIR, "anchors.json")
 HISTORICAL_CSV = os.path.join(DATA_DIR, "historical_prices.csv")
@@ -59,6 +60,10 @@ def get_properties():
 
 def get_rental_properties():
     return load_json(RENTAL_FILE, default=[])
+
+
+def get_nearby_properties():
+    return load_json(NEARBY_PROPS_FILE, default=[])
 
 
 def get_market_zones():

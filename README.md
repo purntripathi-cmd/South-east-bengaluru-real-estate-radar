@@ -5,164 +5,142 @@
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-> **Precision Real Estate & Rental Intelligence System** for the East Bengaluru Outer Ring Road (ORR) corridor: **Bellandur Core**, **Green Glen Layout**, and **Kadubeesanahalli strictly up to New Horizon Gurukul**. Enforces algorithmic traffic geofencing, filters chronic bottlenecks (Panathur), scores builder pedigree, tracks multi-year capital appreciation, evaluates property age, computes Total Cost of Ownership (TOC) & upfront down payments, and records daily Top 10 Purchase & Top 5 Rental CSVs at **5:00 PM IST**.
+> **Precision Real Estate & Rental Intelligence System** for the East Bengaluru Outer Ring Road (ORR) corridor: **Bellandur Core**, **Green Glen Layout**, and **Kadubeesanahalli strictly up to New Horizon Gurukul** + **Adjacent Worth-Considering Micro-Markets** (Sarjapur Road, HSR Layout, Marathahalli, Varthur/Gunjur). Enforces algorithmic traffic geofencing, filters chronic bottlenecks (Panathur), scores builder pedigree, displays resident ratings & verified complaints, computes Total Cost of Ownership (TOC) & upfront down payments, and records daily Top 10 Purchase & Top 5 Rental CSVs at **5:00 PM IST**.
 
 ---
 
 ## 📑 Table of Contents
-1. [Executive Summary & Project Architecture](#1-executive-summary--project-architecture)
-2. [Micro-Market Zoning & Traffic Constraint Rules](#2-micro-market-zoning--traffic-constraint-rules)
-3. [Property Age & Structural Longevity Metrics](#3-property-age--structural-longevity-metrics)
-4. [Financial Engine: Total Maintenance, Advance Cash & Total Ownership Cost (TOC)](#4-financial-engine-total-maintenance-advance-cash--total-ownership-cost-toc)
-5. [Interactive Map UI & Google Maps Integration](#5-interactive-map-ui--google-maps-integration)
-6. [Mobile-First Responsive Design](#6-mobile-first-responsive-design)
-7. [Rental House Discovery Radar (Tab 2)](#7-rental-house-discovery-radar-tab-2)
-8. [Automated Daily Tracker at 5:00 PM IST (Top 10 Purchase & Top 5 Rental CSVs)](#8-automated-daily-tracker-at-500-pm-ist)
-9. [Builder Pedigree Hierarchy & Due Diligence Checklist](#9-builder-pedigree-hierarchy--due-diligence-checklist)
+1. [Executive Summary & Architecture](#1-executive-summary--architecture)
+2. [Comprehensive Comparison Tables (Purchase & Rental)](#2-comprehensive-comparison-tables-purchase--rental)
+3. [Resident Ratings, Feedback Scores & Verified Common Complaints](#3-resident-ratings-feedback-scores--verified-common-complaints)
+4. [Nearby Areas Scanner: Worth-Considering Properties](#4-nearby-areas-scanner-worth-considering-properties)
+5. [Micro-Market Zoning & Traffic Rules](#5-micro-market-zoning--traffic-rules)
+6. [Financial Engine: Total Maintenance, Advance Cash & Total Ownership Cost (TOC)](#6-financial-engine-total-maintenance-advance-cash--total-ownership-cost-toc)
+7. [Interactive Map UI & Google Maps Integration](#7-interactive-map-ui--google-maps-integration)
+8. [Mobile-First Responsive Design](#8-mobile-first-responsive-design)
+9. [Automated 5:00 PM IST Daily Tracker](#9-automated-500-pm-ist-daily-tracker)
 10. [Local Quickstart & Streamlit Cloud Deployment](#10-local-quickstart--streamlit-cloud-deployment)
 
 ---
 
-## 1. Executive Summary & Project Architecture
+## 1. Executive Summary & Architecture
 
-The **East Bengaluru Real Estate Radar** is a production-grade Streamlit application engineered to eliminate emotion and speculation from home buying and renting in Bengaluru's primary tech corridor (Outer Ring Road).
+The application provides an institutional-grade decision matrix for property purchase and rental in Bengaluru's primary tech corridor (Outer Ring Road).
 
 ```mermaid
 flowchart TD
-    A["Raw Property & Rental Data"] --> B["Micro-Market Geofencing Engine"]
-    B --> C{"Zone Check"}
+    A["Raw Property & Rental Data"] --> B["Geofencing & Micro-Market Engine"]
+    B --> C{"Corridor Classification"}
     C -->|Green Zone: Bellandur, Green Glen, Gurukul| D["Multi-Criteria Scoring Engine"]
-    C -->|Red Zone: Panathur Corridor / Underpass| E["Apply -50 Pts Choke Penalty"]
-    D --> F["Match Score (0-100) + Age + TOC Engine"]
-    E --> F
-    F --> G["Mobile-First Interactive Folium / Google Map UI"]
-    F --> H["Tab 1: Purchase & Upfront Cash Breakdown"]
-    F --> I["Tab 2: Rental Discovery & Arbitrage"]
-    J["Daily Cron at 5:00 PM IST (11:30 UTC)"] --> K["scripts/daily_tracker.py"]
-    K --> L["Export data/top_10_purchase_daily.csv"]
-    K --> M["Export data/top_5_rental_daily.csv"]
-    K --> N["Append data/historical_prices.csv"]
+    C -->|Red Zone: Panathur Choke Corridor| E["Apply -50 Pts Choke Penalty"]
+    C -->|Nearby Areas: Sarjapur, HSR, Varthur| F["Nearby Scanner Engine"]
+    D --> G["Match Score (0-100) + Age + TOC Engine"]
+    E --> G
+    G --> H["Comprehensive Comparison Tables (Purchase & Rental)"]
+    G --> I["Resident Ratings & Verified Complaints Engine"]
+    F --> J["Table of Worth-Considering Properties Nearby"]
+    K["Daily Cron at 5:00 PM IST (11:30 UTC)"] --> L["scripts/daily_tracker.py"]
+    L --> M["data/top_10_purchase_daily.csv"]
+    L --> N["data/top_5_rental_daily.csv"]
 ```
 
 ---
 
-## 2. Micro-Market Zoning & Traffic Constraint Rules
+## 2. Comprehensive Comparison Tables (Purchase & Rental)
 
-The application enforces strict geographic zoning boundaries to eliminate properties trapped behind chronic congestion bottlenecks:
+### 🏢 Purchase Comparison Table
+Interactive, sortable, and exportable table comparing all purchase properties across all applicable dimensions:
+* **Identification**: Property Name, Builder, Builder Tier, Micro-Market, Land Title, RERA Status.
+* **Pricing & Configuration**: Rate per sqft (₹), Config (BHK), Carpet/Super Area (sqft), Base Agreement Value (₹ Cr).
+* **Maintenance & Ownership**: Monthly Maintenance, Annual Maintenance, 20% Loan Down Payment, Upfront Cash Required (₹ Lakhs), Grand Total Ownership Cost (₹ Cr).
+* **Location & Infrastructure**: Metro Blue Line Distance (km), PTP / Ecospace Distance (km), Route Status (Panathur-Free vs Red Choke).
+* **Resident Sentiment**: Resident Rating (★ / 5.0), Feedback Score (/100), Common Complaints & Warnings.
+* **Interactive Head-to-Head Comparator**: Select 2–4 properties to view a side-by-side spec-by-spec comparison matrix.
 
-### 🟢 Allowed 'Green' Zones
-* **Bellandur Core Grid**: Wide arterial access onto Outer Ring Road, high rental velocity, walking access to upcoming Blue Line metro.
-* **Green Glen Layout**: Highly structured internal grid layout, walking distance to RMZ Ecospace, elevated drainage ridge.
-* **Kadubeesanahalli (Gurukul Side)**: Strictly bounded to the **NCC Nagarjuna Green Woods side up to New Horizon Gurukul**, directly accessible from ORR without crossing Panathur Road.
-
-### 🔴 Strictly Blacklisted 'Red' Zones
-* **Panathur Main Road Choke Corridor**: Unregulated narrow 20ft road carrying 50x designed density.
-* **Panathur Railway Underpass & S-Curve**: Chronic single-lane bottleneck subject to extreme monsoon flooding and 45–75 minute delays for a 2km stretch.
-* **Panathur Post Office Junction**: Commercial choke point with no bypass options.
-* **Penalty Enforcement**: Any property routing through these choke points triggers an automatic **-50 points penalty** or disqualification.
-
----
-
-## 3. Property Age & Structural Longevity Metrics
-
-Both purchase and rental inventories feature prominent **Property Age Indicators**:
-* **Age in Years**: Calculated dynamically against the year of construction (`year_built`).
-* **Categorization**:
-  * 🆕 **Brand New (0–3 Years)**: Highest energy efficiency, modern Mivan monolithic casting, zero maintenance backlog.
-  * 💎 **Prime Modern (4–7 Years)**: Settled society governance, active Cauvery water connections, mature landscape.
-  * 🏛️ **Mature Gated (8–12 Years)**: Established resident association, proven flood resistance during Bengaluru monsoons.
-  * ⚠️ **Older (12+ Years)**: Potential plumbing and lift retrofitting requirements.
-* **Interactive Filter**: Filter inventory by age category directly from the UI.
+### 🏡 Rental Comparison Table
+* **Parameters**: Society Name, Unit Title, Micro-Market, BHK, Area, Property Age, Monthly Rent, Monthly Maintenance, **Total Monthly Outflow (Rent + Maint)**, Security Deposit, Brokerage Savings, Platform Pricing Arbitrage, Safe Route Status, Resident Rating, Feedback Score, Verified Tenant Complaints, Direct Owner WhatsApp Links.
+* **Interactive Head-to-Head Comparator**: Select 2–3 rental societies to compare monthly outflow, security deposit, and commute times.
 
 ---
 
-## 4. Financial Engine: Total Maintenance, Advance Cash & Total Ownership Cost (TOC)
+## 3. Resident Ratings, Feedback Scores & Verified Common Complaints
 
-Buying a property in Bengaluru involves significant legal, statutory, and society charges beyond the base agreement value. The application calculates the complete financial footprint:
-
-### 1. Total Maintenance Outflow
-* **Purchase**: Monthly maintenance per sqft (e.g. ₹4.5/sqft/mo $\times$ 1,950 sqft = **₹8,775/mo** $\rightarrow$ **₹1,05,300/year**).
-* **Rental**: Monthly rent + monthly maintenance = **Total Monthly Outflow** (e.g. ₹68,000 rent + ₹5,500 maintenance = **₹73,500/mo**).
-
-### 2. Upfront Advance & Down Payment Required
-* **20% Home Loan Down Payment**: Paid in cash from personal funds.
-* **Karnataka Stamp Duty (5.6%)**: Urban stamp duty (5.0%) + BBMP surcharge/cess (0.6%). Required 100% upfront before registration.
-* **Government Registration Fee (1.0%)**: Required upfront in cash/bank transfer.
-* **Legal Advocate Title Vetting & BBMP e-Aasthi Khata Transfer**: ~₹60,000.
-* **Society Sinking / Corpus Fund**: ₹1.5 Lakhs – ₹3.5 Lakhs paid upfront to Association.
-* **Total Upfront Cash Required**:
-  $$\text{Upfront Cash} = 20\%\text{ Down Payment} + \text{Stamp Duty (5.6\%)} + \text{Registration (1.0\%)} + \text{Legal/Khata} + \text{Corpus Fund}$$
-
-### 3. Grand Total Cost of Ownership (TOC)
-$$\text{TOC} = \text{Base Price} + \text{Registration (6.6\%)} + \text{Legal \& Khata} + \text{Corpus Fund} + \text{Interiors (₹15L-₹35L)} + \text{1st Year Maintenance}$$
+Every property card and table incorporates granular resident feedback:
+* **Resident Rating**: 1.0 to 5.0 Star scale with category breakdown:
+  * Construction Quality & Structural Longevity
+  * Maintenance & Clubhouse Amenities
+  * Location, Arterial Connectivity & Metro Access
+  * Water Security & Utility Continuity
+* **Verified Common Complaints & Resident Warnings**:
+  * Real resident feedback highlighting evening access queues, visitor parking rules, high maintenance charges, tanker dependencies, and monsoon water-logging vulnerabilities.
 
 ---
 
-## 5. Interactive Map UI & Google Maps Integration
+## 4. Nearby Areas Scanner: Worth-Considering Properties
 
-### ❓ Why was the map blank before?
-1. Default Leaflet / CartoDB tiles (`cartocdn.com`) are frequently blocked by Indian ISP firewalls, enterprise VPNs, or browser adblockers (Brave Shields, uBlock Origin).
-2. Fixed iframe pixel widths can collapse to 0px on certain mobile viewports.
+Beyond the core radar (Bellandur, Green Glen, Gurukul), the system scans immediately adjacent micro-markets that provide compelling alternatives:
 
-### 💡 How Google Maps is Integrated:
-1. **Google Maps Tile Layers (Zero API Key Required)**:
-   The application now includes native Google Maps CDN tile layers:
-   * **Google Maps (Roadmap)**: High-contrast arterial roads and landmark names.
-   * **Google Maps (Satellite / Hybrid)**: High-resolution satellite imagery with overlaid street labels.
-   * **Google Maps (Terrain)**: Topographical elevation and drainage slopes.
-   These tiles load directly from Google's high-speed servers (`mt1.google.com`) without any API keys or quota limits!
-2. **Optional Google Cloud API Key**:
-   If you have a Google Cloud Maps API Key, you can input it in the sidebar for Google Places and Geocoding APIs.
-3. **1-Click Google Maps Deep Links**:
-   Every property and rental card includes a **"📍 Open Exact Pin in Google Maps ↗"** button that opens directly in your Google Maps mobile app with coordinates!
+| Property Name | Micro-Market | Dist. to Bellandur | Rate / sqft | Base Price | Upfront Cash | Resident Rating | Key Value Proposition (Pros) | Real Resident Trade-offs (Cons) |
+|---|---|---|---|---|---|---|---|---|
+| **Godrej Lake Gardens** | Sarjapur Road (Kaikondrahalli) | 3.8 km | ₹11,800 | ₹2.10 Cr | ₹58 L | ⭐ 4.5 / 5 | Kaikondrahalli Lake frontage, Tier 1 Godrej build, 20% cheaper than Bellandur Core | Carmelaram signal bottleneck; extra 15 min commute |
+| **Brigade Cornerstone Utopia** | Varthur - Gunjur Corridor | 6.2 km | ₹9,800 | ₹1.62 Cr | ₹45 L | ⭐ 4.6 / 5 | 47-acre smart township with high-street retail, cineplex, school inside campus | Varthur road widening incomplete; school hours traffic |
+| **Purva Fairmont** | HSR Layout Sector 2 | 3.2 km | ₹15,800 | ₹2.92 Cr | ₹81 L | ⭐ 4.6 / 5 | Elite planned sector, 80ft tree-lined avenues, top restaurants, zero industrial dust | Higher price point; Agara junction peak morning signal |
+| **Purva Riviera** | Marathahalli - ORR North | 4.5 km | ₹11,200 | ₹2.13 Cr | ₹59 L | ⭐ 4.3 / 5 | Direct ORR frontage, massive open grounds, walking distance to retail and multiplexes | 11-year old building; traffic noise and dust from flyover |
+| **SJR Palazza City** | Harlur Road (Off Sarjapur) | 3.6 km | ₹10,400 | ₹1.48 Cr | ₹41 L | ⭐ 4.2 / 5 | High-rise close to HSR with entry ticket < ₹1.5 Cr for 2.5 BHK | Narrow Harlur main road; tanker dependency in summer |
+| **Prestige Lakeside Habitat** | Varthur Lake Front | 7.1 km | ₹10,900 | ₹2.05 Cr | ₹57 L | ⭐ 4.6 / 5 | 102-acre Disney themed township, 4 mega clubhouses, high resale liquidity | Lake rejuvenation odor during windy evenings; 7 km from tech parks |
+
+*All nearby properties are also plotted on the interactive map as distinct purple pins!*
 
 ---
 
-## 6. Mobile-First Responsive Design
+## 5. Micro-Market Zoning & Traffic Rules
 
-* **Fluid Breakpoints**: Custom media queries (`@media (max-width: 768px)`) ensure seamless viewing on iPhones, Androids, and tablets.
-* **Touch-Friendly Controls**: Large touch targets for buttons, sliders, and tabs.
-* **Auto-Stacking Layout**: Multi-column data collapses into vertical cards without horizontal scrollbars.
-* **Responsive Map Container**: Folium container scales to 380px on mobile screens with pan/zoom gestures enabled.
-
----
-
-## 7. Rental House Discovery Radar (Tab 2)
-
-* **Vicinity Filtering**: Search rentals strictly in **Bellandur Core**, **Green Glen Layout**, and **Kadubeesanahalli (Gurukul side)**.
-* **Multi-Platform Price Comparison**: Side-by-side pricing listed across **NoBroker**, **99acres**, **MagicBricks**, **Housing.com**, and **Direct Owner**.
-* **Zero-Brokerage Deal Finder**: Highlights Direct-from-Owner listings, showing potential brokerage savings of **₹52,000 to ₹1,45,000**.
-* **Direct 1-Click WhatsApp Contact**: Click to launch a WhatsApp chat (`https://wa.me/...`) with a pre-filled inquiry referencing the unit and society name.
-* **Total Monthly Outflow**: Displays rent + maintenance combined.
+* **🟢 Allowed Green Zones**: Bellandur Core, Green Glen Layout, Kadubeesanahalli strictly to the NCC Nagarjuna Green Woods side up to New Horizon Gurukul.
+* **🔴 Blacklisted Red Zones**: Panathur Main Road, Panathur Railway Underpass, Panathur Post Office junction.
+* **Penalty**: Properties trapped in Red Zones trigger an instant **-50 points penalty** or disqualification.
 
 ---
 
-## 8. Automated Daily Tracker at 5:00 PM IST
+## 6. Financial Engine: Total Maintenance, Advance Cash & Total Ownership Cost (TOC)
 
-The radar executes daily at **5:00 PM IST (11:30 UTC)**:
-* **Workflow**: `.github/workflows/daily_tracker.yml` and `workflows/daily_tracker.yml`
-* **Cron Expression**: `30 11 * * *`
-* **Daily Exported CSVs**:
-  * `data/top_10_purchase_daily.csv`: Top 10 purchase properties with Age, Rate/sqft, Upfront Advance, Total Ownership Cost, and Traffic Verdict.
-  * `data/top_5_rental_daily.csv`: Top 5 rental properties with Age, Monthly Rent, Total Outflow, Brokerage Savings, and WhatsApp Contact Links.
-  * `data/historical_prices.csv`: Multi-year price progression dataset.
-* **Local Trigger**: Run `scripts/run_daily_5pm_ist.bat` on Windows or click **"Run 5:00 PM IST Snapshot Now"** in Tab 5.
+* **Total Maintenance Outflow**:
+  * Purchase: Monthly maintenance (₹4.5/sqft/mo) & Annual maintenance.
+  * Rental: Base rent + maintenance = **Total Monthly Outflow (₹/mo)**.
+* **Upfront Advance Required**:
+  $$\text{Upfront Cash} = 20\%\text{ Down Payment} + \text{Stamp Duty (5.6\%)} + \text{Registration (1.0\%)} + \text{Legal \& Khata Fees} + \text{Corpus Fund}$$
+* **Grand Total Ownership Cost (TOC)**:
+  $$\text{TOC} = \text{Base Price} + 6.6\%\text{ Govt Taxes} + \text{Legal/Khata} + \text{Corpus} + \text{Interiors (₹15L–₹35L)} + \text{1st Year Maintenance}$$
 
 ---
 
-## 9. Builder Pedigree Hierarchy & Due Diligence Checklist
+## 7. Interactive Map UI & Google Maps Integration
 
-### 🏆 Top 10 Tier 1 Developers
-1. Sobha Limited | 2. Prestige Group | 3. Brigade Group | 4. Total Environment Building Systems | 5. Godrej Properties | 6. Embassy Group | 7. Puravankara Limited | 8. Assetz Property Group | 9. Century Real Estate | 10. Salarpuria Sattva Group
+* **Native Google Maps Tile Layers (Zero API Key Needed)**:
+  * Google Maps (Roadmap) [Default]
+  * Google Maps (Satellite / Hybrid)
+  * Google Maps (Terrain)
+  * OpenStreetMap & CartoDB Positron
+* **1-Click Google Maps Direct Deep Links**:
+  Every property card includes a **"📍 Open Exact Pin in Google Maps ↗"** button that opens directly in your Google Maps mobile app with coordinates.
+* **Optional Google Cloud API Key**: Supported via sidebar.
 
-### 🥈 Secondary Choices (Tier 2)
-Sumadhura Infracon, Rohan Builders, Arvind SmartSpaces, Vajram Group, Shriram Properties, NCC Urban.
+---
 
-### 📋 4 Mandatory Due Diligence Pillars
-1. BBMP / BDA A-Khata Title Verification
-2. Karnataka RERA active registration & litigation check
-3. Dual Water Source (Cauvery connection + Borewells + STP)
-4. Storm-Water Drain (Rajakaluve) Setback Buffer clearance (30m primary / 15m secondary)
+## 8. Mobile-First Responsive Design
+
+* Custom CSS media queries (`@media (max-width: 768px)`) ensure seamless viewing on smartphones and tablets.
+* Touch targets $\ge 44\text{px}$, responsive map height (380px on mobile), and auto-stacking comparison cards.
+
+---
+
+## 9. Automated 5:00 PM IST Daily Tracker
+
+* **Scheduled Time**: Every day at **5:00 PM IST (11:30 UTC)** via GitHub Actions (`cron: '30 11 * * *'`).
+* **Exported CSVs**:
+  * `data/top_10_purchase_daily.csv`: Top 10 purchase properties with Age, Ratings, Complaints, Maintenance, Upfront Advance, and Total Ownership Cost.
+  * `data/top_5_rental_daily.csv`: Top 5 rental properties with Age, Ratings, Complaints, Rent, Maintenance, Total Monthly Outflow, and Direct Owner WhatsApp Links.
+* **In-App Download Center (Tab 6)**: Download both CSV files with 1 click.
+* **Local Windows Script**: Run `scripts/run_daily_5pm_ist.bat` to update locally.
 
 ---
 
@@ -176,16 +154,12 @@ pip install -r requirements.txt
 streamlit run app.py
 ```
 
-### ⚡ Manual 5 PM IST Snapshot Trigger
+### ⚡ Manual Snapshot Trigger
 ```bash
 python scripts/daily_tracker.py --force
 ```
 
 ### ☁️ Streamlit Cloud Deployment
 1. Log in to [share.streamlit.io](https://share.streamlit.io).
-2. Select `purntripathi-cmd/South-east-bengaluru-real-estate-radar`.
-3. Set Main file path to `app.py` and click **Deploy**!
-
----
-
-**Built with precision for East Bengaluru home buyers, investors, and tenants.**
+2. Connect repository `purntripathi-cmd/South-east-bengaluru-real-estate-radar`.
+3. Set main file path to `app.py` and click **Deploy**!

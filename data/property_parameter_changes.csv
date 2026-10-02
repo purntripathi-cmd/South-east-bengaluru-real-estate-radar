@@ -1,0 +1,15 @@
+Property_Type,Property_ID,Property_Name,Field_Changed,Old_Value,New_Value,Timestamp
+Rental,rent_01,Sobha Iris,Pet Friendly,True,🐶 Pets Allowed (Dedicated Park Trail),2026-10-02 16:07:17 UTC
+Rental,rent_01,Sobha Iris,Bachelor Friendly,False,Families & Corporate Working Professionals,2026-10-02 16:07:17 UTC
+Rental,rent_02,Prestige Sunnyside,Pet Friendly,True,Conditional (Cats & Small Dogs Allowed),2026-10-02 16:07:17 UTC
+Rental,rent_02,Prestige Sunnyside,Bachelor Friendly,True,Working Tech Professionals Welcome (ID Required),2026-10-02 16:07:17 UTC
+Rental,rent_03,NCC Nagarjuna Green Woods,Pet Friendly,True,🐶 Highly Pet Friendly (Open Lawn Areas),2026-10-02 16:07:17 UTC
+Rental,rent_03,NCC Nagarjuna Green Woods,Bachelor Friendly,True,Families & Senior Techies Preferred,2026-10-02 16:07:17 UTC
+Rental,rent_04,Rohan Jharoka II,Pet Friendly,False,No Pets Allowed as per Landlord Rule,2026-10-02 16:07:17 UTC
+Rental,rent_04,Rohan Jharoka II,Bachelor Friendly,False,Family Preferred by Society Guidelines,2026-10-02 16:07:17 UTC
+Rental,rent_05,Sobha Marvella,Pet Friendly,True,🐶 Pet Friendly (Spacious Balconies & Garden),2026-10-02 16:07:17 UTC
+Rental,rent_05,Sobha Marvella,Bachelor Friendly,False,Families Preferred; Quiet Enclave Bylaws,2026-10-02 16:07:17 UTC
+Rental,rent_06,Assetz Canvas & Cove,Pet Friendly,True,🐶 Pet Friendly (Lake Promenade Access),2026-10-02 16:07:17 UTC
+Rental,rent_06,Assetz Canvas & Cove,Bachelor Friendly,True,Young IT Professionals & Couples Welcomed,2026-10-02 16:07:17 UTC
+Rental,rent_07,Sobha Dream Acres (Wing 18),Pet Friendly,True,Allowed with Society Pet Registration Tag,2026-10-02 16:07:17 UTC
+Rental,rent_07,Sobha Dream Acres (Wing 18),Bachelor Friendly,True,Bachelors & Bachelorettes Welcomed with HR Letter,2026-10-02 16:07:17 UTC

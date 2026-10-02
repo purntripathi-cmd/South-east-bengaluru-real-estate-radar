@@ -32,10 +32,11 @@ from utils.storage import (
     TOP_5_RENTAL_CSV,
     CHANGES_CSV_FILE
 )
+from scripts.daily_tracker import run_daily_tracker
 
 # Set page configuration
 st.set_page_config(
-    page_title="East Bengaluru Real Estate & Rental Radar",
+    page_title="South East Bengaluru Real Estate Radar & Rental Discovery Platform",
     page_icon="🧭",
     layout="wide",
     initial_sidebar_state="collapsed", # Better UX on mobile devices
@@ -251,7 +252,7 @@ st.markdown("""
 <div class="main-header">
     <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
         <div>
-            <h1 class="main-title">🧭 East Bengaluru Real Estate Radar</h1>
+            <h1 class="main-title">🧭 South East Bengaluru Real Estate Radar & Rental Discovery Platform</h1>
             <p class="sub-title">Bellandur • Green Glen Layout • Kadubeesanahalli (Gurukul Side) & Nearby Micro-Markets</p>
         </div>
         <div>
@@ -276,6 +277,39 @@ with col_k3:
     st.metric(label="Nearby Scanned", value=f"{len(nearby_properties)} Properties", delta="Sarjapur, HSR, Varthur")
 with col_k4:
     st.metric(label="Daily Sync", value="5:00 PM IST", delta="Automated Cron (11:30 UTC)")
+
+# -------------------------------------------------------------
+# Quick Snapshot & Delta Validation Status Banner
+# -------------------------------------------------------------
+with st.container():
+    t_status = tracker_log.get("status", "VALIDATED_NO_CHANGES") if tracker_log else "Ready"
+    t_date = tracker_log.get("date_recorded", tracker_log.get("date_checked", datetime.now().strftime("%Y-%m-%d"))) if tracker_log else datetime.now().strftime("%Y-%m-%d")
+    status_bg = "#064E3B" if "VALIDATED" in t_status or "RECORDED" in t_status else "#1E293B"
+    status_accent = "#10B981" if "VALIDATED" in t_status or "RECORDED" in t_status else "#38BDF8"
+
+    col_banner_txt, col_banner_btn = st.columns([3, 1])
+    with col_banner_txt:
+        st.markdown(f"""
+        <div style="background: {status_bg}; border-left: 5px solid {status_accent}; padding: 9px 14px; border-radius: 8px; margin: 8px 0 14px 0;">
+            <b style="color: #F8FAFC; font-size: 0.92rem;">📡 Radar Data Sync Status: <span style="color: {status_accent};">{t_status}</span></b>
+            <span style="color: #94A3B8; font-size: 0.82rem; margin-left: 8px;">(Snapshot Date: <code>{t_date}</code>)</span>
+            <div style="color: #CBD5E1; font-size: 0.82rem; margin-top: 3px;">
+                Scheduled daily at 5:00 PM IST. Validates all parameters before writing — saves <b>only</b> on new day or when any parameter/rate changes.
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+    with col_banner_btn:
+        st.markdown("<div style='height: 8px;'></div>", unsafe_allow_html=True)
+        if st.button("🔄 Refresh & Record Data", use_container_width=True, key="btn_quick_refresh"):
+            with st.spinner("Auditing property parameters..."):
+                res = run_daily_tracker(dry_run=False, force=False)
+                if res.get("status") == "VALIDATED_NO_CHANGES":
+                    st.toast("✅ State Intact: All properties verified. Zero parameter divergence, no redundant writes made.", icon="🛡️")
+                elif res.get("status") == "UPDATED_ON_PARAMETER_CHANGE":
+                    st.toast(f"⚡ Detected & logged parameter changes! Updated all daily CSVs.", icon="📝")
+                else:
+                    st.toast(f"🚀 Successfully recorded daily snapshot ({res.get('status')})!", icon="💾")
+                st.rerun()
 
 # -------------------------------------------------------------
 # Sidebar: Scoring Weights, Map Provider & Preferences
@@ -358,6 +392,23 @@ with col_sb2:
         save_user_preferences(st.session_state.preferences)
         st.rerun()
 
+st.sidebar.markdown("---")
+st.sidebar.subheader("⚡ Daily Snapshot & Validation")
+st.sidebar.caption("Validates all properties. Writes snapshot **only** on a new day or if any parameter/price details changed.")
+
+force_sb = st.sidebar.checkbox("Force rewrite even if no changes", value=False, key="force_sb")
+if st.sidebar.button("🔄 Refresh & Record Data", use_container_width=True, key="btn_refresh_sb"):
+    with st.spinner("Validating property details & recording snapshot..."):
+        res = run_daily_tracker(dry_run=False, force=force_sb)
+        if res.get("status") == "VALIDATED_NO_CHANGES":
+            st.sidebar.info(f"✅ Data validated for {res.get('date')}. Zero parameter changes; no redundant write made.")
+        elif res.get("status") == "UPDATED_ON_PARAMETER_CHANGE":
+            st.sidebar.success(f"⚡ Detected {res.get('changes_count', 1)} parameter changes! Updated all daily CSVs.")
+            st.rerun()
+        else:
+            st.sidebar.success(f"🚀 Recorded snapshot! ({res.get('status')})")
+            st.rerun()
+
 # -------------------------------------------------------------
 # Main Application Tabs
 # -------------------------------------------------------------
@@ -387,7 +438,7 @@ with tab_purchase:
             "🛠️ Custom Vicinities & Pins (Define Where to Check with Green Pins & Exclude with Red Pins)"
         ],
         horizontal=True,
-        help="Default mode uses East Bengaluru corridor boundaries. Custom mode allows defining target areas anywhere across Bengaluru via custom Green & Red pins."
+        help="Default mode uses South East Bengaluru corridor boundaries. Custom mode allows defining target areas anywhere across Bengaluru via custom Green & Red pins."
     )
 
     with st.expander("📍 Custom Area Pinning & Geofence Manager (Add Green / Red Pins)", expanded=(corridor_mode.startswith("🛠️"))):
@@ -913,7 +964,12 @@ with tab_purchase:
             "Total Cost of Ownership (Cr)": f"₹{round(total_ownership_cost/10000000, 3)} Cr",
             "Metro Dist (km)": f"{p['dist_metro_km']} km",
             "PTP / Ecospace Dist (km)": f"{p['dist_office_km']} km",
-            "Land Title": p["land_title"],
+            "Occupancy Cert (OC)": p.get("occupancy_certificate", "100% OC Received"),
+            "Open Space %": p.get("open_space_pct", "75% Open Space"),
+            "EV Charging": p.get("ev_charging_facility", "EV Bays Installed"),
+            "Power Backup": p.get("power_backup", "100% DG Backup"),
+            "Lake / Drain Buffer": p.get("lake_buffer_compliance", "Compliant"),
+            "Land Title & Nil EC": f"{p['land_title']} ({p.get('encumbrance_certificate', 'Verified')})",
             "Validation URL": p.get("validation_url", "https://rera.karnataka.gov.in"),
             "RERA Portal Link": p.get("rera_portal_url", "https://rera.karnataka.gov.in"),
             "Common Complaints": complaints_short
@@ -1010,6 +1066,26 @@ with tab_purchase:
                         name: f"{p['dist_office_km']} km"
                     })
                     compare_records.append({
+                        "Metric / Parameter": "Occupancy Certificate (OC)",
+                        name: p.get("occupancy_certificate", "100% OC Received")
+                    })
+                    compare_records.append({
+                        "Metric / Parameter": "Open Greenery %",
+                        name: p.get("open_space_pct", "75% Open Space")
+                    })
+                    compare_records.append({
+                        "Metric / Parameter": "EV Charging & Power Backup",
+                        name: f"{p.get('ev_charging_facility', 'EV Bays')} | {p.get('power_backup', '100% DG Backup')}"
+                    })
+                    compare_records.append({
+                        "Metric / Parameter": "Lake & Rajakaluve Setback",
+                        name: p.get("lake_buffer_compliance", "Compliant")
+                    })
+                    compare_records.append({
+                        "Metric / Parameter": "Legal Title & 30-Yr Nil EC",
+                        name: f"{p['land_title']} ({p.get('encumbrance_certificate', 'Verified Nil EC')})"
+                    })
+                    compare_records.append({
                         "Metric / Parameter": "Water Source Security",
                         name: p["water_source"]
                     })
@@ -1024,10 +1100,15 @@ with tab_purchase:
             st.dataframe(df_comp_pivot, use_container_width=True, hide_index=True)
 
     st.markdown("---")
-    st.subheader(f"📋 Evaluated Purchase Property Cards ({len(filtered_props)} Matching)")
+    col_card_h1, col_card_h2 = st.columns([3, 1])
+    with col_card_h1:
+        st.subheader(f"📋 Evaluated Purchase Property Cards ({len(filtered_props)} Matching)")
+        st.caption("Each evaluated property card is collapsible and collapsed by default. Click on any card title to expand specifications, legal clearances, advance cash requirement, and verification links.")
+    with col_card_h2:
+        expand_all_purchase = st.checkbox("📂 Expand All Cards", value=False, key="expand_all_purchase_cards")
 
     # ---------------------------------------------------------
-    # PROPERTY CARDS WITH AGE, RATINGS, COMPLAINTS & TOC
+    # PROPERTY CARDS WITH AGE, RATINGS, COMPLAINTS & TOC (COLLAPSIBLE)
     # ---------------------------------------------------------
     for prop in filtered_props:
         is_red = prop["panathur_routing"]
@@ -1051,9 +1132,16 @@ with tab_purchase:
         total_ownership_cost = base_cost + stamp_duty + reg_fee + legal_fee + khata_fee + corpus_fund + interiors + a_maint
         total_ownership_cost_cr = round(total_ownership_cost / 10000000, 3)
 
-        with st.container():
+        card_title = (
+            f"{'🔴 [Panathur Choke -50]' if is_red else '🟢 [Compliant]'} {prop['name']} "
+            f"({prop['builder_tier_label']}) — Match: {score}/100 | ₹{prop['price_per_sqft']:,}/sqft "
+            f"(~₹{prop['total_price_cr']} Cr) | ⭐ {prop.get('resident_rating', 4.5)}/5 | "
+            f"{prop.get('age_years', 8)} yrs | {prop['micro_market']}"
+        )
+
+        with st.expander(card_title, expanded=expand_all_purchase):
             st.markdown(f"""
-            <div class="property-card" style="border-left: 6px solid {border_color};">
+            <div class="property-card" style="border-left: 6px solid {border_color}; margin-top: 4px;">
                 <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 8px;">
                     <div>
                         <h3 style="margin: 0; color: #F8FAFC; font-size: 1.3rem;">{prop['name']}</h3>
@@ -1094,14 +1182,16 @@ with tab_purchase:
                 st.markdown(f"- **Avg Config:** {prop['avg_bhk']} ({prop['avg_sqft']} sqft)")
                 st.markdown(f"- **Base Flat Price:** `₹{prop['total_price_cr']} Cr` (₹{base_cost:,})")
                 st.markdown(f"- **YoY Price Growth:** `+{prop['yoy_growth_pct']}%`")
+                st.markdown(f"- **Open Space Greenery:** `{prop.get('open_space_pct', '75% Open Space')}`")
 
             with p_col2:
-                st.markdown("**🛠️ Maintenance & Connectivity:**")
-                st.markdown(f"- **Monthly Maintenance:** `₹{m_maint:,} / month` (₹{prop['maintenance_sqft']}/sqft)")
-                st.markdown(f"- **Annual Maintenance:** `₹{a_maint:,} / year`")
-                st.markdown(f"- **Metro Blue Line:** `{prop['dist_metro_km']} km`")
-                st.markdown(f"- **Tech Parks (Ecospace / PTP):** `{prop['dist_office_km']} km`")
-                st.markdown(f"- **Land Title:** `{prop['land_title']}`")
+                st.markdown("**🛠️ Clearances, Utilities & Metro:**")
+                st.markdown(f"- **Occupancy Certificate:** `{prop.get('occupancy_certificate', '100% OC Received')}`")
+                st.markdown(f"- **EV Charging:** `{prop.get('ev_charging_facility', 'EV Bays Installed')}`")
+                st.markdown(f"- **Power Backup:** `{prop.get('power_backup', '100% DG Backup')}`")
+                st.markdown(f"- **Lake / Drain Buffer:** `{prop.get('lake_buffer_compliance', 'Safe Setback')}`")
+                st.markdown(f"- **Legal Title & EC:** `{prop['land_title']} ({prop.get('encumbrance_certificate', 'Nil EC')})`")
+                st.markdown(f"- **Metro Blue Line:** `{prop['dist_metro_km']} km` | **Offices:** `{prop['dist_office_km']} km`")
 
             with p_chart:
                 # 1-Click Google Maps Deep Link
@@ -1160,33 +1250,36 @@ with tab_purchase:
             </div>
             """, unsafe_allow_html=True)
 
-            # Detailed Acquisition & Ownership Cost Expander
-            with st.expander("💼 View Complete Legal, Registration, Advance & Ownership Cost Breakdown"):
-                cost_t1, cost_t2 = st.columns(2)
-                with cost_t1:
-                    st.markdown("#### 🏛️ Government Registration & Legal Charges")
-                    st.markdown(f"- **Base Flat Agreement Cost:** ₹{base_cost:,}")
-                    st.markdown(f"- **Stamp Duty (5.6% Karnataka):** ₹{stamp_duty:,}")
-                    st.markdown(f"- **Registration Fee (1.0% Govt):** ₹{reg_fee:,}")
-                    st.markdown(f"- **Total Stamp Duty & Registration (6.6%):** `₹{(stamp_duty + reg_fee):,}`")
-                    st.markdown(f"- **Advocate Legal Title & EC Vetting:** ₹{legal_fee:,}")
-                    st.markdown(f"- **BBMP e-Aasthi Khata Transfer & Mutation:** ₹{khata_fee:,}")
-                    st.markdown(f"- **One-time Society Sinking / Corpus Fund:** ₹{corpus_fund:,}")
+            # Detailed Acquisition & Ownership Cost Breakdown (Clean Box - No nested expander)
+            st.markdown("""
+            <div style="background: #0F172A; border: 1px solid #334155; border-radius: 8px; padding: 10px 14px; margin: 10px 0;">
+                <b style="color: #38BDF8; font-size: 0.98rem;">💼 Complete Legal, Registration, Advance & Ownership Cost Breakdown</b>
+            </div>
+            """, unsafe_allow_html=True)
+            cost_t1, cost_t2 = st.columns(2)
+            with cost_t1:
+                st.markdown("#### 🏛️ Government Registration & Legal Charges")
+                st.markdown(f"- **Base Flat Agreement Cost:** ₹{base_cost:,}")
+                st.markdown(f"- **Stamp Duty (5.6% Karnataka):** ₹{stamp_duty:,}")
+                st.markdown(f"- **Registration Fee (1.0% Govt):** ₹{reg_fee:,}")
+                st.markdown(f"- **Total Stamp Duty & Registration (6.6%):** `₹{(stamp_duty + reg_fee):,}`")
+                st.markdown(f"- **Advocate Legal Title & EC Vetting:** ₹{legal_fee:,}")
+                st.markdown(f"- **BBMP e-Aasthi Khata Transfer & Mutation:** ₹{khata_fee:,}")
+                st.markdown(f"- **One-time Society Sinking / Corpus Fund:** ₹{corpus_fund:,}")
 
-                with cost_t2:
-                    st.markdown("#### 💵 Advance Cash Required & Total Ownership (TOC)")
-                    st.markdown(f"- **Bank Home Loan Down Payment (20%):** ₹{down_payment_20pct:,}")
-                    st.markdown(f"- **Govt Registration & Taxes (Upfront 100% Cash):** ₹{(stamp_duty + reg_fee):,}")
-                    st.markdown(f"- **Legal, Khata & Corpus (Upfront):** ₹{(legal_fee + khata_fee + corpus_fund):,}")
-                    st.markdown(f"👉 **TOTAL UPFRONT CASH ADVANCE REQUIRED:** <b style='color:#F59E0B; font-size:1.1rem;'>₹{upfront_advance_required:,} (~₹{round(upfront_advance_required/100000, 2)} Lakhs)</b>", unsafe_allow_html=True)
-                    st.markdown("---")
-                    st.markdown(f"- **Interiors & Fit-out Provision (Est.):** ₹{interiors:,}")
-                    st.markdown(f"- **1st Year Annual Maintenance:** ₹{a_maint:,}")
-                    st.markdown(f"🏆 **GRAND TOTAL OWNERSHIP COST (TOC):** <b style='color:#38BDF8; font-size:1.2rem;'>₹{total_ownership_cost_cr} Cr (₹{total_ownership_cost:,})</b>", unsafe_allow_html=True)
+            with cost_t2:
+                st.markdown("#### 💵 Advance Cash Required & Total Ownership (TOC)")
+                st.markdown(f"- **Bank Home Loan Down Payment (20%):** ₹{down_payment_20pct:,}")
+                st.markdown(f"- **Govt Registration & Taxes (Upfront 100% Cash):** ₹{(stamp_duty + reg_fee):,}")
+                st.markdown(f"- **Legal, Khata & Corpus (Upfront):** ₹{(legal_fee + khata_fee + corpus_fund):,}")
+                st.markdown(f"👉 **TOTAL UPFRONT CASH ADVANCE REQUIRED:** <b style='color:#F59E0B; font-size:1.1rem;'>₹{upfront_advance_required:,} (~₹{round(upfront_advance_required/100000, 2)} Lakhs)</b>", unsafe_allow_html=True)
+                st.markdown("---")
+                st.markdown(f"- **Interiors & Fit-out Provision (Est.):** ₹{interiors:,}")
+                st.markdown(f"- **1st Year Annual Maintenance:** ₹{a_maint:,}")
+                st.markdown(f"🏆 **GRAND TOTAL OWNERSHIP COST (TOC):** <b style='color:#38BDF8; font-size:1.2rem;'>₹{total_ownership_cost_cr} Cr (₹{total_ownership_cost:,})</b>", unsafe_allow_html=True)
 
             if is_red:
                 st.error(f"🛑 **Bottleneck Penalty Warning:** {prop['traffic_notes']}")
-            st.markdown("---")
 
 # =============================================================
 # TAB 2: RENTAL HOUSE DISCOVERY RADAR
@@ -1279,6 +1372,11 @@ with tab_rental:
             "Total Monthly (with Deposit Note)": f"Total Monthly: ₹{tot_outflow:,} (+{dep_interest_pm:,}/- pm due to deposit)",
             "Effective Monthly Cost": f"₹{effective_monthly:,}",
             "Security Deposit": f"₹{dep_inr:,} ({r['security_deposit_months']} mos)",
+            "Pet Policy": r.get("pet_friendly", "Allowed"),
+            "Bachelor Policy": r.get("bachelor_friendly", "Professionals Welcome"),
+            "Lock-in / Notice": f"{r.get('lock_in_period_months', 6)}m lock / {r.get('notice_period_months', 1)}m notice",
+            "EV Provision": r.get("ev_charging_facility", "EV Point Available"),
+            "Occupancy Cert": r.get("occupancy_certificate", "100% OC Received"),
             "Brokerage Savings": f"₹{r.get('brokerage_savings_inr', 0):,}",
             "Best Platform": r.get("best_platform", "Direct Owner"),
             "Panathur Free": "🟢 Yes (Safe)" if r["panathur_bottleneck_free"] else "🔴 No (Choke)",
@@ -1350,6 +1448,26 @@ with tab_rental:
                         sel_label: f"{r_item.get('age_years', 7)} Years (Built {r_item.get('year_built', 2019)})"
                     })
                     rent_comp_records.append({
+                        "Metric / Parameter": "Pet Policy",
+                        sel_label: r_item.get("pet_friendly", "Allowed")
+                    })
+                    rent_comp_records.append({
+                        "Metric / Parameter": "Bachelor Policy",
+                        sel_label: r_item.get("bachelor_friendly", "Working Professionals")
+                    })
+                    rent_comp_records.append({
+                        "Metric / Parameter": "Lock-in & Notice Period",
+                        sel_label: f"{r_item.get('lock_in_period_months', 6)} months lock-in / {r_item.get('notice_period_months', 1)} month notice"
+                    })
+                    rent_comp_records.append({
+                        "Metric / Parameter": "EV Provision & Parking",
+                        sel_label: r_item.get("ev_charging_facility", "EV Point Available")
+                    })
+                    rent_comp_records.append({
+                        "Metric / Parameter": "Occupancy Certificate (OC)",
+                        sel_label: r_item.get("occupancy_certificate", "100% OC Received")
+                    })
+                    rent_comp_records.append({
                         "Metric / Parameter": "Brokerage Savings via Direct Owner",
                         sel_label: f"₹{r_item.get('brokerage_savings_inr', 0):,}"
                     })
@@ -1375,9 +1493,14 @@ with tab_rental:
             st.dataframe(df_r_comp_pivot, use_container_width=True, hide_index=True)
 
     st.markdown("---")
-    st.markdown("### 📋 Rental House Details & Direct Contact Cards")
+    col_rent_h1, col_rent_h2 = st.columns([3, 1])
+    with col_rent_h1:
+        st.markdown(f"### 📋 Rental House Details & Direct Contact Cards ({len(filtered_rentals)} Units)")
+        st.caption("Each rental card is collapsible and closed by default. Click on any listing title to view detailed terms, pricing breakdown, and owner contact.")
+    with col_rent_h2:
+        expand_all_rent = st.checkbox("📂 Expand All Rental Cards", value=False, key="expand_all_rental_cards")
 
-    # Render Rental Cards
+    # Render Rental Cards (Collapsible)
     for r in filtered_rentals:
         is_safe_traffic = r["panathur_bottleneck_free"]
         card_border = "#10B981" if is_safe_traffic else "#EF4444"
@@ -1391,9 +1514,15 @@ with tab_rental:
         effective_monthly = tot_outflow + dep_interest_pm
         annual_dep_interest = round(dep_val * 0.075)
 
-        with st.container():
+        rental_card_title = (
+            f"{'🟢 [Safe Route]' if is_safe_traffic else '🔴 [Choke Route]'} {r['unit_title']} — "
+            f"₹{rent_val:,}/mo rent | Total Monthly: ₹{tot_outflow:,} (+{dep_interest_pm:,}/- pm deposit int) | "
+            f"⭐ {r.get('resident_rating', 4.5)}/5 | {r['society_name']} ({r['micro_market']})"
+        )
+
+        with st.expander(rental_card_title, expanded=expand_all_rent):
             st.markdown(f"""
-            <div class="property-card" style="border-left: 6px solid {card_border};">
+            <div class="property-card" style="border-left: 6px solid {card_border}; margin-top: 4px;">
                 <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 8px;">
                     <div>
                         <h3 style="margin: 0; color: #F8FAFC; font-size: 1.25rem;">{r['unit_title']}</h3>
@@ -1424,16 +1553,19 @@ with tab_rental:
             r_info, r_platforms, r_contact = st.columns([1, 1, 1])
 
             with r_info:
-                st.markdown("**🛠️ Outflow & Maintenance Breakdown:**")
+                st.markdown("**🛠️ Outflow & Tenancy Terms:**")
                 st.markdown(f"- **Monthly Rent:** `₹{rent_val:,} / mo`")
                 st.markdown(f"- **Monthly Maintenance:** `₹{maint_val:,} / mo`")
                 st.markdown(f"- **Total Monthly Outflow (Rent + Maint):** <b style='color:#F59E0B;'>₹{tot_outflow:,} / mo</b>", unsafe_allow_html=True)
                 st.markdown(f"- **Security Deposit:** `₹{dep_val:,}` ({r['security_deposit_months']} months)")
-                st.markdown(f"- **7.5% Annual Interest on Deposit (Opportunity Cost):** <b style='color:#FCD34D;'>+₹{dep_interest_pm:,} / mo</b> <span style='font-size:0.8rem; color:#94A3B8;'>(₹{annual_dep_interest:,}/yr)</span>", unsafe_allow_html=True)
+                st.markdown(f"- **7.5% Annual Interest on Deposit (Opportunity Cost):** <b style='color:#FCD34D;'>+₹{dep_interest_pm:,} / mo</b> <span style='font-size:0.8rem; color:#94A3B8;'>(₹{annual_dep_interest:,}/yr locked)</span>", unsafe_allow_html=True)
                 st.markdown(f"👉 **TOTAL MONTHLY WITH DEPOSIT NOTE:** <b style='color:#38BDF8; font-size:1.02rem;'>Total Monthly: ₹{tot_outflow:,} (+{dep_interest_pm:,}/- pm due to deposit)</b>", unsafe_allow_html=True)
                 st.markdown(f"- **Effective Economic Outflow:** `₹{effective_monthly:,} / mo`")
-                st.markdown(f"- **Total Annual Maintenance:** `₹{ann_maint:,} / yr`")
-                st.markdown(f"- **Water Supply:** {r['water_supply']}")
+                st.markdown(f"- **Pet Policy:** `{r.get('pet_friendly', 'Allowed')}`")
+                st.markdown(f"- **Bachelor Policy:** `{r.get('bachelor_friendly', 'Professionals Welcome')}`")
+                st.markdown(f"- **Lock-in / Notice Period:** `{r.get('lock_in_period_months', 6)} months / {r.get('notice_period_months', 1)} month`")
+                st.markdown(f"- **EV Provision:** `{r.get('ev_charging_facility', 'EV Point Available')}`")
+                st.markdown(f"- **Occupancy Certificate:** `{r.get('occupancy_certificate', '100% OC Received')}`")
 
             with r_platforms:
                 st.markdown("**📊 Listed Prices Across Platforms:**")
@@ -1464,7 +1596,7 @@ with tab_rental:
                 # Direct WhatsApp Link
                 wa_msg = urllib.parse.quote(
                     f"Hi {contact.get('name')}, I saw your rental listing for {r['bhk']} in {r['society_name']} "
-                    f"on the East Bengaluru Real Estate Radar. Is it currently available for site visit?"
+                    f"on the South East Bengaluru Real Estate Radar & Rental Discovery Platform. Is it currently available for site visit?"
                 )
                 wa_url = f"https://wa.me/{contact.get('whatsapp')}?text={wa_msg}"
                 

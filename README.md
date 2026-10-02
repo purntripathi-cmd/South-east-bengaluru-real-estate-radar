@@ -1,4 +1,4 @@
-# 🧭 East Bengaluru Real Estate Radar & Rental Discovery Platform
+# 🧭 South East Bengaluru Real Estate Radar & Rental Discovery Platform
 
 [![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://share.streamlit.io)
 [![Daily 5 PM IST Radar Tracker](https://github.com/purntripathi-cmd/South-east-bengaluru-real-estate-radar/actions/workflows/daily_tracker.yml/badge.svg)](https://github.com/purntripathi-cmd/South-east-bengaluru-real-estate-radar/actions/workflows/daily_tracker.yml)

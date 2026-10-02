@@ -1,5 +1,5 @@
 """
-Automated Daily Tracker Script for East Bengaluru Real Estate Radar
+Automated Daily Tracker Script for South East Bengaluru Real Estate Radar & Rental Discovery Platform
 Executes daily at 5:00 PM IST (11:30 UTC).
 - Tracks micro-market price appreciation across Bellandur, Green Glen, Kadubeesanahalli (Gurukul)
 - Evaluates the Panathur Choke Point penalty spread
@@ -77,6 +77,11 @@ def detect_parameter_changes(properties, rental_properties, ledger):
         ("feedback_score", "Feedback Score"),
         ("dist_metro_km", "Metro Distance"),
         ("panathur_routing", "Panathur Route Status"),
+        ("occupancy_certificate", "Occupancy Certificate (OC)"),
+        ("open_space_pct", "Open Space %"),
+        ("ev_charging_facility", "EV Charging Facility"),
+        ("power_backup", "Power Backup"),
+        ("lake_buffer_compliance", "Lake Buffer Compliance"),
         ("validation_url", "Validation URL")
     ]
 
@@ -108,6 +113,11 @@ def detect_parameter_changes(properties, rental_properties, ledger):
         ("resident_rating", "Resident Rating"),
         ("feedback_score", "Feedback Score"),
         ("panathur_bottleneck_free", "Panathur Free Route"),
+        ("pet_friendly", "Pet Friendly"),
+        ("bachelor_friendly", "Bachelor Friendly"),
+        ("lock_in_period_months", "Lock-in Period"),
+        ("notice_period_months", "Notice Period"),
+        ("ev_charging_facility", "EV Charging Facility"),
         ("validation_url", "Validation URL")
     ]
 
@@ -138,7 +148,7 @@ def run_daily_tracker(dry_run=False, force=False):
     timestamp_iso = now_utc.strftime("%Y-%m-%d %H:%M:%S UTC")
 
     safe_print("=" * 70)
-    safe_print("[East Bengaluru Real Estate Radar] Scheduled Daily Tracker & Audit")
+    safe_print("[South East Bengaluru Real Estate Radar & Rental Discovery Platform]")
     safe_print(f"Timestamp: {timestamp_iso} (Scheduled 5:00 PM IST / 11:30 UTC)")
     safe_print("Scope: Bellandur, Green Glen Layout, Kadubeesanahalli (Gurukul)")
     safe_print("=" * 70)
@@ -159,13 +169,14 @@ def run_daily_tracker(dry_run=False, force=False):
     changes_detected = detect_parameter_changes(properties, rental_properties, ledger)
 
     # Check if files already exist for today
-    today_records_exist = (
+    last_recorded_date = ledger.get("last_recorded_date")
+    recorded_today = (last_recorded_date == date_str) and (
         os.path.exists(ALL_PURCHASE_CSV) and
         os.path.exists(ALL_RENTAL_CSV) and
         os.path.exists(HISTORICAL_CSV)
     )
 
-    should_record = force or (not today_records_exist) or (len(changes_detected) > 0)
+    should_record = force or (not recorded_today) or (len(changes_detected) > 0)
 
     if not should_record and not dry_run:
         safe_print(f"\n[VALIDATION PASSED] Existing records for {date_str} are fully intact.")
@@ -274,6 +285,12 @@ def run_daily_tracker(dry_run=False, force=False):
             "RERA_Portal_URL": p.get("rera_portal_url", "https://rera.karnataka.gov.in"),
             "Source_Listing_URL": p.get("source_listing_url", ""),
             "Validation_Status": p.get("validation_status", "Verified"),
+            "Occupancy_Certificate": p.get("occupancy_certificate", "100% OC Received"),
+            "Open_Space_Pct": p.get("open_space_pct", "75% Open Space"),
+            "EV_Charging_Facility": p.get("ev_charging_facility", "EV Bays Installed"),
+            "Power_Backup": p.get("power_backup", "100% Full DG Backup"),
+            "Lake_Buffer_Compliance": p.get("lake_buffer_compliance", "Fully Compliant"),
+            "Encumbrance_Certificate": p.get("encumbrance_certificate", "Verified 30-Yr Nil EC"),
             "Common_Complaints": complaints_str
         })
 
@@ -324,6 +341,12 @@ def run_daily_tracker(dry_run=False, force=False):
             "Water_Supply": r.get("water_supply"),
             "Power_Backup": r.get("power_backup"),
             "Panathur_Free": "YES (Safe)" if r.get("panathur_bottleneck_free") else "NO (Traffic Choke)",
+            "Occupancy_Certificate": r.get("occupancy_certificate", "100% OC Received"),
+            "Pet_Friendly": r.get("pet_friendly", "Allowed"),
+            "Bachelor_Friendly": r.get("bachelor_friendly", "Families & Professionals"),
+            "Lock_In_Period_Months": r.get("lock_in_period_months", 6),
+            "Notice_Period_Months": r.get("notice_period_months", 1),
+            "EV_Charging_Facility": r.get("ev_charging_facility", "EV Points Available"),
             "Validation_URL": r.get("validation_url", ""),
             "Source_Post_URL": r.get("source_post_url", ""),
             "Validation_Status": r.get("validation_status", "Verified"),
@@ -337,6 +360,10 @@ def run_daily_tracker(dry_run=False, force=False):
     rental_records.sort(key=lambda x: (-x["Resident_Rating"], x["Effective_Monthly_Cost_INR"]))
     all_rental_df = pd.DataFrame(rental_records)
     top_5_rental_df = pd.DataFrame(rental_records[:5])
+
+    # Determine status label
+    base_status = "UPDATED_ON_PARAMETER_CHANGE" if changes_detected else ("MANUAL_FORCE_RECORDED" if force else "RECORDED_NEW_SNAPSHOT")
+    status_label = f"DRY_RUN_{base_status}" if dry_run else base_status
 
     # ---------------------------------------------------------
     # 5. Save Snapshots & Audit Trail
@@ -389,13 +416,12 @@ def run_daily_tracker(dry_run=False, force=False):
         # Update ledger with current state
         new_ledger = {
             "last_updated": timestamp_iso,
+            "last_recorded_date": date_str,
             "purchase": {p["id"]: p for p in properties},
             "rental": {r["id"]: r for r in rental_properties}
         }
         with open(AUDIT_LEDGER_FILE, "w", encoding="utf-8") as f:
             json.dump(new_ledger, f, indent=2)
-
-        status_label = "UPDATED_ON_PARAMETER_CHANGE" if changes_detected else ("MANUAL_FORCE_RECORDED" if force else "RECORDED_NEW_SNAPSHOT")
 
         log_entry = {
             "status": status_label,

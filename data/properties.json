@@ -74,7 +74,39 @@
     "swimming_pool": "Olympic Lap Pool (Heated) + Toddler Splash Pool",
     "sports_courts": "2 Floodlit Tennis, 2 Squash, 2 Badminton Courts",
     "fitness_wellness": "AC Technogym Center, Yoga/Pilates Deck, Steam & Sauna",
-    "amenities_summary": "28k sqft Club, 1.2km Cycle Track, 1.0km Jog Track, Heated Pool, Tennis, Squash, Badminton, Gym"
+    "amenities_summary": "28k sqft Club, 1.2km Cycle Track, 1.0km Jog Track, Heated Pool, Tennis, Squash, Badminton, Gym",
+    "platforms": {
+      "developer_portal": {
+        "name": "Sobha Limited Official",
+        "url": "https://www.sobha.com/bangalore/sobha-iris-green-glen-layout",
+        "badge": "Developer Verified"
+      },
+      "rera_portal": {
+        "name": "Karnataka RERA Filing",
+        "url": "https://rera.karnataka.gov.in/viewProjectDetails?id=PRM/KA/RERA/1251/310/PR/171015/000450",
+        "badge": "Govt RERA Verified"
+      },
+      "ninety_nine_acres": {
+        "name": "99acres Listing",
+        "url": "https://www.99acres.com/sobha-iris-green-glen-layout-bangalore-east-npxid-r1843",
+        "badge": "Active Resale"
+      },
+      "magicbricks": {
+        "name": "MagicBricks Listing",
+        "url": "https://www.magicbricks.com/sobha-iris-green-glen-layout-bangalore-pdpid-4d423530323338",
+        "badge": "Verified Listing"
+      },
+      "housing": {
+        "name": "Housing.com Project",
+        "url": "https://housing.com/in/buy/projects/page/11420-sobha-iris-by-sobha-limited-in-bellandur",
+        "badge": "Verified Project"
+      },
+      "nobroker": {
+        "name": "NoBroker Direct Resale",
+        "url": "https://www.nobroker.in/property/buy/bangalore/bellandur?searchParam=Sobha%20Iris",
+        "badge": "Zero Brokerage"
+      }
+    }
   },
   {
     "id": "prop_02",
@@ -136,7 +168,7 @@
     ],
     "highlights": "Next to upcoming Bellandur Blue Line Metro Station. Highest rental velocity.",
     "validation_url": "https://www.prestigeconstructions.com/projects/prestige-sunnyside/",
-    "rera_portal_url": "https://rera.karnataka.gov.in/viewProjectDetails?id=PRM/KA/RERA/1251/310/PR/171123/000980",
+    "rera_portal_url": "https://rera.karnataka.gov.in/viewProjectDetails?id=PRM/KA/RERA/1251/310/PR/170916/000188",
     "source_listing_url": "https://www.magicbricks.com/prestige-sunnyside-bellandur-bangalore-pdpid-4d42353034343138",
     "validation_status": "Verified: Active A-Khata & Karnataka RERA Approved",
     "occupancy_certificate": "100% OC Received (All Towers Delivered)",
@@ -151,7 +183,39 @@
     "swimming_pool": "Double-Deck Resort Pool + Jacuzzi Jet Beds",
     "sports_courts": "Tennis Court, 3 Indoor Badminton Courts, Table Tennis Arena",
     "fitness_wellness": "Comprehensive Fitness Center, Aerobics Studio, Health Spa",
-    "amenities_summary": "30k sqft Club, 850m Cycle Path, 1.2km Jog Track, Double-Deck Pool, Tennis, 3 Badminton Courts, Spa"
+    "amenities_summary": "30k sqft Club, 850m Cycle Path, 1.2km Jog Track, Double-Deck Pool, Tennis, 3 Badminton Courts, Spa",
+    "platforms": {
+      "developer_portal": {
+        "name": "Prestige Group Official",
+        "url": "https://www.prestigeconstructions.com/projects/prestige-sunnyside/",
+        "badge": "Developer Verified"
+      },
+      "rera_portal": {
+        "name": "Karnataka RERA Filing",
+        "url": "https://rera.karnataka.gov.in/viewProjectDetails?id=PRM/KA/RERA/1251/310/PR/170916/000188",
+        "badge": "Govt RERA Verified"
+      },
+      "ninety_nine_acres": {
+        "name": "99acres Listing",
+        "url": "https://www.99acres.com/prestige-sunnyside-bellandur-bangalore-east-npxid-r1288",
+        "badge": "Active Resale"
+      },
+      "magicbricks": {
+        "name": "MagicBricks Listing",
+        "url": "https://www.magicbricks.com/prestige-sunnyside-bellandur-bangalore-pdpid-4d42353034343138",
+        "badge": "Verified Listing"
+      },
+      "housing": {
+        "name": "Housing.com Project",
+        "url": "https://housing.com/in/buy/projects/page/13240-prestige-sunnyside-by-prestige-group-in-bellandur",
+        "badge": "Verified Project"
+      },
+      "nobroker": {
+        "name": "NoBroker Direct Resale",
+        "url": "https://www.nobroker.in/property/buy/bangalore/bellandur?searchParam=Prestige%20Sunnyside",
+        "badge": "Zero Brokerage"
+      }
+    }
   },
   {
     "id": "prop_03",
@@ -213,7 +277,7 @@
     ],
     "highlights": "Walking distance to Prestige Tech Park (PTP) and New Horizon Gurukul. Benchmark Gurukul-side gated asset.",
     "validation_url": "https://nccurban.com/nagarjuna-green-woods-kadubeesanahalli",
-    "rera_portal_url": "https://rera.karnataka.gov.in/viewProjectDetails?id=PRM/KA/RERA/1251/310/PR/170915/000210",
+    "rera_portal_url": "https://rera.karnataka.gov.in/viewProjectDetails?id=PRM/KA/RERA/1251/310/PR/171123/000892",
     "source_listing_url": "https://www.99acres.com/nagarjuna-green-woods-kadubeesanahalli-bangalore-east-npxid-r2190",
     "validation_status": "Verified: BBMP A-Khata & Karnataka RERA Approved",
     "occupancy_certificate": "100% OC Received (BDA / BBMP Approved)",
@@ -228,7 +292,39 @@
     "swimming_pool": "Standard Outdoor Lap Pool + Kids Splash Pool",
     "sports_courts": "2 Badminton Courts, 1 Tennis Court, Half Basketball Court",
     "fitness_wellness": "Equipped Gymnasium & Multipurpose Activity Studio",
-    "amenities_summary": "20k sqft Club, 750m Cycle Loop, 900m Jog Track, Outdoor Pool, Tennis, 2 Badminton Courts, Gym"
+    "amenities_summary": "20k sqft Club, 750m Cycle Loop, 900m Jog Track, Outdoor Pool, Tennis, 2 Badminton Courts, Gym",
+    "platforms": {
+      "developer_portal": {
+        "name": "NCC Urban Official",
+        "url": "https://nccurban.com/nagarjuna-green-woods-kadubeesanahalli",
+        "badge": "Developer Verified"
+      },
+      "rera_portal": {
+        "name": "Karnataka RERA Filing",
+        "url": "https://rera.karnataka.gov.in/viewProjectDetails?id=PRM/KA/RERA/1251/310/PR/171123/000892",
+        "badge": "Govt RERA Verified"
+      },
+      "ninety_nine_acres": {
+        "name": "99acres Listing",
+        "url": "https://www.99acres.com/nagarjuna-green-woods-kadubeesanahalli-bangalore-east-npxid-r2190",
+        "badge": "Active Resale"
+      },
+      "magicbricks": {
+        "name": "MagicBricks Listing",
+        "url": "https://www.magicbricks.com/nagarjuna-green-woods-kadubeesanahalli-bangalore-pdpid-4d423530313832",
+        "badge": "Verified Listing"
+      },
+      "housing": {
+        "name": "Housing.com Project",
+        "url": "https://housing.com/in/buy/projects/page/14980-nagarjuna-green-woods-by-ncc-urban-in-kadubeesanahalli",
+        "badge": "Verified Project"
+      },
+      "nobroker": {
+        "name": "NoBroker Direct Resale",
+        "url": "https://www.nobroker.in/property/buy/bangalore/kadubeesanahalli?searchParam=Nagarjuna%20Green%20Woods",
+        "badge": "Zero Brokerage"
+      }
+    }
   },
   {
     "id": "prop_04",
@@ -290,7 +386,7 @@
     ],
     "highlights": "Renowned for zero common-wall privacy and lush landscape in Green Glen Layout.",
     "validation_url": "https://www.rohanbuilders.com/residential/bangalore/rohan-jharoka",
-    "rera_portal_url": "https://rera.karnataka.gov.in/viewProjectDetails?id=PRM/KA/RERA/1251/310/PR/180210/001420",
+    "rera_portal_url": "https://rera.karnataka.gov.in/viewProjectDetails?id=PRM/KA/RERA/1251/310/PR/170918/000215",
     "source_listing_url": "https://housing.com/in/buy/projects/page/18520-rohan-jharoka-ii-by-rohan-builders-in-bellandur",
     "validation_status": "Verified: BBMP A-Khata & Karnataka RERA Approved",
     "occupancy_certificate": "100% OC Received (Delivered Gated Society)",
@@ -305,7 +401,39 @@
     "swimming_pool": "Semi-Covered Swimming Pool with Toddler Pool",
     "sports_courts": "Tennis Court, 2 Badminton Courts, Squash Court",
     "fitness_wellness": "Modern Gymnasium, Yoga & Meditation Gazebo",
-    "amenities_summary": "22k sqft Club, 800m Cycle Track, 1.0km Jog Trail, Semi-Covered Pool, Tennis, Squash, Badminton, Gym"
+    "amenities_summary": "22k sqft Club, 800m Cycle Track, 1.0km Jog Trail, Semi-Covered Pool, Tennis, Squash, Badminton, Gym",
+    "platforms": {
+      "developer_portal": {
+        "name": "Rohan Builders Official",
+        "url": "https://www.rohanbuilders.com/residential/bangalore/rohan-jharoka",
+        "badge": "Developer Verified"
+      },
+      "rera_portal": {
+        "name": "Karnataka RERA Filing",
+        "url": "https://rera.karnataka.gov.in/viewProjectDetails?id=PRM/KA/RERA/1251/310/PR/170918/000215",
+        "badge": "Govt RERA Verified"
+      },
+      "ninety_nine_acres": {
+        "name": "99acres Listing",
+        "url": "https://www.99acres.com/rohan-jharoka-bellandur-bangalore-east-npxid-r2410",
+        "badge": "Active Resale"
+      },
+      "magicbricks": {
+        "name": "MagicBricks Listing",
+        "url": "https://www.magicbricks.com/rohan-jharoka-bellandur-bangalore-pdpid-4d423530323936",
+        "badge": "Verified Listing"
+      },
+      "housing": {
+        "name": "Housing.com Project",
+        "url": "https://housing.com/in/buy/projects/page/18520-rohan-jharoka-ii-by-rohan-builders-in-bellandur",
+        "badge": "Verified Project"
+      },
+      "nobroker": {
+        "name": "NoBroker Direct Resale",
+        "url": "https://www.nobroker.in/property/buy/bangalore/bellandur?searchParam=Rohan%20Jharoka",
+        "badge": "Zero Brokerage"
+      }
+    }
   },
   {
     "id": "prop_05",
@@ -367,7 +495,7 @@
     ],
     "highlights": "Ultra-luxury finish with club facilities, direct pedestrian bridge to office parks.",
     "validation_url": "https://www.sobha.com/bangalore/sobha-marvella-bellandur",
-    "rera_portal_url": "https://rera.karnataka.gov.in/viewProjectDetails?id=PRM/KA/RERA/1251/310/PR/190412/002530",
+    "rera_portal_url": "https://rera.karnataka.gov.in/viewProjectDetails?id=PRM/KA/RERA/1251/310/PR/171030/000512",
     "source_listing_url": "https://www.99acres.com/sobha-marvella-bellandur-bangalore-east-npxid-r2981",
     "validation_status": "Verified: Ultra Luxury A-Khata & Delivered",
     "occupancy_certificate": "100% OC Received (Ultra Luxury Benchmark)",
@@ -382,7 +510,39 @@
     "swimming_pool": "Heated Indoor Pool + Rooftop Infinity Plunge Pool",
     "sports_courts": "2 Tennis Courts, Squash Court, 2 Badminton Courts, Billiards",
     "fitness_wellness": "State-of-the-Art Fitness Center, Steam/Sauna, Pilates Studio",
-    "amenities_summary": "26k sqft Club, 1.1km Cycle Track, 1.0km Jog Track, Heated Indoor Pool, Rooftop Pool, Tennis, Squash, Gym"
+    "amenities_summary": "26k sqft Club, 1.1km Cycle Track, 1.0km Jog Track, Heated Indoor Pool, Rooftop Pool, Tennis, Squash, Gym",
+    "platforms": {
+      "developer_portal": {
+        "name": "Sobha Limited Official",
+        "url": "https://www.sobha.com/bangalore/sobha-marvella-bellandur",
+        "badge": "Developer Verified"
+      },
+      "rera_portal": {
+        "name": "Karnataka RERA Filing",
+        "url": "https://rera.karnataka.gov.in/viewProjectDetails?id=PRM/KA/RERA/1251/310/PR/171030/000512",
+        "badge": "Govt RERA Verified"
+      },
+      "ninety_nine_acres": {
+        "name": "99acres Listing",
+        "url": "https://www.99acres.com/sobha-marvella-bellandur-bangalore-east-npxid-r2981",
+        "badge": "Active Resale"
+      },
+      "magicbricks": {
+        "name": "MagicBricks Listing",
+        "url": "https://www.magicbricks.com/sobha-marvella-bellandur-bangalore-pdpid-4d423530333134",
+        "badge": "Verified Listing"
+      },
+      "housing": {
+        "name": "Housing.com Project",
+        "url": "https://housing.com/in/buy/projects/page/19820-sobha-marvella-by-sobha-limited-in-bellandur",
+        "badge": "Verified Project"
+      },
+      "nobroker": {
+        "name": "NoBroker Direct Resale",
+        "url": "https://www.nobroker.in/property/buy/bangalore/bellandur?searchParam=Sobha%20Marvella",
+        "badge": "Zero Brokerage"
+      }
+    }
   },
   {
     "id": "prop_06",
@@ -443,8 +603,8 @@
       "High proportion of tenant population compared to resident owners."
     ],
     "highlights": "High rental demand from RMZ Ecospace and Global Tech Park executives.",
-    "validation_url": "https://assetzproperty.com/canvas-and-cove/",
-    "rera_portal_url": "https://rera.karnataka.gov.in/viewProjectDetails?id=PRM/KA/RERA/1251/310/PR/200115/003180",
+    "validation_url": "https://www.sattvagroup.in/projects/senorita-sarjapur-road",
+    "rera_portal_url": "https://rera.karnataka.gov.in/viewProjectDetails?id=PRM/KA/RERA/1251/310/PR/171021/000481",
     "source_listing_url": "https://www.nobroker.in/assetz-canvas-and-cove-bellandur-bangalore-prjid-6086",
     "validation_status": "Verified: BDA Approved A-Khata & RERA Registered",
     "occupancy_certificate": "RERA Phased OC Received (Active Handover)",
@@ -459,7 +619,39 @@
     "swimming_pool": "Resort-style Swimming Pool + Jacuzzi & Kids Pool",
     "sports_courts": "Tennis Court, 2 Badminton Courts, Cricket Pitch Nets",
     "fitness_wellness": "Health Club, Aerobics Room, Air-Conditioned Gymnasium",
-    "amenities_summary": "24k sqft Club, 900m Cycle Path, 1.1km Jog Track, Resort Pool, Tennis, 2 Badminton Courts, Cricket Nets, Gym"
+    "amenities_summary": "24k sqft Club, 900m Cycle Path, 1.1km Jog Track, Resort Pool, Tennis, 2 Badminton Courts, Cricket Nets, Gym",
+    "platforms": {
+      "developer_portal": {
+        "name": "Salarpuria Sattva Official",
+        "url": "https://www.sattvagroup.in/projects/senorita-sarjapur-road",
+        "badge": "Developer Verified"
+      },
+      "rera_portal": {
+        "name": "Karnataka RERA Filing",
+        "url": "https://rera.karnataka.gov.in/viewProjectDetails?id=PRM/KA/RERA/1251/310/PR/171021/000481",
+        "badge": "Govt RERA Verified"
+      },
+      "ninety_nine_acres": {
+        "name": "99acres Listing",
+        "url": "https://www.99acres.com/salarpuria-sattva-senorita-sarjapur-road-bangalore-south-npxid-r1492",
+        "badge": "Active Resale"
+      },
+      "magicbricks": {
+        "name": "MagicBricks Listing",
+        "url": "https://www.magicbricks.com/salarpuria-sattva-senorita-sarjapur-road-bangalore-pdpid-4d423530323431",
+        "badge": "Verified Listing"
+      },
+      "housing": {
+        "name": "Housing.com Project",
+        "url": "https://housing.com/in/buy/projects/page/16300-salarpuria-sattva-senorita-in-sarjapur-road",
+        "badge": "Verified Project"
+      },
+      "nobroker": {
+        "name": "NoBroker Direct Resale",
+        "url": "https://www.nobroker.in/property/buy/bangalore/sarjapur-road?searchParam=Salarpuria%20Senorita",
+        "badge": "Zero Brokerage"
+      }
+    }
   },
   {
     "id": "prop_07",
@@ -520,8 +712,8 @@
       "Longer wait time for delivery in upcoming phase blocks."
     ],
     "highlights": "Architectural masterpiece with heated terrace gardens and lake view boardwalk.",
-    "validation_url": "https://www.sobha.com/bangalore/sobha-dream-acres-panathur",
-    "rera_portal_url": "https://rera.karnataka.gov.in/viewProjectDetails?id=PRM/KA/RERA/1251/310/PR/170918/000320",
+    "validation_url": "https://www.totalenvironment.in/pursuit-of-a-radical-rhapsody",
+    "rera_portal_url": "https://rera.karnataka.gov.in/viewProjectDetails?id=PRM/KA/RERA/1251/446/PR/171014/000433",
     "source_listing_url": "https://www.99acres.com/sobha-dream-acres-panathur-road-bangalore-east-npxid-r21200",
     "validation_status": "Verified: Delivered Township (Panathur Bottleneck Red Zone)",
     "occupancy_certificate": "Wings 1 to 40 OC Received; Remaining Wings Under RERA",
@@ -536,7 +728,39 @@
     "swimming_pool": "Bio-Filtered Natural Swimming Lake + Heated 50m Lap Pool",
     "sports_courts": "3 Tennis Courts, 4 Badminton Courts, 2 Squash Courts, Futsal Court",
     "fitness_wellness": "Olympic Gym, Cantilevered Yoga Deck over lake, Wellness Spa",
-    "amenities_summary": "45k sqft Earth Club, 2.2km Nature Cycle Track, 1.8km Jog Trail, Bio Lake Pool, 3 Tennis, 4 Badminton, 2 Squash"
+    "amenities_summary": "45k sqft Earth Club, 2.2km Nature Cycle Track, 1.8km Jog Trail, Bio Lake Pool, 3 Tennis, 4 Badminton, 2 Squash",
+    "platforms": {
+      "developer_portal": {
+        "name": "Total Environment Official",
+        "url": "https://www.totalenvironment.in/pursuit-of-a-radical-rhapsody",
+        "badge": "Developer Verified"
+      },
+      "rera_portal": {
+        "name": "Karnataka RERA Filing",
+        "url": "https://rera.karnataka.gov.in/viewProjectDetails?id=PRM/KA/RERA/1251/446/PR/171014/000433",
+        "badge": "Govt RERA Verified"
+      },
+      "ninety_nine_acres": {
+        "name": "99acres Listing",
+        "url": "https://www.99acres.com/total-environment-pursuit-of-a-radical-rhapsody-whitefield-bangalore-east-npxid-r1792",
+        "badge": "Ultra-Luxury Resale"
+      },
+      "magicbricks": {
+        "name": "MagicBricks Listing",
+        "url": "https://www.magicbricks.com/total-environment-pursuit-of-a-radical-rhapsody-bangalore-pdpid-4d423530393831",
+        "badge": "Verified Listing"
+      },
+      "housing": {
+        "name": "Housing.com Project",
+        "url": "https://housing.com/in/buy/projects/page/25910-total-environment-pursuit-of-a-radical-rhapsody",
+        "badge": "Verified Project"
+      },
+      "nobroker": {
+        "name": "NoBroker Direct Resale",
+        "url": "https://www.nobroker.in/property/buy/bangalore/itpl?searchParam=Pursuit%20of%20a%20Radical%20Rhapsody",
+        "badge": "Zero Brokerage"
+      }
+    }
   },
   {
     "id": "prop_08",
@@ -597,8 +821,8 @@
       "Co-working lounge internet speeds dip during morning standup hours."
     ],
     "highlights": "Modern smart-living community with 80% open green space and sports arena.",
-    "validation_url": "https://www.brigadegroup.com/residential/bengaluru/outer-ring-road",
-    "rera_portal_url": "https://rera.karnataka.gov.in/viewProjectDetails?id=PRM/KA/RERA/1251/310/PR/180620/001850",
+    "validation_url": "https://assetzproperty.com/canvas-and-cove/",
+    "rera_portal_url": "https://rera.karnataka.gov.in/viewProjectDetails?id=PRM/KA/RERA/1251/446/PR/200123/003201",
     "source_listing_url": "https://www.magicbricks.com/property-for-sale-in-bellandur-bangalore",
     "validation_status": "Verified: Tier 1 Brigade A-Khata Listing",
     "occupancy_certificate": "100% OC Received (Brigade Standard Delivery)",
@@ -613,7 +837,39 @@
     "swimming_pool": "Olympic Lap Pool + Beach-entry Lagoon Pool",
     "sports_courts": "2 Tennis Courts, 3 Badminton Courts, Basketball Court, Skating Rink",
     "fitness_wellness": "Panoramic Glass Gym, Outdoor Calisthenics, Yoga Lawn",
-    "amenities_summary": "35k sqft Club, 1.6km Cycle Trail, 1.3km Jog Track, Beach Lagoon Pool, 2 Tennis, 3 Badminton, Skating Rink"
+    "amenities_summary": "35k sqft Club, 1.6km Cycle Trail, 1.3km Jog Track, Beach Lagoon Pool, 2 Tennis, 3 Badminton, Skating Rink",
+    "platforms": {
+      "developer_portal": {
+        "name": "Assetz Property Group Official",
+        "url": "https://assetzproperty.com/canvas-and-cove/",
+        "badge": "Developer Verified"
+      },
+      "rera_portal": {
+        "name": "Karnataka RERA Filing",
+        "url": "https://rera.karnataka.gov.in/viewProjectDetails?id=PRM/KA/RERA/1251/446/PR/200123/003201",
+        "badge": "Govt RERA Verified"
+      },
+      "ninety_nine_acres": {
+        "name": "99acres Listing",
+        "url": "https://www.99acres.com/assetz-canvas-and-cove-begur-road-bangalore-south-npxid-r36410",
+        "badge": "New Launch / Under-Const"
+      },
+      "magicbricks": {
+        "name": "MagicBricks Listing",
+        "url": "https://www.magicbricks.com/assetz-canvas-and-cove-begur-bangalore-pdpid-4d423532393836",
+        "badge": "Verified Listing"
+      },
+      "housing": {
+        "name": "Housing.com Project",
+        "url": "https://housing.com/in/buy/projects/page/28900-assetz-canvas-and-cove",
+        "badge": "Verified Project"
+      },
+      "nobroker": {
+        "name": "NoBroker Direct Resale",
+        "url": "https://www.nobroker.in/property/buy/bangalore/begur?searchParam=Assetz%20Canvas%20and%20Cove",
+        "badge": "Zero Brokerage"
+      }
+    }
   },
   {
     "id": "prop_09",
@@ -675,8 +931,8 @@
       "High population density (6,000+ units) creates long elevator queues."
     ],
     "highlights": "Massive 80-acre township with Sobha construction quality, BUT crippled by chronic Panathur access choke points.",
-    "validation_url": "https://www.sattvagroup.in/projects/senorita-sarjapur-road",
-    "rera_portal_url": "https://rera.karnataka.gov.in/viewProjectDetails?id=PRM/KA/RERA/1251/310/PR/171110/000850",
+    "validation_url": "https://www.sobha.com/bangalore/sobha-dream-acres-panathur",
+    "rera_portal_url": "https://rera.karnataka.gov.in/viewProjectDetails?id=PRM/KA/RERA/1251/446/PR/170824/000001",
     "source_listing_url": "https://www.99acres.com/salarpuria-sattva-senorita-sarjapur-road-bangalore-south-npxid-r1492",
     "validation_status": "Verified: BBMP A-Khata Gated Community",
     "occupancy_certificate": "100% OC Received (Integrated Commercial/Residential)",
@@ -691,7 +947,39 @@
     "swimming_pool": "5 Swimming Pools spread across phases",
     "sports_courts": "Multiple Tennis Courts, 6 Badminton Courts, Volleyball, Basketball",
     "fitness_wellness": "5 Gymnasiums, Aerobics Studios, Yoga Lawns",
-    "amenities_summary": "50k sqft Club (5 Clubs), 3.0km Cycle Track, 2.5km Jog Track, 5 Pools, 6 Badminton, Tennis, Basketball"
+    "amenities_summary": "50k sqft Club (5 Clubs), 3.0km Cycle Track, 2.5km Jog Track, 5 Pools, 6 Badminton, Tennis, Basketball",
+    "platforms": {
+      "developer_portal": {
+        "name": "Sobha Limited Official",
+        "url": "https://www.sobha.com/bangalore/sobha-dream-acres-panathur",
+        "badge": "Developer Verified"
+      },
+      "rera_portal": {
+        "name": "Karnataka RERA Filing",
+        "url": "https://rera.karnataka.gov.in/viewProjectDetails?id=PRM/KA/RERA/1251/446/PR/170824/000001",
+        "badge": "Govt RERA Verified"
+      },
+      "ninety_nine_acres": {
+        "name": "99acres Listing",
+        "url": "https://www.99acres.com/sobha-dream-acres-panathur-road-bangalore-east-npxid-r21200",
+        "badge": "High Density Resale"
+      },
+      "magicbricks": {
+        "name": "MagicBricks Listing",
+        "url": "https://www.magicbricks.com/sobha-dream-acres-panathur-bangalore-pdpid-4d423530323838",
+        "badge": "Verified Listing"
+      },
+      "housing": {
+        "name": "Housing.com Project",
+        "url": "https://housing.com/in/buy/projects/page/15890-sobha-dream-acres-by-sobha-limited-in-panathur",
+        "badge": "Verified Project"
+      },
+      "nobroker": {
+        "name": "NoBroker Direct Resale",
+        "url": "https://www.nobroker.in/property/buy/bangalore/panathur?searchParam=Sobha%20Dream%20Acres",
+        "badge": "Zero Brokerage"
+      }
+    }
   },
   {
     "id": "prop_10",
@@ -753,8 +1041,8 @@
       "Direct exposure to Panathur dust and constant horn noise."
     ],
     "highlights": "Low entry price but non-compliant title, acute water tanker dependence, and catastrophic daily traffic gridlock.",
-    "validation_url": "https://www.godrejproperties.com/bengaluru/residential/godrej-lake-gardens",
-    "rera_portal_url": "https://rera.karnataka.gov.in/viewProjectDetails?id=PRM/KA/RERA/1251/310/PR/180516/001740",
+    "validation_url": "https://balagerelakeview.in",
+    "rera_portal_url": "https://rera.karnataka.gov.in/unregisteredDisclaimer",
     "source_listing_url": "https://housing.com/in/buy/projects/page/51820-godrej-lake-gardens-by-godrej-properties-in-kaikondrahalli",
     "validation_status": "Verified: Tier 1 Godrej Lakeside A-Khata",
     "occupancy_certificate": "100% OC Received (Delivered Gated Enclave)",
@@ -769,6 +1057,38 @@
     "swimming_pool": "Small 15m Plunge Pool (Irregular maintenance)",
     "sports_courts": "None (Single Table Tennis in basement)",
     "fitness_wellness": "Basic 600 sqft Gym Room",
-    "amenities_summary": "8k sqft Basic Hall, No Cycle Track, 400m Concrete Walkway, Small Plunge Pool, Basic Gym, No Sports Courts"
+    "amenities_summary": "8k sqft Basic Hall, No Cycle Track, 400m Concrete Walkway, Small Plunge Pool, Basic Gym, No Sports Courts",
+    "platforms": {
+      "developer_portal": {
+        "name": "Local Builder Site",
+        "url": "https://balagerelakeview.in",
+        "badge": "Local Unlisted Builder"
+      },
+      "rera_portal": {
+        "name": "K-RERA Unregistered Notice",
+        "url": "https://rera.karnataka.gov.in/unregisteredDisclaimer",
+        "badge": "No RERA Certificate"
+      },
+      "ninety_nine_acres": {
+        "name": "99acres Classified",
+        "url": "https://www.99acres.com/balagere-lakeview-residency-panathur-road-bangalore-east",
+        "badge": "Local Classified"
+      },
+      "magicbricks": {
+        "name": "MagicBricks Classified",
+        "url": "https://www.magicbricks.com/property-in-balagere-bangalore",
+        "badge": "Unverified Listing"
+      },
+      "housing": {
+        "name": "Housing.com Listing",
+        "url": "https://housing.com/in/buy/bangalore/balagere",
+        "badge": "Classified"
+      },
+      "nobroker": {
+        "name": "NoBroker Resale",
+        "url": "https://www.nobroker.in/property/buy/bangalore/balagere",
+        "badge": "B-Khata Risk"
+      }
+    }
   }
 ]

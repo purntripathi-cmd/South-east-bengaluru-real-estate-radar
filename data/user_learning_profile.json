@@ -1,0 +1,34 @@
+{
+  "total_learning_interactions": 14,
+  "last_updated": "2026-10-02T22:00:00+05:30",
+  "learned_preference_weights": {
+    "metro_proximity": 15.0,
+    "traffic_integrity": 20.0,
+    "exact_distances": 15.0,
+    "builder_pedigree": 15.0,
+    "water_logging": 10.0,
+    "financials_appreciation": 15.0,
+    "land_title_quality": 10.0,
+    "amenities_and_tracks": 12.0
+  },
+  "user_sentiment_biases": {
+    "zero_panathur_strict": 1.0,
+    "tier_1_builder_preference": 0.95,
+    "cycling_track_importance": 0.9,
+    "low_maintenance_preference": 0.85
+  },
+  "feedback_history": [
+    {
+      "query": "Which 3 BHK offers the best cycling track and zero traffic penalty?",
+      "recommended_id": "prop_08",
+      "user_feedback": "helpful",
+      "learning_delta": "+1.5 weight to cycling_track & traffic_integrity"
+    },
+    {
+      "query": "Show rental with lowest total monthly outflow including deposit interest",
+      "recommended_id": "rent_03",
+      "user_feedback": "helpful",
+      "learning_delta": "+1.0 weight to effective_monthly_outflow"
+    }
+  ]
+}

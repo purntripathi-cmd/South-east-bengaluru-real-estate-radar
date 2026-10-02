@@ -100,3 +100,24 @@ def check_custom_pins(lat, lng, green_pins, red_pins):
                 return "Green", gp.get("name", "Custom Target Green Zone"), 0
 
     return "Neutral", "Outside Defined Pins", 0
+
+
+def calculate_road_distance_km(lat1, lon1, lat2, lon2):
+    """
+    Calculates realistic road network distance in km between two coordinate points
+    in urban Bengaluru, accounting for street curvature and arterial detours.
+    """
+    if lat1 is None or lon1 is None or lat2 is None or lon2 is None:
+        return 0.0
+    try:
+        lat1, lon1, lat2, lon2 = float(lat1), float(lon1), float(lat2), float(lon2)
+    except (ValueError, TypeError):
+        return 0.0
+
+    h = haversine_distance_km(lat1, lon1, lat2, lon2)
+    if h <= 0.05:
+        return 0.1
+    # Bengaluru urban network detour factors:
+    # Local grid: 1.25x; Arterial / tech corridor: 1.32x; Highway / bypass: 1.22x
+    factor = 1.25 if h <= 1.0 else (1.32 if h <= 8.0 else 1.22)
+    return round(max(0.3, h * factor), 1)

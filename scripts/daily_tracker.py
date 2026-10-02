@@ -27,6 +27,10 @@ if sys.platform == "win32":
         pass
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if BASE_DIR not in sys.path:
+    sys.path.insert(0, BASE_DIR)
+from utils.geo import calculate_road_distance_km
+
 DATA_DIR = os.path.join(BASE_DIR, "data")
 PROPS_FILE = os.path.join(DATA_DIR, "properties.json")
 RENTAL_FILE = os.path.join(DATA_DIR, "rental_properties.json")
@@ -274,6 +278,7 @@ def run_daily_tracker(dry_run=False, force=False):
             "Property_Name": p.get("name"),
             "Builder": p.get("builder"),
             "Date_Posted": p.get("date_posted", "2026-10-02"),
+            "Road_Dist_NH_Gurukul_KM": calculate_road_distance_km(p.get("lat"), p.get("lng"), 12.9412, 77.6968),
             "Listing_Freshness": p.get("listing_freshness", "Fresh Today 🟢"),
             "Last_Verified_Date": p.get("last_verified_date", "2026-10-02"),
             "Builder_Tier": p.get("builder_tier"),
@@ -350,6 +355,7 @@ def run_daily_tracker(dry_run=False, force=False):
             "Society_Name": r.get("society_name"),
             "Unit_Title": r.get("unit_title"),
             "Date_Posted": r.get("date_posted", "2026-10-02"),
+            "Road_Dist_NH_Gurukul_KM": calculate_road_distance_km(r.get("lat"), r.get("lng"), 12.9412, 77.6968),
             "Listing_Freshness": r.get("listing_freshness", "Fresh Today 🟢"),
             "Last_Verified_Date": r.get("last_verified_date", "2026-10-02"),
             "Micro_Market": r.get("micro_market"),
@@ -411,6 +417,7 @@ def run_daily_tracker(dry_run=False, force=False):
             "Builder_Tier": pl.get("builder_tier"),
             "Micro_Market": pl.get("micro_market"),
             "Date_Posted": pl.get("date_posted", "2026-10-02"),
+            "Road_Dist_NH_Gurukul_KM": calculate_road_distance_km(pl.get("lat"), pl.get("lng"), 12.9412, 77.6968),
             "Listing_Freshness": pl.get("listing_freshness", "Fresh Today 🟢"),
             "Last_Verified_Date": pl.get("last_verified_date", "2026-10-02"),
             "Rate_Per_Sqft_INR": pl.get("price_per_sqft"),

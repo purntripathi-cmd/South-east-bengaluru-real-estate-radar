@@ -19,7 +19,7 @@ try:
 except ImportError:
     BeautifulSoup = None
 
-from utils.geo import haversine_distance_km, check_zone_membership, check_custom_pins
+from utils.geo import haversine_distance_km, check_zone_membership, check_custom_pins, calculate_road_distance_km
 from utils.scoring import compute_property_match_score, TIER_1_BUILDERS, TIER_2_BUILDERS
 from utils.table_view import render_sticky_frozen_table
 from utils.ai_engine import (
@@ -741,6 +741,67 @@ custom_radius = st.sidebar.slider(
 )
 search_center["radius_km"] = custom_radius
 
+# ---------------------------------------------------------
+# Sidebar: 4th Column Distance Benchmark Destination (Configurable, Default: New Horizon Gurukul)
+# ---------------------------------------------------------
+st.sidebar.markdown("---")
+st.sidebar.subheader("🎯 4th Column Distance Benchmark")
+st.sidebar.caption("Configures the reference destination shown as the **4th Column** across all tabs. Defaults to **New Horizon Gurukul**.")
+
+benchmark_options = [
+    "🏫 New Horizon Gurukul (Default)",
+    "🏢 RMZ Ecospace (Bellandur)",
+    "🏢 Prestige Tech Park (Kadubeesanahalli)",
+    "🏢 Embassy TechVillage (ETV)",
+    "🏢 Cessna Business Park",
+    "🚇 Kadubeesanahalli Metro (Blue Line)",
+    "🚇 Bellandur Metro Station",
+    "🏥 Sakra World Hospital",
+    "🏫 Gear Innovative Intl School",
+    "🛍️ Central Mall Bellandur",
+    "✈️ Kempegowda Intl Airport (BLR)",
+    "📍 Custom Landmark Coordinates"
+]
+
+benchmark_preset_map = {
+    "🏫 New Horizon Gurukul (Default)": {"name": "New Horizon Gurukul", "short": "NH Gurukul", "lat": 12.9412, "lng": 77.6968},
+    "🏢 RMZ Ecospace (Bellandur)": {"name": "RMZ Ecospace", "short": "Ecospace", "lat": 12.9262, "lng": 77.6836},
+    "🏢 Prestige Tech Park (Kadubeesanahalli)": {"name": "Prestige Tech Park", "short": "PTP", "lat": 12.9366, "lng": 77.6953},
+    "🏢 Embassy TechVillage (ETV)": {"name": "Embassy TechVillage", "short": "ETV", "lat": 12.9298, "lng": 77.6912},
+    "🏢 Cessna Business Park": {"name": "Cessna Business Park", "short": "Cessna", "lat": 12.9348, "lng": 77.6908},
+    "🚇 Kadubeesanahalli Metro (Blue Line)": {"name": "Kadubeesanahalli Metro", "short": "Kadu Metro", "lat": 12.9380, "lng": 77.6950},
+    "🚇 Bellandur Metro Station": {"name": "Bellandur Metro", "short": "Bellandur Metro", "lat": 12.9275, "lng": 77.6825},
+    "🏥 Sakra World Hospital": {"name": "Sakra World Hospital", "short": "Sakra Hosp", "lat": 12.9294, "lng": 77.6881},
+    "🏫 Gear Innovative Intl School": {"name": "Gear Innovative Intl School", "short": "Gear School", "lat": 12.9150, "lng": 77.6890},
+    "🛍️ Central Mall Bellandur": {"name": "Central Mall Bellandur", "short": "Central Mall", "lat": 12.9268, "lng": 77.6775},
+    "✈️ Kempegowda Intl Airport (BLR)": {"name": "Kempegowda Intl Airport", "short": "Airport", "lat": 13.1986, "lng": 77.7066},
+}
+
+selected_benchmark_choice = st.sidebar.selectbox(
+    "Benchmark Landmark (4th Col)",
+    options=benchmark_options,
+    index=0,
+    help="Select which school, tech park, hospital, or metro station should be displayed as the 4th column across all comparison tables and property cards."
+)
+
+if selected_benchmark_choice == "📍 Custom Landmark Coordinates":
+    c_name = st.sidebar.text_input("Custom Landmark Name", value="Custom Landmark")
+    c_lat = st.sidebar.number_input("Latitude", value=12.9350, format="%.4f")
+    c_lng = st.sidebar.number_input("Longitude", value=77.6900, format="%.4f")
+    active_benchmark = {
+        "choice": selected_benchmark_choice,
+        "name": c_name.strip() or "Custom Landmark",
+        "short": (c_name.strip()[:14] if c_name.strip() else "Custom"),
+        "lat": c_lat,
+        "lng": c_lng
+    }
+else:
+    active_benchmark = dict(benchmark_preset_map[selected_benchmark_choice])
+    active_benchmark["choice"] = selected_benchmark_choice
+
+col4_col_name = f"Road Dist: {active_benchmark['short']} (km)"
+st.sidebar.caption(f"Active 4th Col: **{active_benchmark['name']}** (`{active_benchmark['lat']:.4f}, {active_benchmark['lng']:.4f}`)")
+
 st.sidebar.markdown("---")
 st.sidebar.subheader("⚖️ Parameter Scoring Weights (0-100%)")
 w_metro = st.sidebar.slider("Metro Proximity", 0, 40, int(weights.get("metro_proximity", 15)), step=5)
@@ -1333,10 +1394,13 @@ with tab_purchase:
         
         complaints_short = "; ".join(p.get("common_complaints", []))
 
+        road_dist_p = calculate_road_distance_km(p.get("lat"), p.get("lng"), active_benchmark["lat"], active_benchmark["lng"])
+
         table_data.append({
             "Property Name": p["name"],
             "Builder & Hierarchy": f"{p['builder']} ({p['builder_tier']})",
             "Date Posted": p.get("formatted_posted_date", f"{p.get('date_posted', '2026-10-02')} (Fresh 🟢)"),
+            col4_col_name: f"{road_dist_p} km",
             "Micro-Market": p["micro_market"],
             "Zone": "🟢 Green" if p["zone_type"] == "Green" else "🔴 Red (Choke)",
             "Age (Yrs)": f"{p.get('age_years', 8)} yrs ({p.get('year_built', 2018)})",
@@ -1372,8 +1436,8 @@ with tab_purchase:
 
     df_purchase_table = pd.DataFrame(table_data)
 
-    st.caption("📌 **Locked 3-Columns Grid by Default**: First 3 columns (*Property Name*, *Builder*, and *Date Posted*) remain permanently pinned on the left as you scroll horizontally across all 30+ comparative parameters.")
-    render_sticky_frozen_table(df_purchase_table, frozen_cols=3, table_id="purchase_sticky_table", max_height="540px")
+    st.caption(f"📌 **Locked 4-Columns Grid by Default**: First 4 columns (*Property Name*, *Builder*, *Date Posted*, and *{col4_col_name}*) remain permanently pinned on the left as you scroll horizontally across all 30+ comparative parameters.")
+    render_sticky_frozen_table(df_purchase_table, frozen_cols=4, table_id="purchase_sticky_table", max_height="540px")
 
     # 1-Click In-App Sandboxed Incognito Listing & RERA Viewer
     col_p_incog1, col_p_incog2 = st.columns([3, 1])
@@ -1438,6 +1502,10 @@ with tab_purchase:
                     compare_records.append({
                         "Metric / Parameter": "Traffic Route Status",
                         name: "🟢 Panathur-Free Green Route" if not p["panathur_routing"] else "🔴 Panathur Bottleneck (-50 pts)"
+                    })
+                    compare_records.append({
+                        "Metric / Parameter": f"🏫 Road Dist to {active_benchmark['name']}",
+                        name: f"{calculate_road_distance_km(p.get('lat'), p.get('lng'), active_benchmark['lat'], active_benchmark['lng'])} km"
                     })
                     compare_records.append({
                         "Metric / Parameter": "Property Age & Year Built",
@@ -1595,6 +1663,9 @@ with tab_purchase:
                             </span>
                             <span style="background: #0369A1; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.78rem; font-weight: 700;">
                                 📅 Posted: {prop.get('date_posted', '2026-10-02')} ({prop.get('listing_freshness', 'Fresh Today 🟢')})
+                            </span>
+                            <span style="background: #78350F; color: #FDE68A; padding: 2px 8px; border-radius: 4px; font-size: 0.78rem; font-weight: 700;">
+                                🏫 Road to {active_benchmark['short']}: {calculate_road_distance_km(prop.get('lat'), prop.get('lng'), active_benchmark['lat'], active_benchmark['lng'])} km
                             </span>
                         </div>
                         <p style="margin: 5px 0 0 0; color: #94A3B8; font-size: 0.9rem;">
@@ -1830,10 +1901,13 @@ with tab_rental:
         complaints_short = "; ".join(r.get("common_complaints", []))
         contact = r.get("contact", {})
 
+        road_dist_r = calculate_road_distance_km(r.get("lat"), r.get("lng"), active_benchmark["lat"], active_benchmark["lng"])
+
         rental_table_rows.append({
             "Society Name": r["society_name"],
             "Unit Title": r["unit_title"],
             "Date Posted": r.get("formatted_posted_date", f"{r.get('date_posted', '2026-10-02')} (Fresh 🟢)"),
+            col4_col_name: f"{road_dist_r} km",
             "Micro-Market": r["micro_market"],
             "BHK": r["bhk"],
             "Area (sqft)": r["area_sqft"],
@@ -1867,8 +1941,8 @@ with tab_rental:
 
     df_rental_table = pd.DataFrame(rental_table_rows)
 
-    st.caption("📌 **Locked 3-Columns Grid by Default**: First 3 columns (*Society*, *Unit Title*, and *Date Posted*) remain permanently pinned on the left as you scroll horizontally across all rental parameters.")
-    render_sticky_frozen_table(df_rental_table, frozen_cols=3, table_id="rental_sticky_table", max_height="520px")
+    st.caption(f"📌 **Locked 4-Columns Grid by Default**: First 4 columns (*Society*, *Unit Title*, *Date Posted*, and *{col4_col_name}*) remain permanently pinned on the left as you scroll horizontally across all rental parameters.")
+    render_sticky_frozen_table(df_rental_table, frozen_cols=4, table_id="rental_sticky_table", max_height="520px")
 
     # 1-Click In-App Sandboxed Incognito Rental Listing Viewer
     col_r_incog1, col_r_incog2 = st.columns([3, 1])
@@ -1928,6 +2002,10 @@ with tab_rental:
                     rent_comp_records.append({
                         "Metric / Parameter": "Base Monthly Outflow (Rent + Maint)",
                         sel_label: f"₹{tot_outflow:,} / mo"
+                    })
+                    rent_comp_records.append({
+                        "Metric / Parameter": f"🏫 Road Dist to {active_benchmark['name']}",
+                        sel_label: f"{calculate_road_distance_km(r_item.get('lat'), r_item.get('lng'), active_benchmark['lat'], active_benchmark['lng'])} km"
                     })
                     rent_comp_records.append({
                         "Metric / Parameter": "Security Deposit Locked",
@@ -2051,6 +2129,9 @@ with tab_rental:
                             <span class="badge-green">📍 {r['micro_market']}</span>
                             <span style="background: #0284C7; color: white; padding: 2px 7px; border-radius: 4px; font-size: 0.76rem; font-weight: 700;">
                                 📅 Posted: {r.get('date_posted', '2026-10-02')} ({r.get('listing_freshness', 'Fresh Today 🟢')})
+                            </span>
+                            <span style="background: #78350F; color: #FDE68A; padding: 2px 7px; border-radius: 4px; font-size: 0.76rem; font-weight: 700;">
+                                🏫 Road to {active_benchmark['short']}: {calculate_road_distance_km(r.get('lat'), r.get('lng'), active_benchmark['lat'], active_benchmark['lng'])} km
                             </span>
                         </div>
                         <p style="margin: 6px 0 0 0; color: #38BDF8; font-weight: 600; font-size: 0.9rem;">
@@ -2353,11 +2434,13 @@ with tab_nearby:
     for rank_idx, item in enumerate(combined_nearby_eval):
         rank_badge = f"🏆 #{rank_idx+1}" if rank_idx == 0 else (f"🥈 #{rank_idx+1}" if rank_idx == 1 else (f"🥉 #{rank_idx+1}" if rank_idx == 2 else f"#{rank_idx+1}"))
         scope_prefix = "[Tab 1 Core]" if item["is_core_tab1"] else "[Nearby Area]"
+        road_dist_nb = calculate_road_distance_km(item["obj"].get("lat"), item["obj"].get("lng"), active_benchmark["lat"], active_benchmark["lng"])
 
         nearby_table_rows.append({
             "Property Name": item["name"],
             "Developer & Scope": f"{scope_prefix} {item['builder']} ({item['builder_tier']})",
             "Date Posted": item["date_posted"],
+            col4_col_name: f"{road_dist_nb} km",
             "Unified Rank": f"{rank_badge} (Score: {item['unified_score']})",
             "Radar Origin": item["scope_label"],
             "Micro-Market": item["micro_market"],
@@ -2381,8 +2464,8 @@ with tab_nearby:
 
     df_nearby = pd.DataFrame(nearby_table_rows)
 
-    st.caption("📌 **Locked 3-Columns Grid by Default**: First 3 columns (*Property Name*, *Developer & Scope*, and *Date Posted*) remain permanently pinned on the left as you scroll horizontally across all 20+ comparative metrics.")
-    render_sticky_frozen_table(df_nearby, frozen_cols=3, table_id="nearby_sticky_table", max_height="540px")
+    st.caption(f"📌 **Locked 4-Columns Grid by Default**: First 4 columns (*Property Name*, *Developer & Scope*, *Date Posted*, and *{col4_col_name}*) remain permanently pinned on the left as you scroll horizontally across all 20+ comparative metrics.")
+    render_sticky_frozen_table(df_nearby, frozen_cols=4, table_id="nearby_sticky_table", max_height="540px")
 
     st.markdown("---")
     st.markdown("### 🏢 Detailed Ranked Profiles: All 16 Evaluated Properties (Core vs Nearby)")
@@ -2420,6 +2503,9 @@ with tab_nearby:
                             <span class="badge-age">⏳ Age: {item['age_years']} Yrs ({item['year_built']})</span>
                             <span style="background: #0284C7; color: white; padding: 2px 7px; border-radius: 4px; font-size: 0.76rem; font-weight: 700;">
                                 📅 Posted: {item['date_posted']}
+                            </span>
+                            <span style="background: #78350F; color: #FDE68A; padding: 2px 7px; border-radius: 4px; font-size: 0.76rem; font-weight: 700;">
+                                🏫 Road to {active_benchmark['short']}: {calculate_road_distance_km(lat_val, lng_val, active_benchmark['lat'], active_benchmark['lng'])} km
                             </span>
                         </div>
                         <p style="margin: 6px 0 0 0; color: #94A3B8; font-size: 0.9rem;">
@@ -2514,10 +2600,12 @@ with tab_plots:
     plot_table_rows = []
     for pl in gated_plots:
         dims_str = ", ".join(pl.get("plot_dimensions_available", []))
+        road_dist_pl = calculate_road_distance_km(pl.get("lat"), pl.get("lng"), active_benchmark["lat"], active_benchmark["lng"])
         plot_table_rows.append({
             "Layout / Community Name": pl["name"],
             "Developer & Pedigree": f"{pl['builder']} ({pl['builder_tier']})",
             "Date Posted": pl.get("formatted_posted_date", f"{pl.get('date_posted', '2026-10-02')} (Fresh 🟢)"),
+            col4_col_name: f"{road_dist_pl} km",
             "Micro-Market Corridor": pl["micro_market"],
             "Dist to Core (km)": f"{pl['distance_to_bellandur_km']} km",
             "Plot Sizes Available": dims_str,
@@ -2541,8 +2629,8 @@ with tab_plots:
 
     df_plots = pd.DataFrame(plot_table_rows)
 
-    st.caption("📌 **Locked 3-Columns Grid by Default**: First 3 columns (*Layout Name*, *Developer*, and *Date Posted*) remain permanently pinned on the left as you scroll horizontally across all plotted metrics.")
-    render_sticky_frozen_table(df_plots, frozen_cols=3, table_id="plots_sticky_table", max_height="520px")
+    st.caption(f"📌 **Locked 4-Columns Grid by Default**: First 4 columns (*Layout Name*, *Developer*, *Date Posted*, and *{col4_col_name}*) remain permanently pinned on the left as you scroll horizontally across all plotted metrics.")
+    render_sticky_frozen_table(df_plots, frozen_cols=4, table_id="plots_sticky_table", max_height="520px")
 
     st.markdown("---")
     st.markdown("### 🏡 Detailed Profiles: Gated Community Villa Plots & Sites")
@@ -2566,6 +2654,9 @@ with tab_plots:
                             </span>
                             <span style="background: #0284C7; color: white; padding: 2px 7px; border-radius: 4px; font-size: 0.76rem; font-weight: 700;">
                                 📅 Posted: {pl.get('date_posted', '2026-10-02')} ({pl.get('listing_freshness', 'Fresh Today 🟢')})
+                            </span>
+                            <span style="background: #78350F; color: #FDE68A; padding: 2px 7px; border-radius: 4px; font-size: 0.76rem; font-weight: 700;">
+                                🏫 Road to {active_benchmark['short']}: {calculate_road_distance_km(pl.get('lat'), pl.get('lng'), active_benchmark['lat'], active_benchmark['lng'])} km
                             </span>
                         </div>
                         <p style="margin: 5px 0 0 0; color: #94A3B8; font-size: 0.9rem;">
@@ -2920,10 +3011,12 @@ with tab_ai_copilot:
         ai_matrix_rows = []
         for prop_rec in ai_recs.get("ranked_purchase", []):
             sc = prop_rec.get("scores", {})
+            road_dist_ai = calculate_road_distance_km(prop_rec.get("lat"), prop_rec.get("lng"), active_benchmark["lat"], active_benchmark["lng"])
             ai_matrix_rows.append({
                 "Property Name": prop_rec["name"],
                 "Micro-Market": prop_rec["micro_market"],
                 "Date Posted": prop_rec.get("formatted_posted_date", f"{prop_rec.get('date_posted', '2026-10-02')} (Fresh 🟢)"),
+                col4_col_name: f"{road_dist_ai} km",
                 "Composite AI Score": f"{prop_rec['ai_score']} / 100",
                 "Appreciation Alpha (CAP)": f"{sc.get('capital_appreciation', 80)} / 100",
                 "Traffic Resilience (TRI)": f"{sc.get('traffic_resilience', 80)} / 100",
@@ -2936,8 +3029,8 @@ with tab_ai_copilot:
             })
 
         df_ai_matrix = pd.DataFrame(ai_matrix_rows)
-        st.caption("📌 **Locked 3-Columns Grid by Default**: First 3 columns (*Property Name*, *Micro-Market*, and *Date Posted*) remain permanently pinned on the left as you scroll horizontally across all AI scores.")
-        render_sticky_frozen_table(df_ai_matrix, frozen_cols=3, table_id="ai_matrix_sticky_table", max_height="480px")
+        st.caption(f"📌 **Locked 4-Columns Grid by Default**: First 4 columns (*Property Name*, *Micro-Market*, *Date Posted*, and *{col4_col_name}*) remain permanently pinned on the left as you scroll horizontally across all AI scores.")
+        render_sticky_frozen_table(df_ai_matrix, frozen_cols=4, table_id="ai_matrix_sticky_table", max_height="480px")
 
         st.markdown("---")
         st.markdown("##### 📝 Deep-Dive Explainable Justification Cards (Property by Property)")
@@ -3229,7 +3322,7 @@ with tab_architecture:
         st.markdown("#### 🏢 Purchase Properties Monitored")
         if os.path.exists(ALL_PURCHASE_CSV):
             df_all_p = pd.read_csv(ALL_PURCHASE_CSV)
-            p_show_cols = [c for c in ["Property_Name", "Builder", "Date_Posted", "Resident_Rating", "Feedback_Score", "Age_Years", "Rate_Per_Sqft_INR", "Base_Price_Cr", "Upfront_Cash_Required_INR", "Total_Ownership_Cost_Cr", "Validation_Status"] if c in df_all_p.columns]
+            p_show_cols = [c for c in ["Property_Name", "Builder", "Date_Posted", "Road_Dist_NH_Gurukul_KM", "Resident_Rating", "Feedback_Score", "Age_Years", "Rate_Per_Sqft_INR", "Base_Price_Cr", "Upfront_Cash_Required_INR", "Total_Ownership_Cost_Cr", "Validation_Status"] if c in df_all_p.columns]
             st.dataframe(df_all_p[p_show_cols], use_container_width=True, hide_index=True)
             st.caption(f"Total monitored purchase: {len(df_all_p)}")
 
@@ -3237,7 +3330,7 @@ with tab_architecture:
         st.markdown("#### 🏡 Rental Properties Monitored")
         if os.path.exists(ALL_RENTAL_CSV):
             df_all_r = pd.read_csv(ALL_RENTAL_CSV)
-            r_show_cols = [c for c in ["Society_Name", "Unit_Title", "Date_Posted", "Resident_Rating", "Feedback_Score", "Age_Years", "Monthly_Rent_INR", "Total_Monthly_Outflow_INR", "Monthly_Summary_With_Deposit", "Effective_Monthly_Cost_INR", "Best_Platform"] if c in df_all_r.columns]
+            r_show_cols = [c for c in ["Society_Name", "Unit_Title", "Date_Posted", "Road_Dist_NH_Gurukul_KM", "Resident_Rating", "Feedback_Score", "Age_Years", "Monthly_Rent_INR", "Total_Monthly_Outflow_INR", "Monthly_Summary_With_Deposit", "Effective_Monthly_Cost_INR", "Best_Platform"] if c in df_all_r.columns]
             st.dataframe(df_all_r[r_show_cols], use_container_width=True, hide_index=True)
             st.caption(f"Total monitored rental: {len(df_all_r)}")
 
@@ -3245,7 +3338,7 @@ with tab_architecture:
         st.markdown("#### 🏞️ Gated Plots & Sites Monitored")
         if os.path.exists(ALL_GATED_PLOTS_CSV):
             df_all_pl = pd.read_csv(ALL_GATED_PLOTS_CSV)
-            pl_show_cols = [c for c in ["Community_Name", "Developer", "Date_Posted", "Rate_Per_Sqft_INR", "Min_Base_Price_Cr", "Upfront_Cash_Required_Lakhs", "Legal_Approval", "Khata_Type", "Resident_Rating"] if c in df_all_pl.columns]
+            pl_show_cols = [c for c in ["Community_Name", "Developer", "Date_Posted", "Road_Dist_NH_Gurukul_KM", "Rate_Per_Sqft_INR", "Min_Base_Price_Cr", "Upfront_Cash_Required_Lakhs", "Legal_Approval", "Khata_Type", "Resident_Rating"] if c in df_all_pl.columns]
             st.dataframe(df_all_pl[pl_show_cols], use_container_width=True, hide_index=True)
             st.caption(f"Total monitored gated plots: {len(df_all_pl)}")
 

@@ -32,13 +32,15 @@ def render_sticky_frozen_table(df: pd.DataFrame, frozen_cols: int = 3, table_id:
     calc_height = min(max_h_int, max(280, (len(df) + 1) * 44 + 50))
 
     # Column widths for frozen columns
-    # Col 1 (Property Name): 200px
-    # Col 2 (Builder / Unit / Developer): 165px
-    # Col 3 (Date Posted): 180px
-    col_widths = [200, 165, 180]
+    # Col 1 (Property Name): 185px
+    # Col 2 (Builder / Unit / Developer): 150px
+    # Col 3 (Date Posted): 155px
+    # Col 4 (Road Dist to Landmark): 155px
+    col_widths = [185, 150, 155, 155]
     offsets = [0]
     for i in range(1, frozen_col_count):
-        offsets.append(offsets[i-1] + col_widths[i-1])
+        w = col_widths[i-1] if i-1 < len(col_widths) else 150
+        offsets.append(offsets[i-1] + w)
 
     # Build pure CSS
     css_rules = [f"""
@@ -102,7 +104,7 @@ def render_sticky_frozen_table(df: pd.DataFrame, frozen_cols: int = 3, table_id:
     for idx in range(frozen_col_count):
         nth = idx + 1
         left_px = offsets[idx]
-        width_px = col_widths[idx]
+        width_px = col_widths[idx] if idx < len(col_widths) else 150
         is_last_frozen = (idx == frozen_col_count - 1)
         
         if is_last_frozen:
@@ -110,8 +112,22 @@ def render_sticky_frozen_table(df: pd.DataFrame, frozen_cols: int = 3, table_id:
         else:
             border_r = "border-right: 1px solid #334155;"
 
-        font_color = "#38BDF8" if nth == 1 else ("#F8FAFC" if nth == 2 else "#10B981")
-        font_weight = "700" if nth == 1 else ("600" if nth == 3 else "500")
+        # Color coding: Col 1 = Sky, Col 2 = White, Col 3 = Emerald (Date), Col 4 = Amber (Road Distance)
+        if nth == 1:
+            font_color = "#38BDF8"
+            font_weight = "700"
+        elif nth == 2:
+            font_color = "#F8FAFC"
+            font_weight = "500"
+        elif nth == 3:
+            font_color = "#10B981"
+            font_weight = "600"
+        elif nth == 4:
+            font_color = "#F59E0B"
+            font_weight = "700"
+        else:
+            font_color = "#E2E8F0"
+            font_weight = "500"
 
         css_rules.append(f"""
         th.fcol-{nth} {{
@@ -145,10 +161,10 @@ def render_sticky_frozen_table(df: pd.DataFrame, frozen_cols: int = 3, table_id:
         }}
         """)
 
-    # Responsive rule for mobile (<640px)
+    # Responsive rule for mobile (<768px): keep column 1 sticky, unfreeze others to avoid screen clipping
     css_rules.append("""
-    @media (max-width: 640px) {
-        th.fcol-2, th.fcol-3, td.fcol-2, td.fcol-3 {
+    @media (max-width: 768px) {
+        th.fcol-2, th.fcol-3, th.fcol-4, td.fcol-2, td.fcol-3, td.fcol-4 {
             position: static !important;
             border-right: 1px solid #1E293B !important;
             box-shadow: none !important;

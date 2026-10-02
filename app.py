@@ -1595,8 +1595,8 @@ with tab_purchase:
 
     df_purchase_table = pd.DataFrame(table_data)
 
-    st.caption("📌 **Locked 2-Columns Grid by Default**: First 2 columns (*Property Name* and *Builder & Hierarchy*) remain permanently pinned on the left as you scroll horizontally across all 30+ comparative parameters.")
-    render_sticky_frozen_table(df_purchase_table, frozen_cols=2, table_id="purchase_sticky_table", max_height="540px")
+    st.caption("📌 **Locked 1st Column Grid**: The 1st column (*Property Name*) remains permanently pinned on the left as you scroll horizontally across all 30+ comparative parameters.")
+    render_sticky_frozen_table(df_purchase_table, frozen_cols=1, table_id="purchase_sticky_table", max_height="540px")
 
     # 1-Click In-App Sandboxed Incognito Listing & RERA Viewer
     col_p_incog1, col_p_incog2 = st.columns([3, 1])
@@ -2125,8 +2125,8 @@ with tab_rental:
 
     df_rental_table = pd.DataFrame(rental_table_rows)
 
-    st.caption("📌 **Locked 2-Columns Grid by Default**: First 2 columns (*Society Name* and *Unit Title*) remain permanently pinned on the left as you scroll horizontally across all rental parameters.")
-    render_sticky_frozen_table(df_rental_table, frozen_cols=2, table_id="rental_sticky_table", max_height="520px")
+    st.caption("📌 **Locked 1st Column Grid**: The 1st column (*Society Name*) remains permanently pinned on the left as you scroll horizontally across all rental parameters.")
+    render_sticky_frozen_table(df_rental_table, frozen_cols=1, table_id="rental_sticky_table", max_height="520px")
 
     # 1-Click In-App Sandboxed Incognito Rental Listing Viewer
     col_r_incog1, col_r_incog2 = st.columns([3, 1])
@@ -2694,8 +2694,8 @@ with tab_nearby:
 
     df_nearby = pd.DataFrame(nearby_table_rows)
 
-    st.caption("📌 **Locked 2-Columns Grid by Default**: First 2 columns (*Property Name* and *Developer & Scope*) remain permanently pinned on the left as you scroll horizontally across all 20+ comparative metrics.")
-    render_sticky_frozen_table(df_nearby, frozen_cols=2, table_id="nearby_sticky_table", max_height="540px")
+    st.caption("📌 **Locked 1st Column Grid**: The 1st column (*Property Name*) remains permanently pinned on the left as you scroll horizontally across all 20+ comparative metrics.")
+    render_sticky_frozen_table(df_nearby, frozen_cols=1, table_id="nearby_sticky_table", max_height="540px")
 
     st.markdown("---")
     st.markdown("### 🏢 Detailed Ranked Profiles: All 16 Evaluated Properties (Core vs Nearby)")
@@ -2877,8 +2877,8 @@ with tab_plots:
 
     df_plots = pd.DataFrame(plot_table_rows)
 
-    st.caption("📌 **Locked 2-Columns Grid by Default**: First 2 columns (*Layout / Community Name* and *Developer & Pedigree*) remain permanently pinned on the left as you scroll horizontally across all plotted metrics.")
-    render_sticky_frozen_table(df_plots, frozen_cols=2, table_id="plots_sticky_table", max_height="520px")
+    st.caption("📌 **Locked 1st Column Grid**: The 1st column (*Layout / Community Name*) remains permanently pinned on the left as you scroll horizontally across all plotted metrics.")
+    render_sticky_frozen_table(df_plots, frozen_cols=1, table_id="plots_sticky_table", max_height="520px")
 
     st.markdown("---")
     st.markdown("### 🏡 Detailed Profiles: Gated Community Villa Plots & Sites")
@@ -3107,7 +3107,7 @@ with tab_services:
     filtered_services.sort(key=lambda s: s.get("road_distance_km", 99))
 
     st.markdown(f"### 📋 Local Service Directory & Comparative Table ({len(filtered_services)} Matching)")
-    st.caption("📌 **Locked 2-Columns Grid by Default**: First 2 columns (*Provider Name* and *Service Category*) remain permanently pinned on the left as you scroll horizontally across all pricing, ratings, and contact parameters.")
+    st.caption("📌 **Locked 1st Column Grid**: The 1st column (*Provider Name*) remains permanently pinned on the left as you scroll horizontally across all pricing, ratings, and contact parameters.")
 
     # Table View
     service_table_rows = []
@@ -3129,7 +3129,7 @@ with tab_services:
         })
 
     df_services = pd.DataFrame(service_table_rows)
-    render_sticky_frozen_table(df_services, frozen_cols=2, table_id="services_sticky_table", max_height="480px")
+    render_sticky_frozen_table(df_services, frozen_cols=1, table_id="services_sticky_table", max_height="480px")
 
     st.markdown("---")
     st.markdown(f"### 🛠️ Provider Dossiers with Itemized Cost Breakup ({len(filtered_services)} Providers)")
@@ -3509,8 +3509,8 @@ with tab_ai_copilot:
             })
 
         df_ai_matrix = pd.DataFrame(ai_matrix_rows)
-        st.caption("📌 **Locked 2-Columns Grid by Default**: First 2 columns (*Property Name* and *Actual Map Location*) remain permanently pinned on the left as you scroll horizontally across all AI scores.")
-        render_sticky_frozen_table(df_ai_matrix, frozen_cols=2, table_id="ai_matrix_sticky_table", max_height="480px")
+        st.caption("📌 **Locked 1st Column Grid**: The 1st column (*Property Name*) remains permanently pinned on the left as you scroll horizontally across all AI scores.")
+        render_sticky_frozen_table(df_ai_matrix, frozen_cols=1, table_id="ai_matrix_sticky_table", max_height="480px")
 
         st.markdown("---")
         st.markdown("##### 📝 Deep-Dive Explainable Justification Cards (Property by Property)")

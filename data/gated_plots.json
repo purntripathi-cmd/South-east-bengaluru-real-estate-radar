@@ -6,9 +6,13 @@
     "builder_tier": "Tier 1",
     "micro_market": "Sarjapur - Yamare Corridor",
     "lat": 12.8765,
-    "lng": 77.7280,
+    "lng": 77.728,
     "distance_to_bellandur_km": 5.8,
-    "plot_dimensions_available": ["30x40 (1,200 sqft)", "30x50 (1,500 sqft)", "40x60 (2,400 sqft)"],
+    "plot_dimensions_available": [
+      "30x40 (1,200 sqft)",
+      "30x50 (1,500 sqft)",
+      "40x60 (2,400 sqft)"
+    ],
     "min_sqft": 1200,
     "max_sqft": 2400,
     "price_per_sqft": 7850,
@@ -35,7 +39,13 @@
     "validation_url": "https://rera.karnataka.gov.in",
     "source_post_url": "https://www.prestigeconstructions.com/projects/the-prestige-city-great-acres/",
     "why_worth_considering": "180-acre integrated mega-township with Forum Mall, schools, and hospitals inside. Prestige Grade A maintenance and exceptional capital appreciation trajectory.",
-    "key_tradeoffs_complaints": "Sarjapur Road widening near Dommasandra still pending completion; township corpus maintenance is slightly premium."
+    "key_tradeoffs_complaints": "Sarjapur Road widening near Dommasandra still pending completion; township corpus maintenance is slightly premium.",
+    "cauvery_connection": "BWSSB Cauvery Pipeline Laid to Plot Boundary",
+    "stp_details": "Centralized 600 KLD Township STP (Treated flush line to plot edge)",
+    "water_softener": "Central Township Softening Plant (TDS ~180 ppm)",
+    "water_meter": "Smart Individual Digital Water Meter Provision per Plot",
+    "double_pipe_connection": "Dual Utility Trench (Fresh Cauvery Water + STP Treated Flush Water)",
+    "gas_pipe_connection": "Underground GAIL Gas Piped PNG Conduit to Plot Boundary"
   },
   {
     "id": "plot_purva_tivoli_hills",
@@ -46,7 +56,11 @@
     "lat": 12.8912,
     "lng": 77.7345,
     "distance_to_bellandur_km": 6.2,
-    "plot_dimensions_available": ["30x50 (1,500 sqft)", "40x60 (2,400 sqft)", "50x80 (4,000 sqft)"],
+    "plot_dimensions_available": [
+      "30x50 (1,500 sqft)",
+      "40x60 (2,400 sqft)",
+      "50x80 (4,000 sqft)"
+    ],
     "min_sqft": 1500,
     "max_sqft": 4000,
     "price_per_sqft": 7200,
@@ -73,7 +87,13 @@
     "validation_url": "https://rera.karnataka.gov.in",
     "source_post_url": "https://www.puravankara.com/purvaland/",
     "why_worth_considering": "Italian renaissance themed plotted architecture with lush 10-acre curated greens. High floor area ratio (FAR) allows construction of G+2 luxury duplexes.",
-    "key_tradeoffs_complaints": "Requires 1.5 km commute on connecting link road before hitting the main Sarjapur arterial road."
+    "key_tradeoffs_complaints": "Requires 1.5 km commute on connecting link road before hitting the main Sarjapur arterial road.",
+    "cauvery_connection": "Cauvery Feeder Grid Connected + 2.5 Lakh L Underground Sump",
+    "stp_details": "Central Eco-STP with Underground Drainage Network",
+    "water_softener": "Centralized Water Treatment & Softener Plant",
+    "water_meter": "Individual Smart IoT Water Connection Points",
+    "double_pipe_connection": "Dual Plumbing Utility Corridors Laid along all 40-ft Avenues",
+    "gas_pipe_connection": "Piped Gas (GAIL Gas) Underground Utility Ducting"
   },
   {
     "id": "plot_sobha_canvas",
@@ -81,10 +101,13 @@
     "builder": "Sobha Limited",
     "builder_tier": "Tier 1",
     "micro_market": "Sarjapur - Muthanallur Cross Corridor",
-    "lat": 12.8640,
-    "lng": 77.7210,
+    "lat": 12.864,
+    "lng": 77.721,
     "distance_to_bellandur_km": 7.5,
-    "plot_dimensions_available": ["30x40 (1,200 sqft)", "40x60 (2,400 sqft)"],
+    "plot_dimensions_available": [
+      "30x40 (1,200 sqft)",
+      "40x60 (2,400 sqft)"
+    ],
     "min_sqft": 1200,
     "max_sqft": 2400,
     "price_per_sqft": 6950,
@@ -111,7 +134,13 @@
     "validation_url": "https://rera.karnataka.gov.in",
     "source_post_url": "https://www.sobha.com",
     "why_worth_considering": "Benchmark Sobha craftsmanship applied to gated plotted development. Zero drainage waterlogging history and immaculate layout maintenance.",
-    "key_tradeoffs_complaints": "Distance is 7.5 km from Bellandur Core; best suited for professionals with 2-3 days hybrid work schedule."
+    "key_tradeoffs_complaints": "Distance is 7.5 km from Bellandur Core; best suited for professionals with 2-3 days hybrid work schedule.",
+    "cauvery_connection": "BWSSB Cauvery Connection Point Active at Plot Entrance",
+    "stp_details": "Sobha Engineering 350 KLD MBBR Layout STP",
+    "water_softener": "Central Multi-Bed Softener Plant (TDS ~165 ppm)",
+    "water_meter": "Smart Ultrasonic Individual Plot Meter Inlets",
+    "double_pipe_connection": "100% Dual Piping (Separate line for villa landscaping & flushing)",
+    "gas_pipe_connection": "Dedicated GAIL Gas Piped PNG Line to Every Plot"
   },
   {
     "id": "plot_sattva_green_groves",
@@ -119,10 +148,13 @@
     "builder": "Sattva Group",
     "builder_tier": "Tier 1",
     "micro_market": "Gunjur - Varthur Outer Periphery",
-    "lat": 12.9150,
-    "lng": 77.7290,
+    "lat": 12.915,
+    "lng": 77.729,
     "distance_to_bellandur_km": 5.5,
-    "plot_dimensions_available": ["30x50 (1,500 sqft)", "40x60 (2,400 sqft)"],
+    "plot_dimensions_available": [
+      "30x50 (1,500 sqft)",
+      "40x60 (2,400 sqft)"
+    ],
     "min_sqft": 1500,
     "max_sqft": 2400,
     "price_per_sqft": 7450,
@@ -149,7 +181,13 @@
     "validation_url": "https://rera.karnataka.gov.in",
     "source_post_url": "https://www.sattvagroup.in",
     "why_worth_considering": "Strategic location bridging Varthur and Bellandur with quick access to Outer Ring Road via Balagere-Panathur bypass road.",
-    "key_tradeoffs_complaints": "Balagere road experiences moderate traffic during school morning hours (Greenwood / Inventure buses)."
+    "key_tradeoffs_complaints": "Balagere road experiences moderate traffic during school morning hours (Greenwood / Inventure buses).",
+    "cauvery_connection": "BWSSB Cauvery Municipal Line Active + Borewell Recharge",
+    "stp_details": "Centralized SBR Sewage Treatment Plant",
+    "water_softener": "Central Softening Plant",
+    "water_meter": "Individual Digital Water Meters Provisioned",
+    "double_pipe_connection": "Dual Pipe Water Lines to Plot Boundary",
+    "gas_pipe_connection": "Underground Piped Gas Provision"
   },
   {
     "id": "plot_classic_featherlite_orchards",
@@ -157,10 +195,13 @@
     "builder": "Classic Featherlite",
     "builder_tier": "Tier 2",
     "micro_market": "Chikkakannalli / Carmelaram (Near Wipro)",
-    "lat": 12.9080,
+    "lat": 12.908,
     "lng": 77.7015,
     "distance_to_bellandur_km": 4.1,
-    "plot_dimensions_available": ["40x60 (2,400 sqft)", "50x60 (3,000 sqft)"],
+    "plot_dimensions_available": [
+      "40x60 (2,400 sqft)",
+      "50x60 (3,000 sqft)"
+    ],
     "min_sqft": 2400,
     "max_sqft": 3000,
     "price_per_sqft": 8900,
@@ -187,7 +228,13 @@
     "validation_url": "https://rera.karnataka.gov.in",
     "source_post_url": "https://classicfeatherlite.com",
     "why_worth_considering": "Very close to Bellandur Core (only 4.1 km) with mature greenery and immediate active Cauvery water connection. Ready for immediate villa construction.",
-    "key_tradeoffs_complaints": "Larger plot sizes (min 2,400 sqft) demand higher ticket size (>₹2.1 Cr)."
+    "key_tradeoffs_complaints": "Larger plot sizes (min 2,400 sqft) demand higher ticket size (>₹2.1 Cr).",
+    "cauvery_connection": "BWSSB Cauvery Municipal Water Connection Active",
+    "stp_details": "Modern Underground STP with Odorless Bio-filter",
+    "water_softener": "Central Automated Softening Unit",
+    "water_meter": "Individual Smart Water Meters",
+    "double_pipe_connection": "Dual Line Water Supply (Potable + Recycled Garden)",
+    "gas_pipe_connection": "GAIL Gas Pipeline Connected to Layout Gateway"
   },
   {
     "id": "plot_assetz_earth_essence",
@@ -196,9 +243,12 @@
     "builder_tier": "Tier 1",
     "micro_market": "Off Sarjapur Road / Hadosiddapura Link",
     "lat": 12.9025,
-    "lng": 77.7120,
+    "lng": 77.712,
     "distance_to_bellandur_km": 4.8,
-    "plot_dimensions_available": ["30x40 (1,200 sqft)", "30x50 (1,500 sqft)"],
+    "plot_dimensions_available": [
+      "30x40 (1,200 sqft)",
+      "30x50 (1,500 sqft)"
+    ],
     "min_sqft": 1200,
     "max_sqft": 1500,
     "price_per_sqft": 8200,
@@ -225,6 +275,12 @@
     "validation_url": "https://rera.karnataka.gov.in",
     "source_post_url": "https://assetzproperty.com",
     "why_worth_considering": "Boutique biophilic masterplan by Assetz with high green cover and low density. Only 4.8 km to Ecospace via Carmelaram back-road avoiding Sarjapur signal.",
-    "key_tradeoffs_complaints": "Plot units in Phase 1 sold out fast; secondary resale units have slightly higher owner expectations."
+    "key_tradeoffs_complaints": "Plot units in Phase 1 sold out fast; secondary resale units have slightly higher owner expectations.",
+    "cauvery_connection": "BWSSB Cauvery Feeder + 100% Rainwater Harvesting Aquifers",
+    "stp_details": "Bio-Engineered Wetland & SBR STP (Zero Chemical Runoff)",
+    "water_softener": "Central Multi-Stage Softening Plant",
+    "water_meter": "Individual IoT Smart Ultrasonic Water Meters",
+    "double_pipe_connection": "Dual Piping Network (Drinking water + Treated landscape water)",
+    "gas_pipe_connection": "Piped Natural Gas (GAIL Gas) Network Provisioned"
   }
 ]

@@ -73,7 +73,7 @@
     "best_platform": "Direct Owner",
     "brokerage_savings_inr": 72000,
     "tenant_preference": "Family Preferred",
-    "pet_friendly": "\ud83d\udc36 Pets Allowed (Dedicated Park Trail)",
+    "pet_friendly": "🐶 Pets Allowed (Dedicated Park Trail)",
     "bachelor_friendly": "Families & Corporate Working Professionals",
     "water_supply": "24/7 Cauvery Water + 4 Active Borewells (Zero Water Cuts)",
     "power_backup": "100% Full DG Backup (Lights, Fans, Fridge, AC points)",
@@ -115,9 +115,15 @@
     "clubhouse_sqft": "28,000 sqft Grand Club Iris",
     "amenities_summary": "28k sqft Club, 1.2km Cycle Track, 1.0km Jog Track, Heated Pool, Tennis, Squash, Badminton, Gym",
     "date_posted": "2026-10-02",
-    "listing_freshness": "Fresh Today \ud83d\udfe2",
+    "listing_freshness": "Fresh Today 🟢",
     "last_verified_date": "2026-10-02",
-    "formatted_posted_date": "2026-10-02 (Fresh Today \ud83d\udfe2)"
+    "formatted_posted_date": "2026-10-02 (Fresh Today 🟢)",
+    "cauvery_connection": "BWSSB Cauvery Active (Daily Direct Supply)",
+    "stp_details": "220 KLD MBBR STP (Flushing recycled)",
+    "water_softener": "Central Softener Active (TDS ~160 ppm)",
+    "water_meter": "Individual Smart Ultrasonic Meter (Billed on exact usage)",
+    "double_pipe_connection": "100% Dual Piping (STP Flush)",
+    "gas_pipe_connection": "GAIL Piped Gas Active in Kitchen"
   },
   {
     "id": "rent_02",
@@ -234,9 +240,15 @@
     "clubhouse_sqft": "30,000 sqft Multilevel Clubhouse",
     "amenities_summary": "30k sqft Club, 850m Cycle Path, 1.2km Jog Track, Double-Deck Pool, Tennis, 3 Badminton Courts, Spa",
     "date_posted": "2026-10-02",
-    "listing_freshness": "Fresh Today \ud83d\udfe2",
+    "listing_freshness": "Fresh Today 🟢",
     "last_verified_date": "2026-10-02",
-    "formatted_posted_date": "2026-10-02 (Fresh Today \ud83d\udfe2)"
+    "formatted_posted_date": "2026-10-02 (Fresh Today 🟢)",
+    "cauvery_connection": "BWSSB Cauvery Active (Alternate Days)",
+    "stp_details": "310 KLD SBR Plant (Zero Liquid Discharge)",
+    "water_softener": "Central Softening Plant Active (TDS ~190 ppm)",
+    "water_meter": "Individual Digital Sub-meter",
+    "double_pipe_connection": "100% Dual Piping (Dual Flush)",
+    "gas_pipe_connection": "GAIL Piped Gas Connected"
   },
   {
     "id": "rent_03",
@@ -312,7 +324,7 @@
     "best_platform": "Direct Owner",
     "brokerage_savings_inr": 55000,
     "tenant_preference": "All Welcome (Bachelors & Families)",
-    "pet_friendly": "\ud83d\udc36 Highly Pet Friendly (Open Lawn Areas)",
+    "pet_friendly": "🐶 Highly Pet Friendly (Open Lawn Areas)",
     "bachelor_friendly": "Families & Senior Techies Preferred",
     "water_supply": "Dual Cauvery Connection + 3 Deep Borewells",
     "power_backup": "100% Full Generator Backup",
@@ -353,9 +365,15 @@
     "clubhouse_sqft": "20,000 sqft Resident Clubhouse",
     "amenities_summary": "20k sqft Club, 750m Cycle Loop, 900m Jog Track, Outdoor Pool, Tennis, 2 Badminton Courts, Gym",
     "date_posted": "2026-10-01",
-    "listing_freshness": "Yesterday \ud83d\udfe2",
+    "listing_freshness": "Yesterday 🟢",
     "last_verified_date": "2026-10-02",
-    "formatted_posted_date": "2026-10-01 (Yesterday \ud83d\udfe2)"
+    "formatted_posted_date": "2026-10-01 (Yesterday 🟢)",
+    "cauvery_connection": "BWSSB Cauvery Piped Supply",
+    "stp_details": "180 KLD MBBR STP (100% Recycled to flush)",
+    "water_softener": "Central Softener + Sand Filter",
+    "water_meter": "Individual Smart Water Meter",
+    "double_pipe_connection": "Dual Piping Active",
+    "gas_pipe_connection": "Reticulated Gas Bank Active"
   },
   {
     "id": "rent_04",
@@ -471,9 +489,15 @@
     "clubhouse_sqft": "22,000 sqft Jharoka Clubhouse",
     "amenities_summary": "22k sqft Club, 800m Cycle Track, 1.0km Jog Trail, Semi-Covered Pool, Tennis, Squash, Badminton, Gym",
     "date_posted": "2026-10-02",
-    "listing_freshness": "Fresh Today \ud83d\udfe2",
+    "listing_freshness": "Fresh Today 🟢",
     "last_verified_date": "2026-10-02",
-    "formatted_posted_date": "2026-10-02 (Fresh Today \ud83d\udfe2)"
+    "formatted_posted_date": "2026-10-02 (Fresh Today 🟢)",
+    "cauvery_connection": "BWSSB Cauvery Active + Borewell",
+    "stp_details": "250 KLD Aeration STP (Recycled flushing)",
+    "water_softener": "Central Automated Dual-Bed Softener",
+    "water_meter": "Individual Smart IoT Meter",
+    "double_pipe_connection": "100% Dual Piping (Double Pipe)",
+    "gas_pipe_connection": "GAIL Piped Gas Active"
   },
   {
     "id": "rent_05",
@@ -549,7 +573,7 @@
     "best_platform": "Direct Owner",
     "brokerage_savings_inr": 145000,
     "tenant_preference": "Senior Executives & Families",
-    "pet_friendly": "\ud83d\udc36 Pet Friendly (Spacious Balconies & Garden)",
+    "pet_friendly": "🐶 Pet Friendly (Spacious Balconies & Garden)",
     "bachelor_friendly": "Families Preferred; Quiet Enclave Bylaws",
     "water_supply": "Cauvery Active + Water Softening + Rainwater Harvesting",
     "power_backup": "100% Full Uninterrupted DG Backup",
@@ -589,9 +613,15 @@
     "clubhouse_sqft": "26,000 sqft Signature Clubhouse",
     "amenities_summary": "26k sqft Club, 1.1km Cycle Track, 1.0km Jog Track, Heated Indoor Pool, Rooftop Pool, Tennis, Squash, Gym",
     "date_posted": "2026-09-30",
-    "listing_freshness": "2d ago \ud83d\udfe2",
+    "listing_freshness": "2d ago 🟢",
     "last_verified_date": "2026-10-02",
-    "formatted_posted_date": "2026-09-30 (2d ago \ud83d\udfe2)"
+    "formatted_posted_date": "2026-09-30 (2d ago 🟢)",
+    "cauvery_connection": "BWSSB Cauvery High Pressure Line",
+    "stp_details": "150 KLD German MBR Membrane STP",
+    "water_softener": "Industrial Multi-Stage Softener (TDS 150 ppm)",
+    "water_meter": "Ultrasonic Smart Water Meter",
+    "double_pipe_connection": "100% Dual Piping with Copper Lines",
+    "gas_pipe_connection": "GAIL Piped Gas Active"
   },
   {
     "id": "rent_06",
@@ -667,7 +697,7 @@
     "best_platform": "Direct Owner",
     "brokerage_savings_inr": 57000,
     "tenant_preference": "Tech Professionals (Bachelors or Couples)",
-    "pet_friendly": "\ud83d\udc36 Pet Friendly (Lake Promenade Access)",
+    "pet_friendly": "🐶 Pet Friendly (Lake Promenade Access)",
     "bachelor_friendly": "Young IT Professionals & Couples Welcomed",
     "water_supply": "24/7 Treated Dual Cauvery + Deep Borewell",
     "power_backup": "100% Full DG Backup",
@@ -708,9 +738,15 @@
     "clubhouse_sqft": "35,000 sqft Biophilic Green Clubhouse",
     "amenities_summary": "35k sqft Club, 1.6km Cycle Trail, 1.3km Jog Track, Beach Lagoon Pool, 2 Tennis, 3 Badminton, Skating Rink",
     "date_posted": "2026-10-02",
-    "listing_freshness": "Fresh Today \ud83d\udfe2",
+    "listing_freshness": "Fresh Today 🟢",
     "last_verified_date": "2026-10-02",
-    "formatted_posted_date": "2026-10-02 (Fresh Today \ud83d\udfe2)"
+    "formatted_posted_date": "2026-10-02 (Fresh Today 🟢)",
+    "cauvery_connection": "BWSSB Cauvery Connected",
+    "stp_details": "320 KLD Advanced MBBR STP",
+    "water_softener": "Central Softening Plant (TDS ~190 ppm)",
+    "water_meter": "Individual IoT Smart Water Meter",
+    "double_pipe_connection": "100% Dual Piping Active",
+    "gas_pipe_connection": "GAIL Piped Gas Active"
   },
   {
     "id": "rent_07",
@@ -825,8 +861,14 @@
     "clubhouse_sqft": "50,000 sqft (5 Clubhouses)",
     "amenities_summary": "50k sqft Club (5 Clubs), 3.0km Cycle Track, 2.5km Jog Track, 5 Pools, 6 Badminton, Tennis, Basketball",
     "date_posted": "2026-09-29",
-    "listing_freshness": "3d ago \ud83d\udfe1",
+    "listing_freshness": "3d ago 🟡",
     "last_verified_date": "2026-10-02",
-    "formatted_posted_date": "2026-09-29 (3d ago \ud83d\udfe1)"
+    "formatted_posted_date": "2026-09-29 (3d ago 🟡)",
+    "cauvery_connection": "Tanker + Borewell (Cauvery line laid, awaiting meter)",
+    "stp_details": "1,200 KLD Central Township STP",
+    "water_softener": "Central Softening Unit (TDS ~280 ppm)",
+    "water_meter": "Individual Digital Sub-meter",
+    "double_pipe_connection": "100% Dual Piping (STP Flush)",
+    "gas_pipe_connection": "Central Reticulated Gas Bank"
   }
 ]

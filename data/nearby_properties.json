@@ -21,7 +21,7 @@
     "total_ownership_cost_cr": 2.42,
     "resident_rating": 4.5,
     "feedback_score": 90,
-    "why_worth_considering": "Direct unhindered frontage on Kaikondrahalli Lake. ~\u20b92,400/sqft cheaper than Bellandur Core while offering Tier 1 Godrej construction, Olympic swimming pool, and high greenery.",
+    "why_worth_considering": "Direct unhindered frontage on Kaikondrahalli Lake. ~₹2,400/sqft cheaper than Bellandur Core while offering Tier 1 Godrej construction, Olympic swimming pool, and high greenery.",
     "key_tradeoffs_complaints": "Sarjapur Road peak hour bottleneck near Carmelaram railway gate. Extra 12-18 min commute to Ecospace during evening rush.",
     "commute_to_ecospace_mins": 18,
     "commute_to_ptp_mins": 22,
@@ -32,9 +32,15 @@
     "rera_portal_url": "https://rera.karnataka.gov.in",
     "validation_status": "Verified: Official Project Page & Karnataka RERA",
     "date_posted": "2026-10-02",
-    "listing_freshness": "Fresh Today \ud83d\udfe2",
+    "listing_freshness": "Fresh Today 🟢",
     "last_verified_date": "2026-10-02",
-    "formatted_posted_date": "2026-10-02 (Fresh Today \ud83d\udfe2)"
+    "formatted_posted_date": "2026-10-02 (Fresh Today 🟢)",
+    "cauvery_connection": "BWSSB Cauvery Municipal Line Active",
+    "stp_details": "210 KLD MBBR STP (100% Recycled for flushing)",
+    "water_softener": "Central Water Softener (TDS ~185 ppm)",
+    "water_meter": "Individual IoT Smart Ultrasonic Meters",
+    "double_pipe_connection": "100% Dual Piping Installed",
+    "gas_pipe_connection": "GAIL Gas Ltd Piped PNG Active"
   },
   {
     "id": "nearby_02",
@@ -58,7 +64,7 @@
     "total_ownership_cost_cr": 1.88,
     "resident_rating": 4.6,
     "feedback_score": 91,
-    "why_worth_considering": "Massive 47-acre integrated smart township with high-street retail, cineplex, school, and commercial offices inside the campus. Exceptional value per sqft (< \u20b910k/sqft) for a Tier 1 developer.",
+    "why_worth_considering": "Massive 47-acre integrated smart township with high-street retail, cineplex, school, and commercial offices inside the campus. Exceptional value per sqft (< ₹10k/sqft) for a Tier 1 developer.",
     "key_tradeoffs_complaints": "Varthur Road widening is incomplete in certain segments; transit through Gunjur junction slows down during school hours.",
     "commute_to_ecospace_mins": 25,
     "commute_to_ptp_mins": 20,
@@ -69,9 +75,15 @@
     "rera_portal_url": "https://rera.karnataka.gov.in",
     "validation_status": "Verified: Official Project Page & Karnataka RERA",
     "date_posted": "2026-10-01",
-    "listing_freshness": "Yesterday \ud83d\udfe2",
+    "listing_freshness": "Yesterday 🟢",
     "last_verified_date": "2026-10-02",
-    "formatted_posted_date": "2026-10-01 (Yesterday \ud83d\udfe2)"
+    "formatted_posted_date": "2026-10-01 (Yesterday 🟢)",
+    "cauvery_connection": "BWSSB Cauvery Main Feeder Line Connected",
+    "stp_details": "850 KLD Integrated Township SBR STP",
+    "water_softener": "Central Industrial Softening Plant (TDS ~170 ppm)",
+    "water_meter": "Individual Smart Digital Water Meters",
+    "double_pipe_connection": "100% Dual Piping (STP Flush to all towers)",
+    "gas_pipe_connection": "GAIL Gas Ltd Piped PNG Active"
   },
   {
     "id": "nearby_03",
@@ -96,7 +108,7 @@
     "resident_rating": 4.6,
     "feedback_score": 93,
     "why_worth_considering": "Located in Bengaluru's most sought-after planned residential sector (HSR Layout). Tree-lined 80ft sector avenues, top eateries, elite schools, zero industrial dust.",
-    "key_tradeoffs_complaints": "Higher entry pricing (~\u20b915.8k/sqft). Agara junction signal wait during peak morning hours when exiting onto ORR.",
+    "key_tradeoffs_complaints": "Higher entry pricing (~₹15.8k/sqft). Agara junction signal wait during peak morning hours when exiting onto ORR.",
     "commute_to_ecospace_mins": 14,
     "commute_to_ptp_mins": 20,
     "water_source": "100% Active BWSSB Cauvery Line + 2 Borewells",
@@ -106,9 +118,15 @@
     "rera_portal_url": "https://rera.karnataka.gov.in",
     "validation_status": "Verified: Official Project Page & Karnataka RERA",
     "date_posted": "2026-09-30",
-    "listing_freshness": "2d ago \ud83d\udfe2",
+    "listing_freshness": "2d ago 🟢",
     "last_verified_date": "2026-10-02",
-    "formatted_posted_date": "2026-09-30 (2d ago \ud83d\udfe2)"
+    "formatted_posted_date": "2026-09-30 (2d ago 🟢)",
+    "cauvery_connection": "BWSSB Cauvery Active (Daily Municipal Supply)",
+    "stp_details": "190 KLD MBBR Sewage Treatment Plant",
+    "water_softener": "Central Automated Water Softener (TDS ~195 ppm)",
+    "water_meter": "Individual Digital Water Sub-meters",
+    "double_pipe_connection": "100% Dual Piping System Active",
+    "gas_pipe_connection": "GAIL Gas Ltd Piped PNG Active"
   },
   {
     "id": "nearby_04",
@@ -143,9 +161,15 @@
     "rera_portal_url": "https://rera.karnataka.gov.in",
     "validation_status": "Verified: Official Project Page & Karnataka RERA",
     "date_posted": "2026-10-02",
-    "listing_freshness": "Fresh Today \ud83d\udfe2",
+    "listing_freshness": "Fresh Today 🟢",
     "last_verified_date": "2026-10-02",
-    "formatted_posted_date": "2026-10-02 (Fresh Today \ud83d\udfe2)"
+    "formatted_posted_date": "2026-10-02 (Fresh Today 🟢)",
+    "cauvery_connection": "BWSSB Cauvery Connection Active",
+    "stp_details": "320 KLD Extended Aeration STP (Recycled for landscaping & flush)",
+    "water_softener": "Central Softening Plant (TDS ~200 ppm)",
+    "water_meter": "Individual Water Sub-meters",
+    "double_pipe_connection": "Dual Pipe Plumbing Active",
+    "gas_pipe_connection": "GAIL Gas Ltd Piped PNG Active"
   },
   {
     "id": "nearby_05",
@@ -169,7 +193,7 @@
     "total_ownership_cost_cr": 1.72,
     "resident_rating": 4.2,
     "feedback_score": 84,
-    "why_worth_considering": "Very affordable entry ticket (< \u20b91.5 Cr for 2.5 BHK) in a modern high-rise close to HSR and Bellandur. Complete clubhouse amenities and tennis court.",
+    "why_worth_considering": "Very affordable entry ticket (< ₹1.5 Cr for 2.5 BHK) in a modern high-rise close to HSR and Bellandur. Complete clubhouse amenities and tennis court.",
     "key_tradeoffs_complaints": "Harlur main road has high vehicular density with narrow sections; water tanker dependency during peak summer months.",
     "commute_to_ecospace_mins": 16,
     "commute_to_ptp_mins": 22,
@@ -180,9 +204,15 @@
     "rera_portal_url": "https://rera.karnataka.gov.in",
     "validation_status": "Verified: Official Project Page & Karnataka RERA",
     "date_posted": "2026-09-29",
-    "listing_freshness": "3d ago \ud83d\udfe1",
+    "listing_freshness": "3d ago 🟡",
     "last_verified_date": "2026-10-02",
-    "formatted_posted_date": "2026-09-29 (3d ago \ud83d\udfe1)"
+    "formatted_posted_date": "2026-09-29 (3d ago 🟡)",
+    "cauvery_connection": "BWSSB Cauvery Piped Supply + Borewells",
+    "stp_details": "260 KLD MBBR STP",
+    "water_softener": "Central Water Treatment & Softening Plant",
+    "water_meter": "Individual Smart Digital Meters",
+    "double_pipe_connection": "100% Dual Piping Active",
+    "gas_pipe_connection": "Reticulated Gas Cylinder Bank (GAIL pipeline in progress)"
   },
   {
     "id": "nearby_06",
@@ -217,8 +247,14 @@
     "rera_portal_url": "https://rera.karnataka.gov.in",
     "validation_status": "Verified: Official Project Page & Karnataka RERA",
     "date_posted": "2026-10-01",
-    "listing_freshness": "Yesterday \ud83d\udfe2",
+    "listing_freshness": "Yesterday 🟢",
     "last_verified_date": "2026-10-02",
-    "formatted_posted_date": "2026-10-01 (Yesterday \ud83d\udfe2)"
+    "formatted_posted_date": "2026-10-01 (Yesterday 🟢)",
+    "cauvery_connection": "BWSSB Cauvery Line + 102-Acre Township Rainwater Reservoirs",
+    "stp_details": "1,500 KLD SBR Sewage Treatment Plant (Treated water for flush & 80 acres greens)",
+    "water_softener": "Centralized Water Softening & Filtration Plant (TDS ~175 ppm)",
+    "water_meter": "Individual IoT Smart Ultrasonic Meters",
+    "double_pipe_connection": "100% Dual Piping (Separate toilet flush line)",
+    "gas_pipe_connection": "GAIL Gas Ltd Piped PNG Active"
   }
 ]

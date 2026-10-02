@@ -108,9 +108,15 @@
       }
     },
     "date_posted": "2026-10-02",
-    "listing_freshness": "Fresh Today \ud83d\udfe2",
+    "listing_freshness": "Fresh Today 🟢",
     "last_verified_date": "2026-10-02",
-    "formatted_posted_date": "2026-10-02 (Fresh Today \ud83d\udfe2)"
+    "formatted_posted_date": "2026-10-02 (Fresh Today 🟢)",
+    "cauvery_connection": "BWSSB Cauvery Stage IV (Active - Daily Supply)",
+    "stp_details": "220 KLD MBBR Plant (100% Recycled to Flushing & Landscaping)",
+    "water_softener": "Centralized Ion-Exchange Softener (TDS reduced 780 -> 160 ppm)",
+    "water_meter": "Individual Smart IoT Ultrasonic Meters (Consumption-based billing)",
+    "double_pipe_connection": "100% Dual Piping (Fresh water taps + Treated STP toilet flush)",
+    "gas_pipe_connection": "GAIL Gas Ltd Piped Natural Gas (PNG) Direct to Kitchen"
   },
   {
     "id": "prop_02",
@@ -221,9 +227,15 @@
       }
     },
     "date_posted": "2026-10-02",
-    "listing_freshness": "Fresh Today \ud83d\udfe2",
+    "listing_freshness": "Fresh Today 🟢",
     "last_verified_date": "2026-10-02",
-    "formatted_posted_date": "2026-10-02 (Fresh Today \ud83d\udfe2)"
+    "formatted_posted_date": "2026-10-02 (Fresh Today 🟢)",
+    "cauvery_connection": "BWSSB Cauvery Connected (Alternate Days Grid Supply)",
+    "stp_details": "310 KLD SBR Plant (Zero Liquid Discharge ZLD Certified)",
+    "water_softener": "Central Commercial Softener Plant (TDS ~190 ppm)",
+    "water_meter": "Individual Digital Water Sub-meters in all units",
+    "double_pipe_connection": "100% Dual Piping (Separate overhead flush tank)",
+    "gas_pipe_connection": "GAIL Gas Ltd Piped Natural Gas (PNG) Active"
   },
   {
     "id": "prop_03",
@@ -334,9 +346,15 @@
       }
     },
     "date_posted": "2026-10-01",
-    "listing_freshness": "Yesterday \ud83d\udfe2",
+    "listing_freshness": "Yesterday 🟢",
     "last_verified_date": "2026-10-02",
-    "formatted_posted_date": "2026-10-01 (Yesterday \ud83d\udfe2)"
+    "formatted_posted_date": "2026-10-01 (Yesterday 🟢)",
+    "cauvery_connection": "BWSSB Cauvery Piped Line Connected",
+    "stp_details": "180 KLD MBBR Biological STP (Treated water for flush & garden)",
+    "water_softener": "Central Sand Filter + Softener Unit (TDS ~210 ppm)",
+    "water_meter": "Individual Smart Water Meters Installed",
+    "double_pipe_connection": "100% Dual Piping Installed & Operational",
+    "gas_pipe_connection": "Central Reticulated Cylinder Bank (GAIL pipeline at gate)"
   },
   {
     "id": "prop_04",
@@ -447,9 +465,15 @@
       }
     },
     "date_posted": "2026-10-02",
-    "listing_freshness": "Fresh Today \ud83d\udfe2",
+    "listing_freshness": "Fresh Today 🟢",
     "last_verified_date": "2026-10-02",
-    "formatted_posted_date": "2026-10-02 (Fresh Today \ud83d\udfe2)"
+    "formatted_posted_date": "2026-10-02 (Fresh Today 🟢)",
+    "cauvery_connection": "BWSSB Cauvery Line Active + Borewell Backup",
+    "stp_details": "250 KLD Extended Aeration STP (Recycled for flush & lawns)",
+    "water_softener": "Central Automated Dual-Bed Softener (TDS ~175 ppm)",
+    "water_meter": "Individual IoT Smart Meters (App-based daily tracking)",
+    "double_pipe_connection": "100% Dual Plumbing System (Double pipe flush)",
+    "gas_pipe_connection": "GAIL Gas Ltd Piped Natural Gas (PNG) Active"
   },
   {
     "id": "prop_05",
@@ -560,9 +584,15 @@
       }
     },
     "date_posted": "2026-09-30",
-    "listing_freshness": "2d ago \ud83d\udfe2",
+    "listing_freshness": "2d ago 🟢",
     "last_verified_date": "2026-10-02",
-    "formatted_posted_date": "2026-09-30 (2d ago \ud83d\udfe2)"
+    "formatted_posted_date": "2026-09-30 (2d ago 🟢)",
+    "cauvery_connection": "BWSSB Cauvery Stage IV (High Pressure Direct Supply)",
+    "stp_details": "150 KLD German Membrane Bioreactor (MBR) STP (Ultra-filtration)",
+    "water_softener": "Industrial Multi-Stage Water Softener & Iron Filter (TDS 150 ppm)",
+    "water_meter": "High-Precision Ultrasonic Smart Water Meters",
+    "double_pipe_connection": "100% Dual Piping with Copper Core Risers",
+    "gas_pipe_connection": "GAIL Gas Ltd Piped Natural Gas (PNG) Active"
   },
   {
     "id": "prop_06",
@@ -673,9 +703,15 @@
       }
     },
     "date_posted": "2026-10-01",
-    "listing_freshness": "Yesterday \ud83d\udfe2",
+    "listing_freshness": "Yesterday 🟢",
     "last_verified_date": "2026-10-02",
-    "formatted_posted_date": "2026-10-01 (Yesterday \ud83d\udfe2)"
+    "formatted_posted_date": "2026-10-01 (Yesterday 🟢)",
+    "cauvery_connection": "BWSSB Cauvery Municipal Line Active",
+    "stp_details": "280 KLD MBBR Sewage Treatment Plant",
+    "water_softener": "Central Water Softener Unit (TDS ~220 ppm)",
+    "water_meter": "Individual Digital Sub-meters in each apartment",
+    "double_pipe_connection": "100% Dual Piping for Toilet Flush & Garden",
+    "gas_pipe_connection": "GAIL Gas Ltd Piped Natural Gas (PNG) Active"
   },
   {
     "id": "prop_07",
@@ -786,9 +822,15 @@
       }
     },
     "date_posted": "2026-10-02",
-    "listing_freshness": "Fresh Today \ud83d\udfe2",
+    "listing_freshness": "Fresh Today 🟢",
     "last_verified_date": "2026-10-02",
-    "formatted_posted_date": "2026-10-02 (Fresh Today \ud83d\udfe2)"
+    "formatted_posted_date": "2026-10-02 (Fresh Today 🟢)",
+    "cauvery_connection": "BWSSB Cauvery Stage IV + 10-Acre Lakeside Rainwater Harvest Reservoirs",
+    "stp_details": "450 KLD Eco-Engineered SBR STP with UV Disinfection",
+    "water_softener": "Central Automated Multi-Bed Softener + Dedicated RO Drinking Water Line",
+    "water_meter": "Individual Smart Ultrasonic IoT Water Meters",
+    "double_pipe_connection": "100% Dual Piping (Separate greywater toilet line)",
+    "gas_pipe_connection": "GAIL Gas Ltd Piped PNG with Automatic Gas Leak Cut-off Sensor"
   },
   {
     "id": "prop_08",
@@ -899,9 +941,15 @@
       }
     },
     "date_posted": "2026-10-02",
-    "listing_freshness": "Fresh Today \ud83d\udfe2",
+    "listing_freshness": "Fresh Today 🟢",
     "last_verified_date": "2026-10-02",
-    "formatted_posted_date": "2026-10-02 (Fresh Today \ud83d\udfe2)"
+    "formatted_posted_date": "2026-10-02 (Fresh Today 🟢)",
+    "cauvery_connection": "BWSSB Cauvery Municipal Line Connected",
+    "stp_details": "320 KLD Advanced MBBR Sewage Treatment Plant",
+    "water_softener": "Central Water Treatment & Softening Plant (TDS ~190 ppm)",
+    "water_meter": "Individual IoT Smart Water Meters",
+    "double_pipe_connection": "100% Dual Piping System Active",
+    "gas_pipe_connection": "GAIL Gas Ltd Piped Natural Gas (PNG) Active"
   },
   {
     "id": "prop_09",
@@ -1013,9 +1061,15 @@
       }
     },
     "date_posted": "2026-09-29",
-    "listing_freshness": "3d ago \ud83d\udfe1",
+    "listing_freshness": "3d ago 🟡",
     "last_verified_date": "2026-10-02",
-    "formatted_posted_date": "2026-09-29 (3d ago \ud83d\udfe1)"
+    "formatted_posted_date": "2026-09-29 (3d ago 🟡)",
+    "cauvery_connection": "No Direct Cauvery Yet (Tanker + Deep Borewells; Pipeline Laid)",
+    "stp_details": "1,200 KLD Mega-Township STP (Treated water for flush & 81 acres)",
+    "water_softener": "Central Town-Level Softening Plant (TDS ~280 ppm)",
+    "water_meter": "Individual Smart Digital Water Meters",
+    "double_pipe_connection": "100% Dual Piping (Treated STP flush active)",
+    "gas_pipe_connection": "Centralized Reticulated Piped Gas Bank"
   },
   {
     "id": "prop_10",
@@ -1127,8 +1181,14 @@
       }
     },
     "date_posted": "2026-09-28",
-    "listing_freshness": "4d ago \ud83d\udd34",
+    "listing_freshness": "4d ago 🔴",
     "last_verified_date": "2026-10-02",
-    "formatted_posted_date": "2026-09-28 (4d ago \ud83d\udd34)"
+    "formatted_posted_date": "2026-09-28 (4d ago 🔴)",
+    "cauvery_connection": "No Cauvery Connection (100% Private Tanker Dependent)",
+    "stp_details": "Basic Septic Tank Only (No STP / No Treated Water Recycling)",
+    "water_softener": "No Softener (Raw Hard Borewell/Tanker Water, TDS > 950 ppm)",
+    "water_meter": "No Individual Meter (Flat-rate water billing shared among flats)",
+    "double_pipe_connection": "Single Pipe Only (No Dual Piping; Fresh tanker water flushed)",
+    "gas_pipe_connection": "No Piped Gas (Individual LPG Cylinder delivery only)"
   }
 ]

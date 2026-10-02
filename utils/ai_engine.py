@@ -297,10 +297,20 @@ def compute_ai_recommendations(purchase_props, rental_props, user_prefs=None):
             "bpa_score": round(bpa_score, 1),
             "tce_score": round(tce_score, 1),
             "leq_score": round(leq_score, 1),
+            "scores": {
+                "capital_appreciation": round(cap_score, 1),
+                "traffic_resilience": round(tri_score, 1),
+                "builder_pedigree": round(bpa_score, 1),
+                "tco_efficiency": round(tce_score, 1),
+                "living_experience": round(leq_score, 1)
+            },
             "ai_badge": justification_badge,
             "ai_justification": justification_text,
+            "justification": justification_text,
             "ai_pros": pros,
-            "ai_cons": cons
+            "pros": pros,
+            "ai_cons": cons,
+            "cons": cons
         })
 
     # Sort descending by AI score
@@ -340,6 +350,10 @@ def compute_ai_recommendations(purchase_props, rental_props, user_prefs=None):
             "ai_justification": (
                 f"Saves ₹{savings:,} in direct brokerage. Effective monthly cost is ₹{effective_outflow:,}/mo "
                 f"(including ₹{dep_interest_pm:,}/mo deposit opportunity cost). Zero Panathur commute."
+            ),
+            "justification": (
+                f"Saves ₹{savings:,} in direct brokerage. Effective monthly cost is ₹{effective_outflow:,}/mo "
+                f"(including ₹{dep_interest_pm:,}/mo deposit opportunity cost). Zero Panathur commute."
             )
         })
 
@@ -347,7 +361,9 @@ def compute_ai_recommendations(purchase_props, rental_props, user_prefs=None):
 
     return {
         "purchase_ranked": ranked_purchase,
+        "ranked_purchase": ranked_purchase,
         "rentals_ranked": ranked_rentals,
+        "ranked_rentals": ranked_rentals,
         "top_purchase_pick": ranked_purchase[0] if ranked_purchase else None,
         "top_rental_pick": ranked_rentals[0] if ranked_rentals else None,
         "blacklisted_warning": [p for p in ranked_purchase if p.get("panathur_routing")]

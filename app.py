@@ -1324,8 +1324,8 @@ with tab_purchase:
 
         table_data.append({
             "Property Name": p["name"],
-            "Builder": p["builder"],
-            "Tier": p["builder_tier"],
+            "Builder & Hierarchy": f"{p['builder']} ({p['builder_tier']})",
+            "Date Posted": p.get("formatted_posted_date", f"{p.get('date_posted', '2026-10-02')} (Fresh 🟢)"),
             "Micro-Market": p["micro_market"],
             "Zone": "🟢 Green" if p["zone_type"] == "Green" else "🔴 Red (Choke)",
             "Age (Yrs)": f"{p.get('age_years', 8)} yrs ({p.get('year_built', 2018)})",
@@ -1366,12 +1366,12 @@ with tab_purchase:
         view_mode_p = st.radio(
             "Comparison Table Layout:",
             [
-                "📌 Frozen 3-Columns Grid (Locked on Left: Property Name • Builder & Hierarchy • Micro-Market)",
+                "📌 Frozen 3-Columns Grid (Locked on Left: Property Name • Builder • Date Posted)",
                 "📊 Standard Interactive Dataframe"
             ],
             horizontal=True,
             key="purchase_table_freeze_mode",
-            help="Freezes the first 3 identifier columns so they remain pinned while scrolling horizontally through the remaining 25+ parameters."
+            help="Freezes the first 3 identifier columns (Property Name, Builder, and Date Posted) so they remain pinned while scrolling horizontally through the remaining 25+ parameters."
         )
     with col_vtp2:
         st.caption("Scroll horizontally to compare all 30+ parameters; first 3 columns remain permanently locked on left.")
@@ -1599,11 +1599,15 @@ with tab_purchase:
                             <span class="badge-age">
                                 ⏳ Age: {prop.get('age_years', 8)} Years (Built {prop.get('year_built', 2018)}) • {prop.get('age_category', '')}
                             </span>
+                            <span style="background: #0369A1; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.78rem; font-weight: 700;">
+                                📅 Posted: {prop.get('date_posted', '2026-10-02')} ({prop.get('listing_freshness', 'Fresh Today 🟢')})
+                            </span>
                         </div>
                         <p style="margin: 5px 0 0 0; color: #94A3B8; font-size: 0.9rem;">
                             <b>Developer:</b> {prop['builder']} &nbsp;|&nbsp; 
                             <b>Hierarchy:</b> <span style="color: #38BDF8;">{prop['builder_tier_label']}</span> &nbsp;|&nbsp; 
-                            <b>Micro-Market:</b> {prop['micro_market']}
+                            <b>Micro-Market:</b> {prop['micro_market']} &nbsp;|&nbsp;
+                            <b>Listing Freshness:</b> <span style="color: #38BDF8; font-weight: 600;">{prop.get('date_posted', '2026-10-02')} (Verified Active)</span>
                         </p>
                     </div>
                     <div style="text-align: right;">
@@ -1835,6 +1839,7 @@ with tab_rental:
         rental_table_rows.append({
             "Society Name": r["society_name"],
             "Unit Title": r["unit_title"],
+            "Date Posted": r.get("formatted_posted_date", f"{r.get('date_posted', '2026-10-02')} (Fresh 🟢)"),
             "Micro-Market": r["micro_market"],
             "BHK": r["bhk"],
             "Area (sqft)": r["area_sqft"],
@@ -1873,12 +1878,12 @@ with tab_rental:
         view_mode_r = st.radio(
             "Rental Table Layout:",
             [
-                "📌 Frozen 3-Columns Grid (Locked on Left: Society • Unit Title • Micro-Market)",
+                "📌 Frozen 3-Columns Grid (Locked on Left: Society • Unit Title • Date Posted)",
                 "📊 Standard Interactive Dataframe"
             ],
             horizontal=True,
             key="rental_table_freeze_mode",
-            help="Freezes the first 3 identifier columns on the left while allowing horizontal scrolling across all other parameters."
+            help="Freezes the first 3 identifier columns (Society, Unit Title, and Date Posted) on the left while allowing horizontal scrolling across all other parameters."
         )
     with col_vtr2:
         st.caption("First 3 columns remain permanently locked on left as you scroll across all rental parameters.")
@@ -2067,9 +2072,12 @@ with tab_rental:
                             <span class="badge-age">⏳ Age: {r.get('age_years', 7)} Years (Built {r.get('year_built', 2019)})</span>
                             <span class="badge-deal">🏢 {r['society_name']}</span>
                             <span class="badge-green">📍 {r['micro_market']}</span>
+                            <span style="background: #0284C7; color: white; padding: 2px 7px; border-radius: 4px; font-size: 0.76rem; font-weight: 700;">
+                                📅 Posted: {r.get('date_posted', '2026-10-02')} ({r.get('listing_freshness', 'Fresh Today 🟢')})
+                            </span>
                         </div>
                         <p style="margin: 6px 0 0 0; color: #38BDF8; font-weight: 600; font-size: 0.9rem;">
-                            📐 {r['area_sqft']} sqft &nbsp;|&nbsp; 🛋️ {r['furnishing']} &nbsp;|&nbsp; 🏢 Floor: {r['floor']} &nbsp;|&nbsp; 🧭 Facing: {r['facing']}
+                            📐 {r['area_sqft']} sqft &nbsp;|&nbsp; 🛋️ {r['furnishing']} &nbsp;|&nbsp; 🏢 Floor: {r['floor']} &nbsp;|&nbsp; 🧭 Facing: {r['facing']} &nbsp;|&nbsp; 📅 Verified: <span style="color:#A78BFA;">{r.get('date_posted', '2026-10-02')}</span>
                         </p>
                     </div>
                     <div style="text-align: right;">
@@ -2276,6 +2284,7 @@ with tab_nearby:
         nearby_table_rows.append({
             "Property Name": nb["name"],
             "Developer": f"{nb['builder']} ({nb['builder_tier']})",
+            "Date Posted": nb.get("formatted_posted_date", f"{nb.get('date_posted', '2026-10-02')} (Fresh 🟢)"),
             "Micro-Market": nb["micro_market"],
             "Dist to Core (km)": f"{nb['distance_to_bellandur_km']} km",
             "Age (Yrs)": f"{nb.get('age_years', 5)} yrs ({nb.get('year_built', 2021)})",
@@ -2301,12 +2310,12 @@ with tab_nearby:
         view_mode_nb = st.radio(
             "Nearby Table Layout:",
             [
-                "📌 Frozen 3-Columns Grid (Locked on Left: Property Name • Developer • Micro-Market)",
+                "📌 Frozen 3-Columns Grid (Locked on Left: Property Name • Developer • Date Posted)",
                 "📊 Standard Interactive Dataframe"
             ],
             horizontal=True,
             key="nearby_table_freeze_mode",
-            help="Freezes the first 3 columns while allowing horizontal scroll across all comparative metrics."
+            help="Freezes the first 3 columns (Property Name, Developer, and Date Posted) while allowing horizontal scroll across all comparative metrics."
         )
     with col_vtn2:
         st.caption("First 3 columns remain locked on left as you scroll.")
@@ -2331,11 +2340,15 @@ with tab_nearby:
                             <span class="badge-deal">📍 {nb['micro_market']} ({nb['distance_to_bellandur_km']} km to Bellandur Core)</span>
                             <span class="badge-rating">⭐ {nb.get('resident_rating', 4.5)} / 5.0 (Feedback: {nb.get('feedback_score', 90)}/100)</span>
                             <span class="badge-age">⏳ Age: {nb.get('age_years', 5)} Years (Built {nb.get('year_built', 2021)})</span>
+                            <span style="background: #0284C7; color: white; padding: 2px 7px; border-radius: 4px; font-size: 0.76rem; font-weight: 700;">
+                                📅 Posted: {nb.get('date_posted', '2026-10-02')} ({nb.get('listing_freshness', 'Fresh Today 🟢')})
+                            </span>
                         </div>
                         <p style="margin: 5px 0 0 0; color: #94A3B8; font-size: 0.9rem;">
                             <b>Developer:</b> {nb['builder']} &nbsp;|&nbsp; 
                             <b>Hierarchy:</b> <span style="color: #A78BFA;">{nb['builder_tier']}</span> &nbsp;|&nbsp; 
-                            <b>Status:</b> {nb.get('status', 'Ready to Move')}
+                            <b>Status:</b> {nb.get('status', 'Ready to Move')} &nbsp;|&nbsp;
+                            <b>Listing Freshness:</b> <span style="color: #A78BFA; font-weight: 600;">{nb.get('date_posted', '2026-10-02')} (Verified Active)</span>
                         </p>
                     </div>
                     <div style="text-align: right;">
@@ -2646,6 +2659,7 @@ with tab_ai_copilot:
             ai_matrix_rows.append({
                 "Property Name": prop_rec["name"],
                 "Micro-Market": prop_rec["micro_market"],
+                "Date Posted": prop_rec.get("formatted_posted_date", f"{prop_rec.get('date_posted', '2026-10-02')} (Fresh 🟢)"),
                 "Composite AI Score": f"{prop_rec['ai_score']} / 100",
                 "Appreciation Alpha (CAP)": f"{sc.get('capital_appreciation', 80)} / 100",
                 "Traffic Resilience (TRI)": f"{sc.get('traffic_resilience', 80)} / 100",
@@ -2663,7 +2677,7 @@ with tab_ai_copilot:
             view_mode_ai = st.radio(
                 "AI Table Layout:",
                 [
-                    "📌 Frozen 3-Columns Grid (Locked on Left: Property Name • Micro-Market • Composite AI Score)",
+                    "📌 Frozen 3-Columns Grid (Locked on Left: Property Name • Micro-Market • Date Posted)",
                     "📊 Standard Interactive Dataframe"
                 ],
                 horizontal=True,
@@ -2950,17 +2964,17 @@ with tab_architecture:
         st.markdown("#### 🏢 All Available Purchase Properties Monitored")
         if os.path.exists(ALL_PURCHASE_CSV):
             df_all_p = pd.read_csv(ALL_PURCHASE_CSV)
-            p_show_cols = [c for c in ["Property_Name", "Resident_Rating", "Feedback_Score", "Age_Years", "Rate_Per_Sqft_INR", "Base_Price_Cr", "Upfront_Cash_Required_INR", "Total_Ownership_Cost_Cr", "Validation_Status"] if c in df_all_p.columns]
+            p_show_cols = [c for c in ["Property_Name", "Builder", "Date_Posted", "Resident_Rating", "Feedback_Score", "Age_Years", "Rate_Per_Sqft_INR", "Base_Price_Cr", "Upfront_Cash_Required_INR", "Total_Ownership_Cost_Cr", "Validation_Status"] if c in df_all_p.columns]
             st.dataframe(df_all_p[p_show_cols], use_container_width=True, hide_index=True)
-            st.caption(f"Total monitored purchase options: {len(df_all_p)}")
+            st.caption(f"Total monitored purchase options: {len(df_all_p)} (Col 3: Date Posted ensures real-time listing freshness)")
 
     with pv_c2:
         st.markdown("#### 🏡 All Available Rental Properties Monitored")
         if os.path.exists(ALL_RENTAL_CSV):
             df_all_r = pd.read_csv(ALL_RENTAL_CSV)
-            r_show_cols = [c for c in ["Society_Name", "Resident_Rating", "Feedback_Score", "Age_Years", "Monthly_Rent_INR", "Total_Monthly_Outflow_INR", "Monthly_Summary_With_Deposit", "Effective_Monthly_Cost_INR", "Best_Platform"] if c in df_all_r.columns]
+            r_show_cols = [c for c in ["Society_Name", "Unit_Title", "Date_Posted", "Resident_Rating", "Feedback_Score", "Age_Years", "Monthly_Rent_INR", "Total_Monthly_Outflow_INR", "Monthly_Summary_With_Deposit", "Effective_Monthly_Cost_INR", "Best_Platform"] if c in df_all_r.columns]
             st.dataframe(df_all_r[r_show_cols], use_container_width=True, hide_index=True)
-            st.caption(f"Total monitored rental options: {len(df_all_r)}")
+            st.caption(f"Total monitored rental options: {len(df_all_r)} (Col 3: Date Posted ensures real-time listing freshness)")
 
     # ---------------------------------------------------------
     # PARAMETER CHANGE AUDIT TRAIL

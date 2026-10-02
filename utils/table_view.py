@@ -21,8 +21,8 @@ def render_sticky_frozen_table(df: pd.DataFrame, frozen_cols: int = 3, table_id:
     frozen_headers = cols[:frozen_col_count]
     scroll_headers = cols[frozen_col_count:]
 
-    # Define fixed pixel widths for frozen columns
-    col_widths = [190, 160, 160]  # width in px
+    # Define fixed pixel widths for frozen columns (Col 1: Name, Col 2: Builder/Unit, Col 3: Date Posted)
+    col_widths = [190, 160, 175]  # width in px
     offsets = [0]
     for i in range(1, frozen_col_count):
         offsets.append(offsets[i-1] + col_widths[i-1])

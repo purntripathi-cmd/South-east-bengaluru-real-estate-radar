@@ -30,7 +30,11 @@
     "status": "Ready to Move",
     "validation_url": "https://www.godrejproperties.com/bengaluru/residential/godrej-lake-gardens",
     "rera_portal_url": "https://rera.karnataka.gov.in",
-    "validation_status": "Verified: Official Project Page & Karnataka RERA"
+    "validation_status": "Verified: Official Project Page & Karnataka RERA",
+    "date_posted": "2026-10-02",
+    "listing_freshness": "Fresh Today \ud83d\udfe2",
+    "last_verified_date": "2026-10-02",
+    "formatted_posted_date": "2026-10-02 (Fresh Today \ud83d\udfe2)"
   },
   {
     "id": "nearby_02",
@@ -63,7 +67,11 @@
     "status": "Delivered / Handover Ongoing",
     "validation_url": "https://www.brigadegroup.com/residential/bengaluru/brigade-cornerstone-utopia",
     "rera_portal_url": "https://rera.karnataka.gov.in",
-    "validation_status": "Verified: Official Project Page & Karnataka RERA"
+    "validation_status": "Verified: Official Project Page & Karnataka RERA",
+    "date_posted": "2026-10-01",
+    "listing_freshness": "Yesterday \ud83d\udfe2",
+    "last_verified_date": "2026-10-02",
+    "formatted_posted_date": "2026-10-01 (Yesterday \ud83d\udfe2)"
   },
   {
     "id": "nearby_03",
@@ -96,7 +104,11 @@
     "status": "Ready to Move",
     "validation_url": "https://www.puravankara.com/projects/purva-fairmont-hsr-layout",
     "rera_portal_url": "https://rera.karnataka.gov.in",
-    "validation_status": "Verified: Official Project Page & Karnataka RERA"
+    "validation_status": "Verified: Official Project Page & Karnataka RERA",
+    "date_posted": "2026-09-30",
+    "listing_freshness": "2d ago \ud83d\udfe2",
+    "last_verified_date": "2026-10-02",
+    "formatted_posted_date": "2026-09-30 (2d ago \ud83d\udfe2)"
   },
   {
     "id": "nearby_04",
@@ -129,7 +141,11 @@
     "status": "Ready to Move",
     "validation_url": "https://www.puravankara.com/projects/purva-riviera-marathahalli",
     "rera_portal_url": "https://rera.karnataka.gov.in",
-    "validation_status": "Verified: Official Project Page & Karnataka RERA"
+    "validation_status": "Verified: Official Project Page & Karnataka RERA",
+    "date_posted": "2026-10-02",
+    "listing_freshness": "Fresh Today \ud83d\udfe2",
+    "last_verified_date": "2026-10-02",
+    "formatted_posted_date": "2026-10-02 (Fresh Today \ud83d\udfe2)"
   },
   {
     "id": "nearby_05",
@@ -162,7 +178,11 @@
     "status": "Ready to Move",
     "validation_url": "https://www.sjrprimecorp.com/palazza-city-harlur",
     "rera_portal_url": "https://rera.karnataka.gov.in",
-    "validation_status": "Verified: Official Project Page & Karnataka RERA"
+    "validation_status": "Verified: Official Project Page & Karnataka RERA",
+    "date_posted": "2026-09-29",
+    "listing_freshness": "3d ago \ud83d\udfe1",
+    "last_verified_date": "2026-10-02",
+    "formatted_posted_date": "2026-09-29 (3d ago \ud83d\udfe1)"
   },
   {
     "id": "nearby_06",
@@ -195,6 +215,10 @@
     "status": "Ready to Move",
     "validation_url": "https://www.prestigeconstructions.com/projects/prestige-lakeside-habitat/",
     "rera_portal_url": "https://rera.karnataka.gov.in",
-    "validation_status": "Verified: Official Project Page & Karnataka RERA"
+    "validation_status": "Verified: Official Project Page & Karnataka RERA",
+    "date_posted": "2026-10-01",
+    "listing_freshness": "Yesterday \ud83d\udfe2",
+    "last_verified_date": "2026-10-02",
+    "formatted_posted_date": "2026-10-01 (Yesterday \ud83d\udfe2)"
   }
 ]

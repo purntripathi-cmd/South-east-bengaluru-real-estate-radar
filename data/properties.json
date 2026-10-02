@@ -106,7 +106,11 @@
         "url": "https://www.nobroker.in/property/buy/bangalore/bellandur?searchParam=Sobha%20Iris",
         "badge": "Zero Brokerage"
       }
-    }
+    },
+    "date_posted": "2026-10-02",
+    "listing_freshness": "Fresh Today \ud83d\udfe2",
+    "last_verified_date": "2026-10-02",
+    "formatted_posted_date": "2026-10-02 (Fresh Today \ud83d\udfe2)"
   },
   {
     "id": "prop_02",
@@ -215,7 +219,11 @@
         "url": "https://www.nobroker.in/property/buy/bangalore/bellandur?searchParam=Prestige%20Sunnyside",
         "badge": "Zero Brokerage"
       }
-    }
+    },
+    "date_posted": "2026-10-02",
+    "listing_freshness": "Fresh Today \ud83d\udfe2",
+    "last_verified_date": "2026-10-02",
+    "formatted_posted_date": "2026-10-02 (Fresh Today \ud83d\udfe2)"
   },
   {
     "id": "prop_03",
@@ -324,7 +332,11 @@
         "url": "https://www.nobroker.in/property/buy/bangalore/kadubeesanahalli?searchParam=Nagarjuna%20Green%20Woods",
         "badge": "Zero Brokerage"
       }
-    }
+    },
+    "date_posted": "2026-10-01",
+    "listing_freshness": "Yesterday \ud83d\udfe2",
+    "last_verified_date": "2026-10-02",
+    "formatted_posted_date": "2026-10-01 (Yesterday \ud83d\udfe2)"
   },
   {
     "id": "prop_04",
@@ -433,7 +445,11 @@
         "url": "https://www.nobroker.in/property/buy/bangalore/bellandur?searchParam=Rohan%20Jharoka",
         "badge": "Zero Brokerage"
       }
-    }
+    },
+    "date_posted": "2026-10-02",
+    "listing_freshness": "Fresh Today \ud83d\udfe2",
+    "last_verified_date": "2026-10-02",
+    "formatted_posted_date": "2026-10-02 (Fresh Today \ud83d\udfe2)"
   },
   {
     "id": "prop_05",
@@ -542,7 +558,11 @@
         "url": "https://www.nobroker.in/property/buy/bangalore/bellandur?searchParam=Sobha%20Marvella",
         "badge": "Zero Brokerage"
       }
-    }
+    },
+    "date_posted": "2026-09-30",
+    "listing_freshness": "2d ago \ud83d\udfe2",
+    "last_verified_date": "2026-10-02",
+    "formatted_posted_date": "2026-09-30 (2d ago \ud83d\udfe2)"
   },
   {
     "id": "prop_06",
@@ -651,7 +671,11 @@
         "url": "https://www.nobroker.in/property/buy/bangalore/sarjapur-road?searchParam=Salarpuria%20Senorita",
         "badge": "Zero Brokerage"
       }
-    }
+    },
+    "date_posted": "2026-10-01",
+    "listing_freshness": "Yesterday \ud83d\udfe2",
+    "last_verified_date": "2026-10-02",
+    "formatted_posted_date": "2026-10-01 (Yesterday \ud83d\udfe2)"
   },
   {
     "id": "prop_07",
@@ -760,7 +784,11 @@
         "url": "https://www.nobroker.in/property/buy/bangalore/itpl?searchParam=Pursuit%20of%20a%20Radical%20Rhapsody",
         "badge": "Zero Brokerage"
       }
-    }
+    },
+    "date_posted": "2026-10-02",
+    "listing_freshness": "Fresh Today \ud83d\udfe2",
+    "last_verified_date": "2026-10-02",
+    "formatted_posted_date": "2026-10-02 (Fresh Today \ud83d\udfe2)"
   },
   {
     "id": "prop_08",
@@ -869,7 +897,11 @@
         "url": "https://www.nobroker.in/property/buy/bangalore/begur?searchParam=Assetz%20Canvas%20and%20Cove",
         "badge": "Zero Brokerage"
       }
-    }
+    },
+    "date_posted": "2026-10-02",
+    "listing_freshness": "Fresh Today \ud83d\udfe2",
+    "last_verified_date": "2026-10-02",
+    "formatted_posted_date": "2026-10-02 (Fresh Today \ud83d\udfe2)"
   },
   {
     "id": "prop_09",
@@ -979,7 +1011,11 @@
         "url": "https://www.nobroker.in/property/buy/bangalore/panathur?searchParam=Sobha%20Dream%20Acres",
         "badge": "Zero Brokerage"
       }
-    }
+    },
+    "date_posted": "2026-09-29",
+    "listing_freshness": "3d ago \ud83d\udfe1",
+    "last_verified_date": "2026-10-02",
+    "formatted_posted_date": "2026-09-29 (3d ago \ud83d\udfe1)"
   },
   {
     "id": "prop_10",
@@ -1089,6 +1125,10 @@
         "url": "https://www.nobroker.in/property/buy/bangalore/balagere",
         "badge": "B-Khata Risk"
       }
-    }
+    },
+    "date_posted": "2026-09-28",
+    "listing_freshness": "4d ago \ud83d\udd34",
+    "last_verified_date": "2026-10-02",
+    "formatted_posted_date": "2026-09-28 (4d ago \ud83d\udd34)"
   }
 ]

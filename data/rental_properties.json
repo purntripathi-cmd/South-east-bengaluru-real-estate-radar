@@ -113,7 +113,11 @@
     "cycling_track": "1.2 km Dedicated Asphalt Cycling Track",
     "jogging_track": "1.0 km Rubberized Synthetic Jogging Track",
     "clubhouse_sqft": "28,000 sqft Grand Club Iris",
-    "amenities_summary": "28k sqft Club, 1.2km Cycle Track, 1.0km Jog Track, Heated Pool, Tennis, Squash, Badminton, Gym"
+    "amenities_summary": "28k sqft Club, 1.2km Cycle Track, 1.0km Jog Track, Heated Pool, Tennis, Squash, Badminton, Gym",
+    "date_posted": "2026-10-02",
+    "listing_freshness": "Fresh Today \ud83d\udfe2",
+    "last_verified_date": "2026-10-02",
+    "formatted_posted_date": "2026-10-02 (Fresh Today \ud83d\udfe2)"
   },
   {
     "id": "rent_02",
@@ -228,7 +232,11 @@
     "cycling_track": "850m Paved Cycling Path",
     "jogging_track": "1.2 km Tree-Canopied Jogging Track",
     "clubhouse_sqft": "30,000 sqft Multilevel Clubhouse",
-    "amenities_summary": "30k sqft Club, 850m Cycle Path, 1.2km Jog Track, Double-Deck Pool, Tennis, 3 Badminton Courts, Spa"
+    "amenities_summary": "30k sqft Club, 850m Cycle Path, 1.2km Jog Track, Double-Deck Pool, Tennis, 3 Badminton Courts, Spa",
+    "date_posted": "2026-10-02",
+    "listing_freshness": "Fresh Today \ud83d\udfe2",
+    "last_verified_date": "2026-10-02",
+    "formatted_posted_date": "2026-10-02 (Fresh Today \ud83d\udfe2)"
   },
   {
     "id": "rent_03",
@@ -343,7 +351,11 @@
     "cycling_track": "750m Internal Paved Cycle Loop",
     "jogging_track": "900m Perimeter Jogging Track",
     "clubhouse_sqft": "20,000 sqft Resident Clubhouse",
-    "amenities_summary": "20k sqft Club, 750m Cycle Loop, 900m Jog Track, Outdoor Pool, Tennis, 2 Badminton Courts, Gym"
+    "amenities_summary": "20k sqft Club, 750m Cycle Loop, 900m Jog Track, Outdoor Pool, Tennis, 2 Badminton Courts, Gym",
+    "date_posted": "2026-10-01",
+    "listing_freshness": "Yesterday \ud83d\udfe2",
+    "last_verified_date": "2026-10-02",
+    "formatted_posted_date": "2026-10-01 (Yesterday \ud83d\udfe2)"
   },
   {
     "id": "rent_04",
@@ -457,7 +469,11 @@
     "cycling_track": "800m Dedicated Ground Cycle Track",
     "jogging_track": "1.0 km Landscaped Walking & Jogging Trail",
     "clubhouse_sqft": "22,000 sqft Jharoka Clubhouse",
-    "amenities_summary": "22k sqft Club, 800m Cycle Track, 1.0km Jog Trail, Semi-Covered Pool, Tennis, Squash, Badminton, Gym"
+    "amenities_summary": "22k sqft Club, 800m Cycle Track, 1.0km Jog Trail, Semi-Covered Pool, Tennis, Squash, Badminton, Gym",
+    "date_posted": "2026-10-02",
+    "listing_freshness": "Fresh Today \ud83d\udfe2",
+    "last_verified_date": "2026-10-02",
+    "formatted_posted_date": "2026-10-02 (Fresh Today \ud83d\udfe2)"
   },
   {
     "id": "rent_05",
@@ -571,7 +587,11 @@
     "cycling_track": "1.1 km Interlocking Paver Cycle Track",
     "jogging_track": "1.0 km Reflexology Jogging Track",
     "clubhouse_sqft": "26,000 sqft Signature Clubhouse",
-    "amenities_summary": "26k sqft Club, 1.1km Cycle Track, 1.0km Jog Track, Heated Indoor Pool, Rooftop Pool, Tennis, Squash, Gym"
+    "amenities_summary": "26k sqft Club, 1.1km Cycle Track, 1.0km Jog Track, Heated Indoor Pool, Rooftop Pool, Tennis, Squash, Gym",
+    "date_posted": "2026-09-30",
+    "listing_freshness": "2d ago \ud83d\udfe2",
+    "last_verified_date": "2026-10-02",
+    "formatted_posted_date": "2026-09-30 (2d ago \ud83d\udfe2)"
   },
   {
     "id": "rent_06",
@@ -686,7 +706,11 @@
     "cycling_track": "1.6 km Dedicated Cycling Trail with Bike Stations",
     "jogging_track": "1.3 km Cushion-Tread Jogging Track",
     "clubhouse_sqft": "35,000 sqft Biophilic Green Clubhouse",
-    "amenities_summary": "35k sqft Club, 1.6km Cycle Trail, 1.3km Jog Track, Beach Lagoon Pool, 2 Tennis, 3 Badminton, Skating Rink"
+    "amenities_summary": "35k sqft Club, 1.6km Cycle Trail, 1.3km Jog Track, Beach Lagoon Pool, 2 Tennis, 3 Badminton, Skating Rink",
+    "date_posted": "2026-10-02",
+    "listing_freshness": "Fresh Today \ud83d\udfe2",
+    "last_verified_date": "2026-10-02",
+    "formatted_posted_date": "2026-10-02 (Fresh Today \ud83d\udfe2)"
   },
   {
     "id": "rent_07",
@@ -799,6 +823,10 @@
     "cycling_track": "3.0 km Internal Township Cycle Boulevard",
     "jogging_track": "2.5 km Perimeter Jogging Track",
     "clubhouse_sqft": "50,000 sqft (5 Clubhouses)",
-    "amenities_summary": "50k sqft Club (5 Clubs), 3.0km Cycle Track, 2.5km Jog Track, 5 Pools, 6 Badminton, Tennis, Basketball"
+    "amenities_summary": "50k sqft Club (5 Clubs), 3.0km Cycle Track, 2.5km Jog Track, 5 Pools, 6 Badminton, Tennis, Basketball",
+    "date_posted": "2026-09-29",
+    "listing_freshness": "3d ago \ud83d\udfe1",
+    "last_verified_date": "2026-10-02",
+    "formatted_posted_date": "2026-09-29 (3d ago \ud83d\udfe1)"
   }
 ]

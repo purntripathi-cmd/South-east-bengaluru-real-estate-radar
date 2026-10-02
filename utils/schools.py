@@ -85,51 +85,47 @@ def render_schools_collapsible_html(prop_lat: Optional[float], prop_lng: Optiona
         sec_fee = bd.get("Secondary (Class 9th - 10th)", "₹1.65L - ₹1.85L / yr")
         sr_fee = bd.get("Sr. Secondary (Class 11th - 12th)", "₹1.8L - ₹2.1L / yr")
 
-        card = f"""
-        <div style="background: #111827; border: 1px solid #374151; border-radius: 6px; padding: 9px 12px; margin-bottom: 8px;">
-            <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 6px;">
-                <div>
-                    <span style="font-weight: 700; color: #F8FAFC; font-size: 0.95rem;">🏫 {s['name']}</span>
-                    <span style="background: #065F46; color: #6EE7B7; padding: 1px 6px; border-radius: 4px; font-size: 0.72rem; font-weight: 700; margin-left: 5px;">{s['curriculum']}</span>
-                    <span style="background: #1E293B; color: #FBBF24; padding: 1px 6px; border-radius: 4px; font-size: 0.72rem; font-weight: 700; margin-left: 4px;">⭐ {s['rating']} / 5.0</span>
-                    <div style="font-size: 0.78rem; color: #94A3B8; margin-top: 2px;">📍 {s['area']}</div>
-                </div>
-                <div style="text-align: right;">
-                    <span style="background: #78350F; color: #FDE68A; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; font-weight: 700;">
-                        🛣️ Road Distance: {s['road_distance_km']} km
-                    </span>
-                </div>
-            </div>
-            <div style="margin-top: 7px; background: #1F2937; border-radius: 5px; padding: 7px 10px;">
-                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; margin-bottom: 5px;">
-                    <span style="color: #FCD34D; font-weight: 700; font-size: 0.82rem;">💰 High-Level Annual Fee Band (Class 1st to 12th):</span>
-                    <span style="color: #38BDF8; font-weight: 800; font-size: 0.88rem;">{s['annual_fee_band']}</span>
-                </div>
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 5px; font-size: 0.76rem; color: #D1D5DB;">
-                    <div>• Primary (Class 1st-5th): <b style="color: #F1F5F9;">{p_fee}</b></div>
-                    <div>• Middle (Class 6th-8th): <b style="color: #F1F5F9;">{m_fee}</b></div>
-                    <div>• Secondary (Class 9th-10th): <b style="color: #F1F5F9;">{sec_fee}</b></div>
-                    <div>• Sr. Sec (Class 11th-12th): <b style="color: #F1F5F9;">{sr_fee}</b></div>
-                </div>
-                <div style="font-size: 0.73rem; color: #9CA3AF; margin-top: 5px; border-top: 1px dashed #374151; padding-top: 4px; display: flex; justify-content: space-between; flex-wrap: wrap;">
-                    <span>Admission: {s['admission_fee_onetime']} &bull; Bus: {s['bus_transport_annual']}</span>
-                    <span>{s['highlights'][:75]}...</span>
-                </div>
-            </div>
-        </div>
-        """
+        card = (
+            f'<div style="background: #111827; border: 1px solid #374151; border-radius: 6px; padding: 9px 12px; margin-bottom: 8px;">'
+            f'<div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 6px;">'
+            f'<div>'
+            f'<span style="font-weight: 700; color: #F8FAFC; font-size: 0.95rem;">🏫 {s["name"]}</span>'
+            f'<span style="background: #065F46; color: #6EE7B7; padding: 1px 6px; border-radius: 4px; font-size: 0.72rem; font-weight: 700; margin-left: 5px;">{s["curriculum"]}</span>'
+            f'<span style="background: #1E293B; color: #FBBF24; padding: 1px 6px; border-radius: 4px; font-size: 0.72rem; font-weight: 700; margin-left: 4px;">⭐ {s["rating"]} / 5.0</span>'
+            f'<div style="font-size: 0.78rem; color: #94A3B8; margin-top: 2px;">📍 {s["area"]}</div>'
+            f'</div>'
+            f'<div style="text-align: right;">'
+            f'<span style="background: #78350F; color: #FDE68A; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; font-weight: 700;">'
+            f'🛣️ Road Distance: {s["road_distance_km"]} km'
+            f'</span>'
+            f'</div>'
+            f'</div>'
+            f'<div style="margin-top: 7px; background: #1F2937; border-radius: 5px; padding: 7px 10px;">'
+            f'<div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; margin-bottom: 5px;">'
+            f'<span style="color: #FCD34D; font-weight: 700; font-size: 0.82rem;">💰 High-Level Annual Fee Band (Class 1st to 12th):</span>'
+            f'<span style="color: #38BDF8; font-weight: 800; font-size: 0.88rem;">{s["annual_fee_band"]}</span>'
+            f'</div>'
+            f'<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 5px; font-size: 0.76rem; color: #D1D5DB;">'
+            f'<div>• Primary (Class 1st-5th): <b style="color: #F1F5F9;">{p_fee}</b></div>'
+            f'<div>• Middle (Class 6th-8th): <b style="color: #F1F5F9;">{m_fee}</b></div>'
+            f'<div>• Secondary (Class 9th-10th): <b style="color: #F1F5F9;">{sec_fee}</b></div>'
+            f'<div>• Sr. Sec (Class 11th-12th): <b style="color: #F1F5F9;">{sr_fee}</b></div>'
+            f'</div>'
+            f'<div style="font-size: 0.73rem; color: #9CA3AF; margin-top: 5px; border-top: 1px dashed #374151; padding-top: 4px; display: flex; justify-content: space-between; flex-wrap: wrap;">'
+            f'<span>Admission: {s["admission_fee_onetime"]} &bull; Bus: {s["bus_transport_annual"]}</span>'
+            f'<span>{s["highlights"][:75]}...</span>'
+            f'</div>'
+            f'</div>'
+            f'</div>'
+        )
         cards_html.append(card)
 
     joined_cards = "".join(cards_html)
     summary_text = f"🎓 Nearby CBSE Schools ({len(nearby)} Closest), Driving Distances & Fee Structure (Class 1 to 12th) &mdash; Click to Expand"
 
-    return f"""
-    <details style="background: #0B132B; border: 1px solid #1E293B; border-radius: 8px; padding: 8px 12px; margin: 10px 0; font-family: sans-serif;">
-        <summary style="cursor: pointer; font-weight: 700; color: #38BDF8; font-size: 0.90rem; outline: none;">
-            {summary_text}
-        </summary>
-        <div style="margin-top: 10px;">
-            {joined_cards}
-        </div>
-    </details>
-    """
+    return (
+        f'<details style="background: #0B132B; border: 1px solid #1E293B; border-radius: 8px; padding: 8px 12px; margin: 10px 0; font-family: sans-serif;">'
+        f'<summary style="cursor: pointer; font-weight: 700; color: #38BDF8; font-size: 0.90rem; outline: none;">{summary_text}</summary>'
+        f'<div style="margin-top: 10px;">{joined_cards}</div>'
+        f'</details>'
+    )

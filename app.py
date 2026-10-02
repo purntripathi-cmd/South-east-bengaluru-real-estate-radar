@@ -1077,7 +1077,15 @@ with tab_purchase:
             ["Any Rating", "4.5★ & Above (Top Rated)", "4.0★ & Above", "3.5★ & Above"]
         )
     with f_c5:
-        budget_filter = st.slider("Max Budget (₹ Cr)", 0.5, 7.0, 7.0, step=0.25)
+        def_purchase_budget = float(prefs.get("filter_defaults", {}).get("purchase_budget_max_cr", 3.5))
+        budget_filter = st.slider(
+            "Max Purchase Budget (₹ Cr)",
+            min_value=0.5,
+            max_value=7.0,
+            value=def_purchase_budget,
+            step=0.25,
+            help="Filter purchase properties by maximum total price in Crores. Default: ₹3.5 Cr."
+        )
 
     # Filter properties
     filtered_props = []
@@ -1579,8 +1587,8 @@ with tab_purchase:
 
     df_purchase_table = pd.DataFrame(table_data)
 
-    st.caption(f"📌 **Locked 4-Columns Grid by Default**: First 4 columns (*Property Name*, *Builder*, *Date Posted*, and *{col4_col_name}*) remain permanently pinned on the left as you scroll horizontally across all 30+ comparative parameters.")
-    render_sticky_frozen_table(df_purchase_table, frozen_cols=4, table_id="purchase_sticky_table", max_height="540px")
+    st.caption("📌 **Locked 2-Columns Grid by Default**: First 2 columns (*Property Name* and *Builder & Hierarchy*) remain permanently pinned on the left as you scroll horizontally across all 30+ comparative parameters.")
+    render_sticky_frozen_table(df_purchase_table, frozen_cols=2, table_id="purchase_sticky_table", max_height="540px")
 
     # 1-Click In-App Sandboxed Incognito Listing & RERA Viewer
     col_p_incog1, col_p_incog2 = st.columns([3, 1])
@@ -1998,7 +2006,15 @@ with tab_rental:
             ["Any Rating", "4.5★ & Above", "4.0★ & Above"]
         )
     with r_col5:
-        rent_budget = st.slider("Max Monthly Rent (₹)", 30000, 160000, 100000, step=5000)
+        def_rent_budget = int(prefs.get("filter_defaults", {}).get("rental_budget_max_pm", 80000))
+        rent_budget = st.slider(
+            "Max Monthly Total Cost (₹)",
+            min_value=30000,
+            max_value=160000,
+            value=def_rent_budget,
+            step=5000,
+            help="Filter rentals by maximum total monthly outflow (Rent + Monthly Maintenance). Default: ₹80,000 PM."
+        )
 
     cb1, cb2 = st.columns(2)
     with cb1:
@@ -2020,7 +2036,8 @@ with tab_rental:
             continue
         if rent_rating_filter == "4.0★ & Above" and r.get("resident_rating", 0) < 4.0:
             continue
-        if r["rent_pm"] > rent_budget:
+        tot_monthly_outflow = r.get("total_monthly_outflow", r.get("rent_pm", 0) + r.get("maintenance_pm", 0))
+        if tot_monthly_outflow > rent_budget:
             continue
         if exclude_panathur_rentals and not r["panathur_bottleneck_free"]:
             continue
@@ -2087,8 +2104,8 @@ with tab_rental:
 
     df_rental_table = pd.DataFrame(rental_table_rows)
 
-    st.caption(f"📌 **Locked 4-Columns Grid by Default**: First 4 columns (*Society*, *Unit Title*, *Date Posted*, and *{col4_col_name}*) remain permanently pinned on the left as you scroll horizontally across all rental parameters.")
-    render_sticky_frozen_table(df_rental_table, frozen_cols=4, table_id="rental_sticky_table", max_height="520px")
+    st.caption("📌 **Locked 2-Columns Grid by Default**: First 2 columns (*Society Name* and *Unit Title*) remain permanently pinned on the left as you scroll horizontally across all rental parameters.")
+    render_sticky_frozen_table(df_rental_table, frozen_cols=2, table_id="rental_sticky_table", max_height="520px")
 
     # 1-Click In-App Sandboxed Incognito Rental Listing Viewer
     col_r_incog1, col_r_incog2 = st.columns([3, 1])
@@ -2578,9 +2595,39 @@ with tab_nearby:
     # Sort all 16 items by unified_score descending
     combined_nearby_eval.sort(key=lambda x: x["unified_score"], reverse=True)
 
+    # Configurable Filter Bar: Scope & Budget (Default: 3.5 Cr)
+    nb_fc1, nb_fc2 = st.columns([1, 1])
+    with nb_fc1:
+        nb_scope_filter = st.selectbox(
+            "Filter Evaluation Scope:",
+            ["All Evaluated Properties (Core + Nearby)", "🛡️ Tab 1 Core Radar Properties Only", "📍 Nearby Extensions Only"],
+            key="nb_scope_filter"
+        )
+    with nb_fc2:
+        nb_budget_filter = st.slider(
+            "Max Purchase Budget (₹ Cr)",
+            min_value=0.5,
+            max_value=7.0,
+            value=3.5,
+            step=0.25,
+            key="nb_budget_filter",
+            help="Filter unified properties by maximum price. Default: ₹3.5 Cr."
+        )
+
+    # Filter evaluation list
+    display_nearby_eval = []
+    for item in combined_nearby_eval:
+        if nb_scope_filter == "🛡️ Tab 1 Core Radar Properties Only" and not item["is_core_tab1"]:
+            continue
+        if nb_scope_filter == "📍 Nearby Extensions Only" and item["is_core_tab1"]:
+            continue
+        if item["total_price_cr"] > nb_budget_filter:
+            continue
+        display_nearby_eval.append(item)
+
     # Build Comparative Table Rows
     nearby_table_rows = []
-    for rank_idx, item in enumerate(combined_nearby_eval):
+    for rank_idx, item in enumerate(display_nearby_eval):
         rank_badge = f"🏆 #{rank_idx+1}" if rank_idx == 0 else (f"🥈 #{rank_idx+1}" if rank_idx == 1 else (f"🥉 #{rank_idx+1}" if rank_idx == 2 else f"#{rank_idx+1}"))
         scope_prefix = "[Tab 1 Core]" if item["is_core_tab1"] else "[Nearby Area]"
         road_dist_nb = calculate_road_distance_km(item["obj"].get("lat"), item["obj"].get("lng"), active_benchmark["lat"], active_benchmark["lng"])
@@ -2613,14 +2660,14 @@ with tab_nearby:
 
     df_nearby = pd.DataFrame(nearby_table_rows)
 
-    st.caption(f"📌 **Locked 4-Columns Grid by Default**: First 4 columns (*Property Name*, *Developer & Scope*, *Date Posted*, and *{col4_col_name}*) remain permanently pinned on the left as you scroll horizontally across all 20+ comparative metrics.")
-    render_sticky_frozen_table(df_nearby, frozen_cols=4, table_id="nearby_sticky_table", max_height="540px")
+    st.caption("📌 **Locked 2-Columns Grid by Default**: First 2 columns (*Property Name* and *Developer & Scope*) remain permanently pinned on the left as you scroll horizontally across all 20+ comparative metrics.")
+    render_sticky_frozen_table(df_nearby, frozen_cols=2, table_id="nearby_sticky_table", max_height="540px")
 
     st.markdown("---")
     st.markdown("### 🏢 Detailed Ranked Profiles: All 16 Evaluated Properties (Core vs Nearby)")
     st.caption("Browse all 16 properties in order of unified ranking score. Each card highlights origin scope badge (`[Tab 1 Core Option 🛡️]` vs `[Nearby Extension 📍]`), pricing, commute times, and direct incognito verification dossiers.")
 
-    for rank_idx, item in enumerate(combined_nearby_eval):
+    for rank_idx, item in enumerate(display_nearby_eval):
         raw_obj = item["obj"]
         lat_val = raw_obj.get("lat", 12.9325)
         lng_val = raw_obj.get("lng", 77.6795)
@@ -2783,8 +2830,8 @@ with tab_plots:
 
     df_plots = pd.DataFrame(plot_table_rows)
 
-    st.caption(f"📌 **Locked 4-Columns Grid by Default**: First 4 columns (*Layout Name*, *Developer*, *Date Posted*, and *{col4_col_name}*) remain permanently pinned on the left as you scroll horizontally across all plotted metrics.")
-    render_sticky_frozen_table(df_plots, frozen_cols=4, table_id="plots_sticky_table", max_height="520px")
+    st.caption("📌 **Locked 2-Columns Grid by Default**: First 2 columns (*Layout / Community Name* and *Developer & Pedigree*) remain permanently pinned on the left as you scroll horizontally across all plotted metrics.")
+    render_sticky_frozen_table(df_plots, frozen_cols=2, table_id="plots_sticky_table", max_height="520px")
 
     st.markdown("---")
     st.markdown("### 🏡 Detailed Profiles: Gated Community Villa Plots & Sites")
@@ -3186,8 +3233,8 @@ with tab_ai_copilot:
             })
 
         df_ai_matrix = pd.DataFrame(ai_matrix_rows)
-        st.caption(f"📌 **Locked 4-Columns Grid by Default**: First 4 columns (*Property Name*, *Actual Map Location*, *Date Posted*, and *{col4_col_name}*) remain permanently pinned on the left as you scroll horizontally across all AI scores.")
-        render_sticky_frozen_table(df_ai_matrix, frozen_cols=4, table_id="ai_matrix_sticky_table", max_height="480px")
+        st.caption("📌 **Locked 2-Columns Grid by Default**: First 2 columns (*Property Name* and *Actual Map Location*) remain permanently pinned on the left as you scroll horizontally across all AI scores.")
+        render_sticky_frozen_table(df_ai_matrix, frozen_cols=2, table_id="ai_matrix_sticky_table", max_height="480px")
 
         st.markdown("---")
         st.markdown("##### 📝 Deep-Dive Explainable Justification Cards (Property by Property)")

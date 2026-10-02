@@ -10,7 +10,7 @@ import streamlit as st
 import streamlit.components.v1 as components
 
 
-def render_sticky_frozen_table(df: pd.DataFrame, frozen_cols: int = 3, table_id: str = "custom_table", max_height: str = "540px"):
+def render_sticky_frozen_table(df: pd.DataFrame, frozen_cols: int = 2, table_id: str = "custom_table", max_height: str = "540px"):
     """
     Renders an HTML/CSS table where the first `frozen_cols` columns are permanently frozen / sticky on the left,
     and the table header is sticky on top, while the remaining columns scroll horizontally.

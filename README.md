@@ -101,13 +101,23 @@ Beyond the core radar (Bellandur, Green Glen, Gurukul), the system scans immedia
 
 ---
 
-## 6. Financial Engine: Total Maintenance, Advance Cash & Total Ownership Cost (TOC)
+## 6. Financial Engine: Total Maintenance, Advance Cash, TOC & Rental Deposit Opportunity Cost
 
-* **Total Maintenance Outflow**:
+* **Rental Total Monthly Outflow with Security Deposit Opportunity Cost (7.5% p.a.)**:
+  * In Bengaluru, landlords lock between 3 to 6 months of rent as interest-free security deposit.
+  * The system computes the **opportunity cost of locked capital** at **7.5% annual interest** (equivalent to senior/standard fixed deposit or liquid fund returns):
+    $$\text{Monthly Deposit Cost} = \frac{\text{Security Deposit (₹)} \times 7.5\%}{12}$$
+  * Formatted and displayed separately across rental cards, comparison tables, and daily CSV snapshots:
+    $$\textbf{Total Monthly: ₹73,500 (+1,700/- pm due to deposit)}$$
+  * **Effective Monthly Cost**:
+    $$\text{Effective Monthly Outflow} = \text{Base Rent} + \text{Monthly Maintenance} + \text{Monthly Deposit Opportunity Cost}$$
+
+* **Total Maintenance Outflow (Purchase)**:
   * Purchase: Monthly maintenance (₹4.5/sqft/mo) & Annual maintenance.
-  * Rental: Base rent + maintenance = **Total Monthly Outflow (₹/mo)**.
-* **Upfront Advance Required**:
+
+* **Upfront Advance Required (Purchase)**:
   $$\text{Upfront Cash} = 20\%\text{ Down Payment} + \text{Stamp Duty (5.6\%)} + \text{Registration (1.0\%)} + \text{Legal \& Khata Fees} + \text{Corpus Fund}$$
+
 * **Grand Total Ownership Cost (TOC)**:
   $$\text{TOC} = \text{Base Price} + 6.6\%\text{ Govt Taxes} + \text{Legal/Khata} + \text{Corpus} + \text{Interiors (₹15L–₹35L)} + \text{1st Year Maintenance}$$
 

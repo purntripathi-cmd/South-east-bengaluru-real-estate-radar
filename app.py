@@ -964,7 +964,12 @@ with tab_rental:
 
     rental_table_rows = []
     for r in filtered_rentals:
-        tot_outflow = r.get("total_monthly_outflow", r["rent_pm"] + r["maintenance_pm"])
+        rent_pm = r["rent_pm"]
+        maint_pm = r["maintenance_pm"]
+        tot_outflow = r.get("total_monthly_outflow", rent_pm + maint_pm)
+        dep_inr = r.get("security_deposit_inr", rent_pm * r.get("security_deposit_months", 4))
+        dep_interest_pm = round((dep_inr * 0.075) / 12)
+        effective_monthly = tot_outflow + dep_interest_pm
         complaints_short = "; ".join(r.get("common_complaints", []))
         contact = r.get("contact", {})
 
@@ -977,10 +982,13 @@ with tab_rental:
             "Age (Yrs)": f"{r.get('age_years', 7)} yrs ({r.get('year_built', 2019)})",
             "Resident Rating": f"⭐ {r.get('resident_rating', 4.5)} / 5",
             "Feedback Score": f"{r.get('feedback_score', 90)} / 100",
-            "Monthly Rent": f"₹{r['rent_pm']:,}",
-            "Monthly Maint": f"₹{r['maintenance_pm']:,}",
+            "Monthly Rent": f"₹{rent_pm:,}",
+            "Monthly Maint": f"₹{maint_pm:,}",
             "Total Monthly Outflow": f"₹{tot_outflow:,}",
-            "Security Deposit": f"₹{r['security_deposit_inr']:,} ({r['security_deposit_months']} mos)",
+            "Deposit Interest (7.5% p.a.)": f"+₹{dep_interest_pm:,}/- pm",
+            "Total Monthly (with Deposit Note)": f"Total Monthly: ₹{tot_outflow:,} (+{dep_interest_pm:,}/- pm due to deposit)",
+            "Effective Monthly Cost": f"₹{effective_monthly:,}",
+            "Security Deposit": f"₹{dep_inr:,} ({r['security_deposit_months']} mos)",
             "Brokerage Savings": f"₹{r.get('brokerage_savings_inr', 0):,}",
             "Best Platform": r.get("best_platform", "Direct Owner"),
             "Panathur Free": "🟢 Yes (Safe)" if r["panathur_bottleneck_free"] else "🔴 No (Choke)",
@@ -1005,22 +1013,41 @@ with tab_rental:
             for sel_label in selected_rent_compare:
                 r_item = next((item for item in filtered_rentals if (item["society_name"] + " - " + item["bhk"]) == sel_label), None)
                 if r_item:
-                    tot_outflow = r_item.get("total_monthly_outflow", r_item["rent_pm"] + r_item["maintenance_pm"])
+                    rent_item = r_item["rent_pm"]
+                    maint_item = r_item["maintenance_pm"]
+                    tot_outflow = r_item.get("total_monthly_outflow", rent_item + maint_item)
+                    dep_inr = r_item.get("security_deposit_inr", rent_item * r_item.get("security_deposit_months", 4))
+                    dep_interest_pm = round((dep_inr * 0.075) / 12)
+                    effective_monthly = tot_outflow + dep_interest_pm
+                    annual_dep_interest = round(dep_inr * 0.075)
+
                     rent_comp_records.append({
                         "Metric / Parameter": "Monthly Rent",
-                        sel_label: f"₹{r_item['rent_pm']:,} / mo"
+                        sel_label: f"₹{rent_item:,} / mo"
                     })
                     rent_comp_records.append({
                         "Metric / Parameter": "Monthly Maintenance",
-                        sel_label: f"₹{r_item['maintenance_pm']:,} / mo"
+                        sel_label: f"₹{maint_item:,} / mo"
                     })
                     rent_comp_records.append({
-                        "Metric / Parameter": "Total Monthly Outflow",
+                        "Metric / Parameter": "Base Monthly Outflow (Rent + Maint)",
                         sel_label: f"₹{tot_outflow:,} / mo"
                     })
                     rent_comp_records.append({
-                        "Metric / Parameter": "Security Deposit",
-                        sel_label: f"₹{r_item['security_deposit_inr']:,} ({r_item['security_deposit_months']} months)"
+                        "Metric / Parameter": "Security Deposit Locked",
+                        sel_label: f"₹{dep_inr:,} ({r_item['security_deposit_months']} months)"
+                    })
+                    rent_comp_records.append({
+                        "Metric / Parameter": "7.5% Annual Interest on Security Deposit (Opportunity Cost)",
+                        sel_label: f"+₹{dep_interest_pm:,}/- pm (₹{annual_dep_interest:,}/yr locked)"
+                    })
+                    rent_comp_records.append({
+                        "Metric / Parameter": "👉 Total Monthly (with Deposit Note)",
+                        sel_label: f"Total Monthly: ₹{tot_outflow:,} (+{dep_interest_pm:,}/- pm due to deposit)"
+                    })
+                    rent_comp_records.append({
+                        "Metric / Parameter": "Effective Economic Monthly Cost",
+                        sel_label: f"₹{effective_monthly:,} / mo"
                     })
                     rent_comp_records.append({
                         "Metric / Parameter": "⭐ Resident Rating & Feedback",
@@ -1063,8 +1090,14 @@ with tab_rental:
         is_safe_traffic = r["panathur_bottleneck_free"]
         card_border = "#10B981" if is_safe_traffic else "#EF4444"
         savings = r.get("brokerage_savings_inr", 0)
-        tot_outflow = r.get("total_monthly_outflow", r["rent_pm"] + r["maintenance_pm"])
-        ann_maint = r.get("annual_maintenance_inr", r["maintenance_pm"] * 12)
+        rent_val = r["rent_pm"]
+        maint_val = r["maintenance_pm"]
+        tot_outflow = r.get("total_monthly_outflow", rent_val + maint_val)
+        ann_maint = r.get("annual_maintenance_inr", maint_val * 12)
+        dep_val = r.get("security_deposit_inr", rent_val * r.get("security_deposit_months", 4))
+        dep_interest_pm = round((dep_val * 0.075) / 12)
+        effective_monthly = tot_outflow + dep_interest_pm
+        annual_dep_interest = round(dep_val * 0.075)
 
         with st.container():
             st.markdown(f"""
@@ -1083,10 +1116,13 @@ with tab_rental:
                         </p>
                     </div>
                     <div style="text-align: right;">
-                        <span style="font-size: 1.6rem; font-weight: 800; color: #10B981;">₹{r['rent_pm']:,}</span>
+                        <span style="font-size: 1.6rem; font-weight: 800; color: #10B981;">₹{rent_val:,}</span>
                         <span style="color: #94A3B8; font-size: 0.9rem;"> / mo rent</span>
-                        <div style="color: #F59E0B; font-weight: 700; font-size: 0.95rem;">
-                            Total Monthly: ₹{tot_outflow:,}
+                        <div style="color: #F59E0B; font-weight: 700; font-size: 0.95rem; margin-top: 3px;">
+                            Total Monthly: ₹{tot_outflow:,} <span style="font-size: 0.82rem; color: #FDE68A; font-weight: 600;">(+{dep_interest_pm:,}/- pm due to deposit)</span>
+                        </div>
+                        <div style="color: #38BDF8; font-size: 0.83rem; font-weight: 600;">
+                            Effective Monthly Outflow: ₹{effective_monthly:,} / mo
                         </div>
                     </div>
                 </div>
@@ -1097,11 +1133,14 @@ with tab_rental:
 
             with r_info:
                 st.markdown("**🛠️ Outflow & Maintenance Breakdown:**")
-                st.markdown(f"- **Monthly Rent:** `₹{r['rent_pm']:,} / mo`")
-                st.markdown(f"- **Monthly Maintenance:** `₹{r['maintenance_pm']:,} / mo`")
-                st.markdown(f"- **Total Monthly Outflow:** <b style='color:#F59E0B;'>₹{tot_outflow:,} / mo</b>", unsafe_allow_html=True)
+                st.markdown(f"- **Monthly Rent:** `₹{rent_val:,} / mo`")
+                st.markdown(f"- **Monthly Maintenance:** `₹{maint_val:,} / mo`")
+                st.markdown(f"- **Total Monthly Outflow (Rent + Maint):** <b style='color:#F59E0B;'>₹{tot_outflow:,} / mo</b>", unsafe_allow_html=True)
+                st.markdown(f"- **Security Deposit:** `₹{dep_val:,}` ({r['security_deposit_months']} months)")
+                st.markdown(f"- **7.5% Annual Interest on Deposit (Opportunity Cost):** <b style='color:#FCD34D;'>+₹{dep_interest_pm:,} / mo</b> <span style='font-size:0.8rem; color:#94A3B8;'>(₹{annual_dep_interest:,}/yr)</span>", unsafe_allow_html=True)
+                st.markdown(f"👉 **TOTAL MONTHLY WITH DEPOSIT NOTE:** <b style='color:#38BDF8; font-size:1.02rem;'>Total Monthly: ₹{tot_outflow:,} (+{dep_interest_pm:,}/- pm due to deposit)</b>", unsafe_allow_html=True)
+                st.markdown(f"- **Effective Economic Outflow:** `₹{effective_monthly:,} / mo`")
                 st.markdown(f"- **Total Annual Maintenance:** `₹{ann_maint:,} / yr`")
-                st.markdown(f"- **Security Deposit:** `₹{r['security_deposit_inr']:,}` ({r['security_deposit_months']} months)")
                 st.markdown(f"- **Water Supply:** {r['water_supply']}")
 
             with r_platforms:
@@ -1407,7 +1446,8 @@ with tab_architecture:
         top_5_csv_path = os.path.join(os.path.dirname(__file__), "data", "top_5_rental_daily.csv")
         if os.path.exists(top_5_csv_path):
             df_top_5 = pd.read_csv(top_5_csv_path)
-            st.dataframe(df_top_5[["Society_Name", "Resident_Rating", "Feedback_Score", "Age_Years", "BHK", "Monthly_Rent_INR", "Total_Monthly_Outflow_INR", "Brokerage_Savings_INR", "Best_Platform"]], use_container_width=True, hide_index=True)
+            rental_preview_cols = [c for c in ["Society_Name", "Resident_Rating", "Feedback_Score", "Age_Years", "BHK", "Monthly_Rent_INR", "Total_Monthly_Outflow_INR", "Monthly_Summary_With_Deposit", "Effective_Monthly_Cost_INR", "Best_Platform"] if c in df_top_5.columns]
+            st.dataframe(df_top_5[rental_preview_cols], use_container_width=True, hide_index=True)
             with open(top_5_csv_path, "rb") as f:
                 st.download_button("📥 Download Top 5 Rental CSV", f, file_name="top_5_rental_daily.csv", mime="text/csv", use_container_width=True)
         else:
